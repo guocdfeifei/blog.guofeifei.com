@@ -1,0 +1,423 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>oracle查询数据库表索引名称、索引字段、创建索引语句 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="仅限查当前属主1. 在oracle8以上的版本中，可以使用以下语句进行索引名称和创建索引语句的查询。 
+SELECT INDEXNAME,DBMS_METADATA.get_ddl(‘INDEX’,INDEX_NAME,TABLE_OWNER) INDEX_DDL  FROM user_indexe">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/oracle_dict/" title="oracle查询数据库表索引名称、索引字段、创建索引语句" itemprop="url">oracle查询数据库表索引名称、索引字段、创建索引语句</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T12:53:29.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T16:27:21.071Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>仅限查当前属主<br>1. 在oracle8以上的版本中，可以使用以下语句进行索引名称和创建索引语句的查询。 </p>
+<p>SELECT INDEX<em>NAME,DBMS_METADATA.get_ddl(‘INDEX’,INDEX_NAME,TABLE_OWNER) INDEX_DDL<br>  FROM user_indexes<br>  WHERE table_name like ‘KJ</em>%’; —‘KJ_%’表示一组以KJ开头的表，可以根据<br>                                    --具体情况更改为相应表名，表明字母区分大小写 </p>
+<p>--在此图片中，blog大字段里面是创建该索引的语句。 </p>
+<p>2. 在oracle10G版本中，可以使用user<em>ind_columns 去查询数据库的表名、索引名、索引创建所在字段等信息。<br>select * from user_ind_columns t<br>where t.table_name like ‘KJ</em>%’; —一组以KJ开头的表，表名区分字母大小写。<br>查询结果图片 </p>
+<p>3. 可以依据user<em>ind_columns显示字段，去更改查询条件显示相应字段内容，如下：<br>select t.table_name,t.index_name,t.column_name from user_ind_columns t<br>where t.table_name like ‘KJ</em>%’; </p>
+<p>4. 也可以尝试如下语句查询，可以显示该索引所属数据库用户。<br>select * from user_ind_statistics</p>
+<p>另外<br>通过搜索摸索，总结了一下oracle中查询表的信息，包括表名，字段名，字段类型，主键，外键唯一性约束信息，索引信息查询SQL如下，希望对大家有所帮助：</p>
+<p>1、查询出所有的用户表<br>select * from user_tables 可以查询出所有的用户表<br>select owner,table_name from all_tables; 查询所有表，包括其他用户表</p>
+<p>通过表名过滤需要将字母作如下处理</p>
+<p>select * from user_tables where table_name = upper(‘表名’)</p>
+<p>因为无论你建立表的时候表名名字是大写还是小写的，create语句执行通过之后，对应的user_tables表中的table_name字段都会自动变为大写字母，所以必须通过内置函数upper将字符串转化为大写字母进行查询，否则，即使建表语句执行通过之后，通过上面的查询语句仍然查询不到对应的记录。<br>2、查询出用户所有表的索引<br>select <em> from user_indexes<br>3、查询用户表的索引(非聚集索引):<br>select </em> from user_indexes where uniqueness=’NONUNIQUE’<br>4、查询用户表的主键(聚集索引):<br>select <em> from user_indexes where uniqueness=’UNIQUE’<br>5、查询表的索引<br>select t.</em>,i.index_type from user_ind_columns t,user_indexes i where t.index_name = i.index_name and</p>
+<p>t.table_name=’NODE’<br>6、查询表的主键<br>select cu.* from user_cons_columns cu, user_constraints au where cu.constraint_name = au.constraint_name and</p>
+<p>au.constraint_type = ‘P’ AND cu.table_name = ‘NODE’<br>7、查找表的唯一性约束（包括名称，构成列）：<br>select column_name from user_cons_columns cu, user_constraints au where cu.constraint_name=au.constraint_name and</p>
+<p>cu.table_name=’NODE’<br>8、查找表的外键<br>select <em> from user_constraints c where c.constraint_type = ‘R’ and c.table_name=’STAFFPOSITION’<br>查询外键约束的列名：<br>select </em> from user_cons_columns cl where cl.constraint_name = 外键名称<br>查询引用表的键的列名：<br>select * from user_cons_columns cl where cl.constraint_name = 外键引用表的键名<br>9、查询表的所有列及其属性<br>方法一：</p>
+<p>select * from user_tab_columns where table_name=upper(‘表名’);</p>
+<p>方法二：</p>
+<p>select cname,coltype,width from col where tname=upper(‘表名’);;</p>
+<p>10.查询一个用户中存在的过程和函数<br>select object_name,created,status from user_objects<br>where lower(object_type) in (‘procedure’,’function’);</p>
+<p>11.查询其它角色表的权限<br>select * from role_tab_privs ;</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/oracle_dict/" data-title="oracle查询数据库表索引名称、索引字段、创建索引语句 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/oracle_dict_role/" title="oracle查询数据库表索引名称、索引字段、创建索引语句">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle查询数据库表索引名称、索引字段、创建索引语句</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/oracle-sql_cnblogs/"  title="Oracle SQL性能优化[转自cnblogs]">
+ <strong>NEXT:</strong><br/> 
+ <span>Oracle SQL性能优化[转自cnblogs]
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

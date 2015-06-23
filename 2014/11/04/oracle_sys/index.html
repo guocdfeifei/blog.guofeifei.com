@@ -1,0 +1,480 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>oracle 系统表详解 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="ORACLE系统表处理
+1.取得指定用户的所有表名：  
+SELECT OWNER  AS “对象所有者”,OBJECT_NAME AS “表名”,OBJECT_ID AS “对象编号” from dba_objects where owner = ‘RAXNYB’ AND OBJECT_TYPE ">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/oracle_sys/" title="oracle 系统表详解" itemprop="url">oracle 系统表详解</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T05:51:31.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T16:27:22.567Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>ORACLE系统表处理</p>
+<p>1.取得指定用户的所有表名：  </p>
+<p>SELECT OWNER  AS “对象所有者”,OBJECT_NAME AS “表名”,OBJECT_ID AS “对象编号” from dba_objects where owner = ‘RAXNYB’ AND OBJECT_TYPE = ‘TABLE’ ORDER BY OWNER,OBJECT_TYPE;<br>或<br>OWNER  AS “对象所有者”,TABLE_NAME AS “表名” from DBA_TABLES where owner = ‘RAXNYB’  ORDER BY OWNER,TABLE_NAME;  </p>
+<p>2.取得指定用户的所有视图名称：  </p>
+<p>SELECT OWNER  AS “对象所有者”,VIEW_NAME AS “视图名称” from DBA_VIEWS  where owner = ‘RAXNYB’  ORDER BY OWNER,VIEW_NAME;  </p>
+<p>oracle系统表查询</p>
+<p>1.用户：  </p>
+<p>select username from dba_users;  </p>
+<p>改口令  </p>
+<p>alter user spgroup identified by spgtest;   </p>
+<p>2.表空间:  </p>
+<p>select <em> from dba_data_files;<br>select </em> from dba_tablespaces;//表空间<br>select tablespace_name,sum(bytes), sum(blocks) from dba_free_space group by tablespace_name;//空闲表空间<br>select <em> from dba_data_files where tablespace_name=’RBS’;//表空间对应的数据文件<br>select </em> from dba_segments where tablespace_name=’INDEXS’;   </p>
+<p>3.数据库对象  </p>
+<p>select * from dba_objects;     </p>
+<p>CLUSTER、DATABASE LINK、FUNCTION、INDEX、LIBRARY、PACKAGE、PACKAGE BODY、PROCEDURE、SEQUENCE、SYNONYM、TABLE、TRIGGER、TYPE、UNDEFINED、VIEW。  </p>
+<p>4.表  </p>
+<p>select * from dba_tables;     </p>
+<p>select extent_id,bytes from dba_extents where segment_name=’CUSTOMERS’ and segment_type=’TABLE’ order by extent_id;//表使用的extent的信息。segment_type=’ROLLBACK’查看回滚段的空间分配信息    </p>
+<p>select distinct table_name from user_tab_columns where column_name=’SO_TYPE_ID’;   </p>
+<p>5.索引  </p>
+<p>select <em> from dba_indexes;//索引，包括主键索引<br>select </em> from dba_ind_columns;//索引列<br>select i.index_name,i.uniqueness,c.column_name<br>from user_indexes i,user_ind_columns c<br>where i.index_name=c.index_name<br>and i.table_name =’ACC_NBR’;//联接使用  </p>
+<p>6.序列  </p>
+<p>select * from dba_sequences;  </p>
+<p>7.视图  </p>
+<p>select <em> from dba_views<br>select </em> from all_views<br>text字段 可用于查询视图生成的脚本  </p>
+<p>8.聚簇  </p>
+<p>select * from dba_clusters  </p>
+<p>9.快照  </p>
+<p>select * from dba_snapshots  </p>
+<p>快照、分区应存在相应的表空间</p>
+<p>10.同义词  </p>
+<p>select * from dba_synonyms  </p>
+<p>//if owner is PUBLIC,then the synonyms is a public synonym.<br>//if owner is one of users,then the synonyms is a private synonym</p>
+<p>11.数据库链  </p>
+<p>select * from dba_db_links  </p>
+<p>在spbase下建数据库链:  </p>
+<p>create database link dbl_spnew<br>connect to spnew identified by spnew using ‘jhhx’;    </p>
+<p>insert into acc_nbr@dbl_spnew select * from acc_nbr where nxx_nbr=’237’ and line_nbr=’8888’;   </p>
+<p>12.触发器  </p>
+<p>select * from dba_trigers;  </p>
+<p>存储过程，函数从dba_objects查找<br>其文本：select text from user_source where name=’BOOK_SP_EXAMPLE’;<br>建立出错：select * from user_errors<br>oracle总是将存储过程，函数等软件放在SYSTEM表空间。</p>
+<p>13.约束<br>（1）约束是和表关联的，可在create table或alter table table_name add/drop/modify来建立、修改、删除约束.<br>可以临时禁止约束，如：  </p>
+<p>alter table book_example disable constraint book_example_1;<br>alter table book_example enable constraint book_example_1;   </p>
+<p>（2）主键和外键被称为表约束，而not null和unique之类的约束被称为列约束。通常将主键和外键作为单独的命名约束放在字段列表下面，而列约束可放在列定义的同一行，这样更具有可读性<br>（3）列约束可从表定义看出，即describe;表约束即主键和外键，可从dba_constraints和dba_cons_columns 查。  </p>
+<p>select * from user_constraints where table_name=’BOOK_EXAMPLE’;<br>select owner,CONSTRAINT_NAME,TABLE_NAME from user_constraints where constraint_type=’R’ order by table_name;   </p>
+<p>（4）定义约束可以无名（系统自动生成约束名）和自己定义约束名（特别是主键、外键） 如：  </p>
+<p>create table book_example (identifier number not null);<br>create table book_example (identifier number constranit book_example_1 not null);   </p>
+<p>14、回滚段：<br>在所有的修改结果存入磁盘前，回滚段中保持恢复该事务所需的全部信息，必须以数据库发生的事务来相应确定其大小（DML语句才可回滚，create,drop,truncate等DDL不能回滚）。<br>回滚段数量=并发事务/4，但不能超过50；使每个回滚段大小足够处理一个完整的事务；  </p>
+<p>create rollback segment r05  tablespace rbs;<br>create rollback segment rbs_cvt tablespace rbs storage(initial 1M next 500k);  </p>
+<p>使回滚段在线  </p>
+<p>alter rollback segment r04 online;  </p>
+<p>用dba_extents,v$rollback_segs监测回滚段的大小和动态增长。</p>
+<p>回滚段的区间信息  </p>
+<p>select * from dba_extents where segment_type=’ROLLBACK’ and segment_name=’RB1’;   </p>
+<p>回滚段的段信息,其中bytes显示目前回滚段的字节数  </p>
+<p>select * from dba_segments where segment_type=’ROLLBACK’ and segment_name=’RB1’;   </p>
+<p>为事物指定回归段  </p>
+<p>set transaction use rollback segment rbs_cvt   </p>
+<p>针对bytes可以使用回滚段回缩。  </p>
+<p>alter rollback segment rbs_cvt shrink;<br>select bytes,extents,max_extents from dba_segments where segment_type=’ROLLBACK’ and segment_name=’RBS_CVT’;   </p>
+<p>回滚段的当前状态信息：  </p>
+<p>select * from dba_rollback_segs where segment_name=’RB1’;  </p>
+<p>比多回滚段状态status，回滚段所属实例instance_num<br>查优化值optimal  </p>
+<p>select n.name,s.optsize from v$rollname n,v$rollstat s where n.usn=s.usn;   </p>
+<p>回滚段中的数据  </p>
+<p>set transaction use rollback segment rb1;/<em>回滚段名</em>/<br>select n.name,s.writes from v$rollname n,v$rollstat s where n.usn=s.usn;   </p>
+<p>当事务处理完毕，再次查询$rollstat，比较writes(回滚段条目字节数)差值，可确定事务的大小。<br>查询回滚段中的事务  </p>
+<p>column rr heading ‘RB Segment’ format a18<br>column us heading ‘Username’ format a15<br>column os heading ‘Os User’ format a10<br>column te heading ‘Terminal’ format a10<br>select r.name rr,nvl(s.username,’no transaction’) us,s.osuser os,s.terminal te from v$lock l,v$session s,v$rollname r<br>where l.sid=s.sid(+)<br>and trunc(l.id1/65536)=R.USN and l.type=’TX’ and l.lmode=6 order by r.name;  </p>
+<p>15、作业<br>查询作业信息  </p>
+<p>select job,broken,next_date,interval,what from user_jobs;<br>select job,broken,next_date,interval,what from dba_jobs;  </p>
+<p>查询正在运行的作业  </p>
+<p>select * from dba_jobs_running;  </p>
+<p>使用包  </p>
+<p>exec dbms_job.submit(:v_num,’a;’,sysdate,’sysdate + (10/(24<em>60</em>60))’)加入作业。间隔10秒钟<br>exec dbms_job.submit(:v_num,’a;’,sysdate,’sysdate + (11/(24*60))’)加入作业。间隔11分钟使用包exec dbms_job.remove(21)删除21号作业。  </p>
+<p>16.批注:<br>ALL_COL_COMMENTS</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/oracle_sys/" data-title="oracle 系统表详解 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/oracle_loop/" title="oracle 自定义函数循环示例">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle 自定义函数循环示例</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/oracle_PARTITION/"  title="oracle 表分区详解">
+ <strong>NEXT:</strong><br/> 
+ <span>oracle 表分区详解
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

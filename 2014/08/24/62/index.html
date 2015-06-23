@@ -1,0 +1,429 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>安装配置Django开发环境（Eclipse + Pydev） | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="本文是2008年04月13日写的，距离现在已经有很多年了，一些版本链接，可能还得大家看情况更新，不行就Google搜一下吧。
+   所谓工欲善其事，必先利其器。Python开发有很多工具，其中Eclipse+Pydev就是其中一种。尽管 的置底文章对这对组合评价不高，但在pipi的坚持和推荐下，我还">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/08/24/62/" title="安装配置Django开发环境（Eclipse + Pydev）" itemprop="url">安装配置Django开发环境（Eclipse + Pydev）</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-08-24T14:35:04.000Z" itemprop="datePublished">2014-08-24</time>
+    更新日期:<time datetime="2015-06-23T15:45:05.115Z" itemprop="dateModified">2015-06-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>本文是2008年04月13日写的，距离现在已经有很多年了，一些版本链接，可能还得大家看情况更新，不行就Google搜一下吧。</p>
+<p>   所谓工欲善其事，必先利其器。Python开发有很多工具，其中Eclipse+Pydev就是其中一种。尽管 的置底文章对这对组合评价不高，但在pipi的坚持和推荐下，我还是选择了这对组合。反正都没有用过，我正好尝尝鲜。非常感谢Pipi，本文得到了Pipi同学的大力支持。</p>
+<pre><code>下面将开发环境的安装配置过程写下来，供后来者参考。
+</code></pre><p>一、安装Eclipse SDK。</p>
+<p>到 <a href="http://download.eclipse.org/eclipse/downloads/" target="_blank" rel="external">http://download.eclipse.org/eclipse/downloads/</a> 找SDK最新的Release版本，最新的版本是 3.3.2</p>
+<p>下载。一开始我选择的是台湾的[Taiwan]National Center for High-Performance Computing (http) ，速度只有5kB/s，还是小日本的快，118kB/S,， Japan Advanced Institute of Science and Technology (http) ，做事情应该也这样，一个明显很缓慢，就要当即力断换其他的。</p>
+<p>下载完毕之后，将eclipse SDK解压到某个目录下，我的放在e:\eclipse就可以了。</p>
+<p>如果要使用中文的，最好是使用跟SDK配套的语言包，否则也不能完全汉化（最后我选择了纯英文的，没汉化）。根据网上的资料，汉化前不要启动Eclipse，否则不能完全汉化。将语言包也解压到同一目录下即可。</p>
+<p>二、安装Pydev</p>
+<p>到 <a href="http://sourceforge.net/projects/pydev/" target="_blank" rel="external">http://sourceforge.net/projects/pydev/</a> 这里找最新版本下载，最新版本是1.3.15</p>
+<p>下载后解压，将plugins目录下所有文件挪到Eclipse的相应目录下，将feature目录下所有文件挪到Eclipse的相应目录下，最后启动Eclipse，在Help－》Software Upates－》Manage Configuration，然后弹出的界面即可看到pydev的插件。</p>
+<p>另一种安装插件的方法是：Help－》Software Upates－》Find and Install－》Search for new features to install-》New remote site－》随便起个name如pydev，url填 <a href="http://pydev.sf.net/updates/" target="_blank" rel="external">http://pydev.sf.net/updates/</a> －》然后照着提示下载安装即可。</p>
+<p>两种方法我都尝试了一下，为保险起见，我选择的是第二种方法。</p>
+<p>三 、Pydev的配置<br>在Eclipse IDE 下， 打开 Window-&gt;Preferences… 对话框，从右侧的树形列表中选择“ PyDev”-&gt;“Interpreter Python”， 点击New按钮，从Python的安装路径下选择Python.exe，然后会弹出一个对话框让你勾选System PYTHONPATH，我是都选了，应该无所谓。最后点Ok，退出。</p>
+<p>四、进行Django项目开发</p>
+<p>1、建立PyDev Project</p>
+<p>Eclipse IDE－》File－》New－》Other－》Pydev－》选择Pydev Project－》起一个项目的名称（例如demo）－》选择路径，如E:\work－》选择适合你的Python版本（我的是2.5）－》将下面的勾去掉，不要建立src文件－》Finish</p>
+<p>2、建立Django Project</p>
+<p>（1）django-admin.py startproject demo。</p>
+<p>（2）把生成的Django项目目录拷贝到Eclipse刚刚建立的项目下的目录里。回到刚才的Elicpse IDE－》在PyDev Package视图中右键单击新建的项目，从弹出的菜单中选择“Refresh”，即可看到Django的项目工程。添加、删除文件和目录的操作都可以通过右键菜单来完成。</p>
+<p>(3)右键单击PyDev项目－》属性－》选择PyDev－》PYTHONPATH－》然后将src目录 (项目文件路径） 添加到项目代码中去－》确定</p>
+<p>（4）对Pydev项目进行配置：选择Pydev的项目名称－》Run菜单－》Open Run Dialog－》Python Run－》右键New－》在Main面板中写入项目名称，通过Browse载入项目名称和Main Module，Main Module选择manage.py－》在Augement面板中,argument必须是 runserver —noreload，下面的workingdirectory加入你的base directory。   </p>
+<p>打完收工，接下来开始写Django应用吧。   </p>
+<p>最后补一个用SourceInsight看Python工程的方法：<br>1、到<a href="http://www.sourceinsight.com/public/languages/下载Python.CLF文件，这是python的语言支持包。" target="_blank" rel="external">http://www.sourceinsight.com/public/languages/下载Python.CLF文件，这是python的语言支持包。</a><br>2、打开SourceInsight-&gt;Options &gt; Preferences －&gt; Languages －&gt; Import －&gt; Select (.CLF)<br>3、再做的：－&gt; Document Types - &gt; Add Type (Give it a name : 填Python－&gt;.给出类型名：我填的是*.py ) 在下面的下拉框里面选择之前导入的文件，然后确定。Source Insight 就可以识别该类型的文件了。  </p>
+<p>20080413</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/django/">django</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/django/">django</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/08/24/62/" data-title="安装配置Django开发环境（Eclipse + Pydev） | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/08/25/oracle-toad-11-licensing/" title="oracle TOAD 11 注册码 Licensing">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle TOAD 11 注册码 Licensing</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/08/24/58/"  title="大烩菜做法">
+ <strong>NEXT:</strong><br/> 
+ <span>大烩菜做法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

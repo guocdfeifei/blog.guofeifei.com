@@ -1,0 +1,471 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>oracle SQL连接(内连接,左连接,右连接,自连接)详解 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="create table department( id number primary key, name varchar2(30));
+
+create table employee(  id number primary key,  name varchar2(30) not null,  sala">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2013/07/31/45/" title="oracle SQL连接(内连接,左连接,右连接,自连接)详解" itemprop="url">oracle SQL连接(内连接,左连接,右连接,自连接)详解</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2013-07-30T20:35:03.000Z" itemprop="datePublished">2013-07-31</time>
+    更新日期:<time datetime="2015-06-23T16:54:03.014Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<pre><code><span class="operator"><span class="keyword">create</span> <span class="keyword">table</span> department( id <span class="built_in">number</span> <span class="keyword">primary</span> <span class="keyword">key</span>, name varchar2(<span class="number">30</span>));</span>
+
+<span class="operator"><span class="keyword">create</span> <span class="keyword">table</span> employee(  id <span class="built_in">number</span> <span class="keyword">primary</span> <span class="keyword">key</span>,  name varchar2(<span class="number">30</span>) <span class="keyword">not</span> <span class="literal">null</span>,  salary <span class="built_in">number</span>(<span class="number">6</span>,<span class="number">2</span>),  title varchar2(<span class="number">30</span>),  manager <span class="built_in">number</span>,  deptid <span class="built_in">number</span>);</span>
+
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> department <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'人力资源'</span>);</span>
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> department <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'开发中心'</span>);</span>
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> department <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'总裁室'</span>);</span>
+
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> employee <span class="keyword">values</span>(<span class="number">4</span>,<span class="string">'赵六'</span>,<span class="number">9000</span>,<span class="string">'项目经理'</span>,<span class="literal">null</span>,<span class="number">2</span>);</span>
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> employee <span class="keyword">values</span>(<span class="number">3</span>,<span class="string">'王五'</span>,<span class="number">7000</span>,<span class="string">'项目组长'</span>,<span class="number">4</span>,<span class="number">2</span>);</span>
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> employee <span class="keyword">values</span>(<span class="number">1</span>,<span class="string">'张三'</span>,<span class="number">6000</span>,<span class="string">'程序员'</span>,<span class="number">3</span>,<span class="number">2</span>);</span>
+<span class="operator"><span class="keyword">insert</span> <span class="keyword">into</span> employee <span class="keyword">values</span>(<span class="number">2</span>,<span class="string">'李四'</span>,<span class="number">7000</span>,<span class="string">'HR'</span>,<span class="number">4</span>,<span class="number">1</span>);</span>
+</code></pre><p>不同的 SQL JOIN   </p>
+<pre><code>* <span class="built_in">JOIN</span>: 如果表中有至少一个匹配，则返回行   
+* <span class="built_in">LEFT</span> <span class="built_in">JOIN</span>: 即使右表中没有匹配，也从左表返回所有的行   
+* <span class="built_in">RIGHT</span> <span class="built_in">JOIN</span>: 即使左表中没有匹配，也从右表返回所有的行   
+* FULL <span class="built_in">JOIN</span>: 只要其中一个表中存在匹配，就返回行   
+</code></pre><p>INNER JOIN 关键字在表中存在至少一个匹配时返回行。如果 “employee” 中的行在 “department” 中没有匹配，就不会列出这些行。   </p>
+<p>LEFT JOIN 关键字会从左表 (employee) 那里返回所有的行，即使在右表 (department) 中没有匹配的行。   </p>
+<p>RIGHT JOIN 关键字会从右表 (department) 那里返回所有的行，即使在左表 (employee) 中没有匹配的行。   </p>
+<p>FULL JOIN 关键字会从左表 (employee) 和右表 (department) 那里返回所有的行。如果 “employee” 中的行在表 “department” 中没有匹配，或者如果 “department” 中的行在表 “employee” 中没有匹配，这些行同样会列出。   </p>
+<p>注释：INNER JOIN 与 JOIN 是相同的。<br>注释：在某些数据库中， LEFT JOIN 称为 LEFT OUTER JOIN。<br>注释：在某些数据库中， RIGHT JOIN 称为 RIGHT OUTER JOIN。<br>注释：在某些数据库中， FULL JOIN 称为 FULL OUTER JOIN。   </p>
+<p>内连接:是最常用的链接,也叫等值链接<br>不管限制条件在on中还是在where中，内连接都得到笛卡尔积中满足所有条件的记录。对于inner join, on和where的效果是一样的。   </p>
+<p>1)当没有限制条件,此时为笛卡尔积：   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee , department ;</span>
+<span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee <span class="keyword">inner</span> <span class="keyword">join</span> department <span class="keyword">on</span> <span class="number">1</span>=<span class="number">1</span>;</span>
+</code></pre><p>得到的效果是一样的.   </p>
+<p><img src="http://dl.iteye.com/upload/attachment/439432/f8f4d55a-e39b-368e-9ff9-fd376c031367.jpg" alt="">   </p>
+<p>2)此时如果加上where限制条件,则对上面笛卡尔积的每一条记录看它是否满足限制条件，如果满足，则它在结果集中。   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp , department dept <span class="keyword">where</span> emp.deptid= dept.id;</span>
+<span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp <span class="keyword">inner</span> <span class="keyword">join</span> department dept <span class="keyword">on</span> emp.deptid= dept.id;</span>
+</code></pre><p><img src="http://dl.iteye.com/upload/attachment/439438/4680072a-a348-313b-ba43-c58ffaf8d249.jpg" alt="">   </p>
+<p>外连接<br>  则分为”左外连接(左连接)”,”右外连接(右连接)”两种情况: left join / right join   </p>
+<p>交叉连接（完全连接）cross join 不带 where 条件的   </p>
+<p>左连接(left join):<br>1)当没加限制条件时,得到笛卡尔积，同内连接没加限制条件一样   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee <span class="keyword">left</span> <span class="keyword">join</span> department <span class="keyword">on</span> <span class="number">1</span>=<span class="number">1</span>;</span>
+</code></pre><p>2)当添加特定条件时:<br>  oracle数据库中可以用(+)来实现,    </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp , department dept <span class="keyword">where</span> emp.deptid= dept.id(+);</span>
+</code></pre><p>即“(+)”所在位置的另一侧为连接的方向，左连接说明等号左侧的所有记录均会被显示，无论其在右侧是否得到匹配;<br>等同于:   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp <span class="keyword">left</span> <span class="keyword">join</span> department dept <span class="keyword">on</span> emp.deptid= dept.id;</span>
+</code></pre><p><img src="http://dl.iteye.com/upload/attachment/439451/c230b107-afe3-34c1-bd52-1f393f388308.jpg" alt="">   </p>
+<p>右连接:<br>  oracle数据库中可以用(+)来实现,    </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp , department dept <span class="keyword">where</span> emp.deptid(+)= dept.id;</span>
+</code></pre><p>即“(+)”所在位置的另一侧为连接的方向，右连接说明等号右侧的所有记录均会被显示，无论其在左侧是否得到匹配;<br>等同于:   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp <span class="keyword">right</span> <span class="keyword">join</span> department dept <span class="keyword">on</span> emp.deptid= dept.id;</span>
+</code></pre><p><img src="http://dl.iteye.com/upload/attachment/439463/887eaecb-79f9-3bd6-9987-567732550062.jpg" alt="">   </p>
+<p>全连接:会从左表 (employee) 和右表 (department) 那里返回所有的行。如果 “employee” 中的行在表 “department” 中没有匹配，或者如果 “department” 中的行在表 “employee” 中没有匹配，这些行同样会列出   </p>
+<p>连接分为三种：内连接、外连接、交叉连接     </p>
+<p>1、等值连接：在连接条件中使用等于号(=)运算符比较被连接列的列值，其查询结果中列出被连接表中的所有列，包括其中的重复列。   </p>
+<p>2、不等连接： 在连接条件使用除等于运算符以外的其它比较运算符比较被连接的列的列值。这些运算符包括&gt;、&gt;=、&lt;=、&lt;、!&gt;、!&lt;和&lt;&gt;。   </p>
+<p>3、自然连接(仅仅是一种特的等值连接)：在连接条件中使用等于(=)运算符比较被连接列的列值，但它使用选择列表指出查询结果集合中所包括的列，并删除连接表中的重复列。   </p>
+<p>外连接：<br>分为三种：左外连接(LEFT OUTER JOIN或LEFT JOIN)、右外连接(RIGHT OUTER JOIN或RIGHT JOIN)和全外连接(FULL OUTER JOIN或FULL JOIN)三种     </p>
+<p>交叉连接(CROSS JOIN)<br>没有WHERE 子句，它返回连接表中所有数据行的笛卡尔积<br>先返回 左表所有行，左表行在与右表行一一组合，等于两个表相乘   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp <span class="keyword">cross</span> <span class="keyword">join</span> department dept</span>
+</code></pre><p><img src="http://dl.iteye.com/upload/attachment/439491/218b5c70-42a2-3f77-be5a-ab6744ce2646.jpg" alt="">   </p>
+<p>如果需要加条件,则使用where   </p>
+<pre><code><span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp <span class="keyword">cross</span> <span class="keyword">join</span> department dept <span class="keyword">where</span> emp.deptid= dept.id;</span> 
+
+<span class="comment">--等同于</span>
+<span class="operator"><span class="keyword">select</span> * <span class="keyword">from</span> employee emp <span class="keyword">inner</span> <span class="keyword">join</span> department dept <span class="keyword">on</span> emp.deptid= dept.id;</span>
+</code></pre><p><img src="http://dl.iteye.com/upload/attachment/439495/c398aa23-c164-300e-ab59-d1ddaaa8defb.jpg" alt="">   </p>
+<p>两个主要的连接类型是内连 接和外连 接。到目前为止，所有示例中使用的都是内连 接。内连 接只保留交叉积中满足连接条件的那些行。如果某行在一个表中存在，但在另一个表中不存在，则结果表中不包括该信息。<br>外连 接是内连 接和左表和/或右表中未包括内连 接中的那些行的并置。当对两个表执行外连 接时，可任意将一个表指定为左表而将另一个表指定为右表。外连 接有三种类型:   </p>
+<p>左外连 接包括内连 接和左表中未包括在内连 接中的那些行。   </p>
+<p>右外连 接包括内连 接和右表中未包括在内连 接中的那些行。   </p>
+<p>全外连 接包括内连 接以及左表和右表中未包括在内连 接中的行。<br>内连 接一般是检索两个表里连接字段都存在的数据。<br>左连接的意思是，查询左（语句前面）表里的所有内容，无论右边表里有没有。右边表里没有的内容用NULL代替。<br>右连接和左连接相反。   </p>
+<p>数据表的连接有:<br>1、内连 接(自然连接): 只有两个表相匹配的行才能在结果集中出现<br>2、外连 接: 包括<br>（1）左外连 接(左边的表不加限制)<br>（2）右外连 接(右边的表不加限制)<br>（3）全外连 接(左右两表都不加限制)<br>3、自连接(连接发生在一张基表内)   </p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2013/07/31/45/" data-title="oracle SQL连接(内连接,左连接,右连接,自连接)详解 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2013/08/01/46/" title="github用代理登录主机">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  github用代理登录主机</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2013/07/20/42/"  title="python问题：IndentationError:expected an indented block错误解决">
+ <strong>NEXT:</strong><br/> 
+ <span>python问题：IndentationError:expected an indented block错误解决
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

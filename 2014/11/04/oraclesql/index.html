@@ -1,0 +1,430 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>oracle之SQL的优化及索引介绍 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="今天看到了一个贴子，简单介绍一下：影响查询性能的两个关键因素：索引，表扫描次数所以优化的目标就是怎样更好的利用索引和减少表扫描次数不过得先知道什么是索引？索引有什么特点？有几种类型的索引？索引是对数据库表中一列或多列的值进行排序的一种结构，例如 employee 表的姓（name）列。如果要按姓查找">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/oraclesql/" title="oracle之SQL的优化及索引介绍" itemprop="url">oracle之SQL的优化及索引介绍</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T11:50:39.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T16:27:22.710Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>今天看到了一个贴子，简单介绍一下：<br>影响查询性能的两个关键因素：<br>索引，表扫描次数<br>所以优化的目标就是怎样更好的利用索引和减少表扫描次数<br>不过得先知道什么是索引？索引有什么特点？有几种类型的索引？<br>索引是对数据库表中一列或多列的值进行排序的一种结构，例如 employee 表的姓（name）列。如果要按姓查找特定职员，与必须搜索表中的所有行相比，索引会帮助您更快地获得该信息。<br>索引是一个单独的、物理的数据库结构，它是某个表中一列或若干列值的集合和相应的指向表中物理标识这些值的数据页的逻辑指针清单。索引提供指向存储在表的指定列中的数据值的指针，然后根据您指定的排序顺序对这些指针排序。数据库使用索引的方式与您使用书籍中的索引的方式很相似：它搜索索引以找到特定值，然后顺指针找到包含该值的行。 在数据库关系图中，您可以在选定表的”索引/键”属性页中创建、编辑或删除每个索引类型。当保存索引所附加到的表，或保存该表所在的关系图时，索引将保存在数据库中。<br>可以基于数据库表中的单列或多列创建索引。多列索引使您可以区分其中一列可能有相同值的行。 如果经常同时搜索两列或多列或按两列或多列排序时，索引也很有帮助。例如，如果经常在同一查询中为姓和名两列设置判据，那么在这两列上创建多列索引将很有意义。 确定索引的有效性： 检查查询的 WHERE 和 JOIN 子句。在任一子句中包括的每一列都是索引可以选择的对象。 对新索引进行试验以检查它对运行查询性能的影响。 考虑已在表上创建的索引数量。最好避免在单个表上有很多索引。 检查已在表上创建的索引的定义。最好避免包含共享列的重叠索引。 检查某列中唯一数据值的数量，并将该数量与表中的行数进行比较。比较的结果就是该列的可选择性，这有助于确定该列是否适合建立索引，如果适合，确定索引的类型。<br>建立索引的优点：<br>1.大大加快数据的检索速度;<br> 2.创建唯一性索引，保证数据库表中每一行数据的唯一性;<br> 3.加速表和表之间的连接;<br> 4.在使用分组和排序子句进行数据检索时，可以显著减少查询中分组和排序的时间。<br>索引类型： 根据数据库的功能，可以在数据库设计器中创建四种索引：唯一索引、非唯一索引、主键索引和聚集索引。 尽管唯一索引有助于定位信息，但为获得最佳性能结果，建议改用主键或唯一约束。<br>唯一索引：<br> 唯一索引是不允许其中任何两行具有相同索引值的索引。 当现有数据中存在重复的键值时，大多数数据库不允许将新创建的唯一索引与表一起保存。数据库还可能防止添加将在表中创建重复键值的新数据。例如，如果在 employee 表中职员的姓 (lname) 上创建了唯一索引，则任何两个员工都不能同姓。<br>非唯一索引：<br>非唯一索引是相对唯一索引，允许其中任何两行具有相同索引值的索引。 当现有数据中存在重复的键值时，数据库是允许将新创建的索引与表一起保存。这时数据库不能防止添加将在表中创建重复键值的新数据。<br>主键索引：<br>数据库表经常有一列或列组合，其值唯一标识表中的每一行。该列称为表的主键。 在数据库关系图中为表定义主键将自动创建主键索引，主键索引是唯一索引的特定类型。该索引要求主键中的每个值都唯一。当在查询中使用主键索引时，它还允许对数据的快速访问。<br> 聚集索引（也叫聚簇索引）：<br>在聚集索引中，表中行的物理顺序与键值的逻辑（索引）顺序相同。一个表只能包含一个聚集索引。 如果某索引不是聚集索引，则表中行的物理顺序与键值的逻辑顺序不匹配。与非聚集索引相比，聚集索引通常提供更快的数据访问速度。  </p>
+<p>贴子内容：<br>1、应用程序中，保证在实现功能的基础上，尽量减少对数据库的访问次数；通过<br>搜索参数，尽量减少对表的访问行数,最小化结果集，从而减轻网络负担；能够分<br>开的操作尽量分开处理，提高每次的响应速度；在数据窗口使用SQL时，尽量把使<br>用的索引放在选择的首列；算法的结构尽量简单；在查询时，不要过多地使用通配<br>符如SELECT * FROM T1语句，要用到几列就选择几列如：SELECT COL1,COL2 FROM<br>T1；在可能的情况下尽量限制尽量结果集行数如：SELECT TOP 300<br>COL1,COL2,COL3 FROM T1,因为某些情况下用户是不需要那么多的数据的。不要在<br>应用中使用数据库游标，游标是非常有用的工具，但比使用常规的、面向集的SQL<br>语句需要更大的开销；按照特定顺序提取数据的查找。  </p>
+<p>2、 避免使用不兼容的数据类型。例如float和int、char和varchar、binary和<br>varbinary是不兼容的。数据类型的不兼容可能使优化器无法执行一些本来可以进<br>行的优化操作。例如:<br>SELECT name FROM employee WHERE salary ＞ 60000<br>在这条语句中,如salary字段是money型的,则优化器很难对其进行优化,因为60000<br>是个整型数。我们应当在编程时将整型转化成为钱币型,而不要等到运行时转化。  </p>
+<p>3、 尽量避免在WHERE子句中对字段进行函数或表达式操作，这将导致引擎放弃<br>使用索引而进行全表扫描。如：<br>SELECT <em> FROM T1 WHERE F1/2=100<br>应改为:<br>SELECT </em> FROM T1 WHERE F1=100*2</p>
+<p>SELECT <em> FROM RECORD WHERE SUBSTRING(CARD_NO,1,4)=’5378’<br>应改为:<br>SELECT </em> FROM RECORD WHERE CARD_NO LIKE ‘5378%’</p>
+<p>SELECT member_number, first_name, last_name FROM members<br>WHERE DATEDIFF(yy,datofbirth,GETDATE()) &gt; 21<br>应改为:<br>SELECT member_number, first_name, last_name FROM members<br>WHERE dateofbirth &lt; DATEADD(yy,-21,GETDATE())<br>即：任何对列的操作都将导致表扫描，它包括数据库函数、计算表达式等等，查询<br>时要尽可能将操作移至等号右边。</p>
+<p>4、 避免使用!=或＜＞、IS NULL或IS NOT NULL、IN ，NOT IN等这样的操作符,<br>因为这会使系统无法使用索引,而只能直接搜索表中的数据。例如:<br>SELECT id FROM employee WHERE id != ‘B%’<br>优化器将无法通过索引来确定将要命中的行数,因此需要搜索该表的所有行。  </p>
+<p>5、 尽量使用数字型字段，一部分开发人员和数据库管理人员喜欢把包含数值信<br>息的字段<br>设计为字符型，这会降低查询和连接的性能，并会增加存储开销。这是因为引擎在<br>处理查询和连接回逐个比较字符串中每一个字符，而对于数字型而言只需要比较一<br>次就够了。</p>
+<p>6、 合理使用EXISTS,NOT EXISTS子句。如下所示：<br>1.SELECT SUM(T1.C1)FROM T1 WHERE(<br>(SELECT COUNT(<em>)FROM T2 WHERE T2.C2=T1.C2&gt;0)<br>2.SELECT SUM(T1.C1) FROM T1WHERE EXISTS(<br>  SELECT </em> FROM T2 WHERE T2.C2=T1.C2)<br>两者产生相同的结果，但是后者的效率显然要高于前者。因为后者不会产生大量锁<br>定的表扫描或是索引扫描。<br>如果你想校验表里是否存在某条纪录，不要用count(<em>)那样效率很低，而且浪费服<br>务器资源。可以用EXISTS代替。如：<br>IF (SELECT COUNT(</em>) FROM table_name WHERE column_name = ‘xxx’)<br>可以写成：<br>IF EXISTS (SELECT * FROM table_name WHERE column_name = ‘xxx’)</p>
+<p>经常需要写一个T_SQL语句比较一个父结果集和子结果集，从而找到是否存在在父<br>结果集中有而在子结果集中没有的记录，如：<br>1.SELECT a.hdr_key FROM hdr_tbl a—— tbl a 表示tbl用别名a代替<br>WHERE NOT EXISTS (SELECT * FROM dtl_tbl b WHERE a.hdr_key = b.hdr_key)  </p>
+<p>2.SELECT a.hdr_key FROM hdr_tbl a<br>LEFT JOIN dtl_tbl b ON a.hdr_key = b.hdr_key WHERE b.hdr_key IS NULL  </p>
+<p>3.SELECT hdr_key FROM hdr_tbl<br>WHERE hdr_key NOT IN (SELECT hdr_key FROM dtl_tbl)<br>  三种写法都可以得到同样正确的结果，但是效率依次降低。</p>
+<p>7、 尽量避免在索引过的字符数据中，使用非打头字母搜索。这也使得引擎无法<br>利用索引。<br>见如下例子：<br>SELECT <em> FROM T1 WHERE NAME LIKE ‘%L%’<br>SELECT </em> FROM T1 WHERE SUBSTING(NAME,2,1)=’L’<br>SELECT * FROM T1 WHERE NAME LIKE ‘L%’<br>即使NAME字段建有索引，前两个查询依然无法利用索引完成加快操作，引擎不得不<br>对全表所有数据逐条操作来完成任务。而第三个查询能够使用索引来加快操作。</p>
+<p>8、 分利用连接条件，在某种情况下，两个表之间可能不只一个的连接条件，这<br>时在 WHERE 子句中将连接条件完整的写上，有可能大大提高查询速度。<br>例：<br>SELECT SUM(A.AMOUNT) FROM ACCOUNT A,CARD B WHERE A.CARD_NO = B.CARD_NO<br>SELECT SUM(A.AMOUNT) FROM ACCOUNT A,CARD B WHERE A.CARD_NO = B.CARD_NO<br>AND A.ACCOUNT_NO=B.ACCOUNT_NO<br>第二句将比第一句执行快得多。</p>
+<p>9、 消除对大型表行数据的顺序存取<br>  尽管在所有的检查列上都有索引，但某些形式的WHERE子句强迫优化器使用<br>顺序存取。如：<br>SELECT * FROM orders WHERE (customer_num=104 AND order_num&gt;1001) OR<br>order_num=1008<br>解决办法可以使用并集来避免顺序存取：<br>SELECT ＊ FROM orders WHERE customer_num=104 AND order_num&gt;1001<br>UNION<br>SELECT ＊ FROM orders WHERE order_num=1008<br>这样就能利用索引路径处理查询。</p>
+<p>10、 避免困难的正规表达式<br>  LIKE关键字支持通配符匹配，技术上叫正规表达式。但这种匹配特别耗费时<br>间。例如：SELECT * FROM customer WHERE zipcode LIKE “98<em> </em> _”<br>即使在zipcode字段上建立了索引，在这种情况下也还是采用顺序扫描的方式。如<br>果把语句改为SELECT ＊ FROM customer WHERE zipcode &gt;”98000”，在执行查询<br>时就会利用索引来查询，显然会大大提高速度。<br>11、 使用视图加速查询<br>把表的一个子集进行排序并创建视图，有时能加速查询。它有助于避免多重排序<br>操作，而且在其他方面还能简化优化器的工作。例如：<br>SELECT cust.name，rcvbles.balance，……other columns<br>FROM cust，rcvbles<br>WHERE cust.customer_id = rcvlbes.customer_id<br>AND rcvblls.balance&gt;0<br>AND cust.postcode&gt;”98000”<br>ORDER BY cust.name<br>如果这个查询要被执行多次而不止一次，可以把所有未付款的客户找出来放在一个<br>视图中，并按客户的名字进行排序：<br>CREATE VIEW DBO.V_CUST_RCVLBES<br>AS<br>SELECT cust.name，rcvbles.balance，……other columns<br>FROM cust，rcvbles<br>WHERE cust.customer_id = rcvlbes.customer_id<br>AND rcvblls.balance&gt;0<br>ORDER BY cust.name  </p>
+<p>然后以下面的方式在视图中查询：<br>SELECT ＊ FROM V_CUST_RCVLBES<br>WHERE postcode&gt;”98000”<br>视图中的行要比主表中的行少，而且物理顺序就是所要求的顺序，减少了磁盘<br>I/O，所以查询工作量可以得到大幅减少。</p>
+<p>12、 能够用BETWEEN的就不要用IN<br>SELECT <em> FROM T1 WHERE ID IN (10,11,12,13,14)<br>改成：<br>SELECT </em> FROM T1 WHERE ID BETWEEN 10 AND 14<br>因为IN会使系统无法使用索引,而只能直接搜索表中的数据。</p>
+<p>13、 DISTINCT的就不用GROUP BY<br>  SELECT OrderID FROM Details WHERE UnitPrice &gt; 10 GROUP BY OrderID<br>  可改为：<br>  SELECT DISTINCT OrderID FROM Details WHERE UnitPrice &gt; 10  </p>
+<p>14、 部分利用索引<br>  1.SELECT employeeID, firstname, lastname<br>FROM names<br>WHERE dept = ‘prod’ or city = ‘Orlando’ or division = ‘food’</p>
+<p>  2.SELECT employeeID, firstname, lastname FROM names WHERE dept =<br>‘prod’<br>UNION ALL<br>SELECT employeeID, firstname, lastname FROM names WHERE city = ‘Orlando’<br>UNION ALL<br>SELECT employeeID, firstname, lastname FROM names WHERE division =<br>‘food’<br>如果dept 列建有索引则查询2可以部分利用索引，查询1则不能。</p>
+<p>15、 能用UNION ALL就不要用UNION<br>UNION ALL不执行SELECT DISTINCT函数，这样就会减少很多不必要的资源</p>
+<p>16、 不要写一些不做任何事的查询<br>如：SELECT COL1 FROM T1 WHERE 1=0<br>  SELECT COL1 FROM T1 WHERE COL1=1 AND COL1=2<br>这类死码不会返回任何结果集，但是会消耗系统资源。</p>
+<p>17、 尽量不要用SELECT INTO语句。<br>SELECT INTO 语句会导致表锁定，阻止其他用户访问该表。</p>
+<p>18、 必要时强制查询优化器使用某个索引<br>  SELECT <em> FROM T1 WHERE nextprocess = 1 AND processid IN (8,32,45)<br>改成：<br>SELECT </em> FROM T1 (INDEX = IX_ProcessID) WHERE nextprocess = 1 AND<br>processid IN (8,32,45)<br>则查询优化器将会强行利用索引IX_ProcessID 执行查询。  </p>
+<p>19、 虽然UPDATE、DELETE语句的写法基本固定，但是还是对UPDATE语句给点建<br>议：<br>a) 尽量不要修改主键字段。<br>b) 当修改VARCHAR型字段时，尽量使用相同长度内容的值代替。<br>c) 尽量最小化对于含有UPDATE触发器的表的UPDATE操作。<br>d) 避免UPDATE将要复制到其他数据库的列。<br>e) 避免UPDATE建有很多索引的列。<br>f) 避免UPDATE在WHERE子句条件中的列。</p>
+<p>上面我们提到的是一些基本的提高查询速度的注意事项,但是在更多的情况下,往往<br>需要反复试验比较不同的语句以得到最佳方案。最好的方法当然是测试，看实现相<br>同功能的SQL语句哪个执行时间最少，但是数据库中如果数据量很少，是比较不出<br>来的，这时可以用查看执行计划，即：把实现相同功能的多条SQL语句考到查询分<br>析器，按CTRL+L看查所利用的索引，表扫描次数（这两个对性能影响最大），总体<br>上看询成本百分比即可。<br>简单的存储过程可以用向导自动生成：在企业管理器工具栏点击运行向导图标，点<br>击”数据库”、”创建存储过程向导”。复杂存储过程的调试：在查询分析器左边<br>的对象浏览器（没有？按F8）选择要调试的存储过程,点右键，点调试，输入参数<br>执行，出现一个浮动工具条，上面有单步执行，断点设置等。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/oraclesql/" data-title="oracle之SQL的优化及索引介绍 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/oracle_materialized/" title="oracle 物化视图详解">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle 物化视图详解</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/oracle_recyclebin/"  title="oracle恢复删除的表或表记录的方法">
+ <strong>NEXT:</strong><br/> 
+ <span>oracle恢复删除的表或表记录的方法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

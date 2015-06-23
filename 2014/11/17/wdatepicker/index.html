@@ -1,0 +1,531 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>WdatePicker日历控件使用方法[全] | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="跨无限级框架显示
+
+无论你把日期控件放在哪里,你都不需要担心会被外层的iframe所遮挡进而影响客户体验,因为My97日期控件是可以跨无限级框架显示的
+示例2-7 跨无限级框架演示
+可无限跨越框架iframe,无论怎么嵌套框架都不必担心了,即使有滚动条也不怕
+
+民国年日历和其他特殊日历
+
+当年份格式">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/17/wdatepicker/" title="WdatePicker日历控件使用方法[全]" itemprop="url">WdatePicker日历控件使用方法[全]</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-17T13:47:14.000Z" itemprop="datePublished">2014-11-17</time>
+    更新日期:<time datetime="2015-06-23T16:08:18.156Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#{}"><span class="toc-number">1.</span> <span class="toc-text">{}</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#F{}"><span class="toc-number">2.</span> <span class="toc-text">F{}</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#F{$dp-$D(\’d4312\’)||\’2020-10-01\’}_表示当_d4312_为空时,_采用_2020-10-01_的值作为最大值"><span class="toc-number">3.</span> <span class="toc-text">F{$dp.$D(\’d4312\’)||\’2020-10-01\’} 表示当 d4312 为空时, 采用 2020-10-01 的值作为最大值</span></a></li></ol>
+		</div>
+		
+		<ol>
+<li>跨无限级框架显示</li>
+</ol>
+<p>无论你把日期控件放在哪里,你都不需要担心会被外层的iframe所遮挡进而影响客户体验,因为<strong>My97</strong>日期控件是可以跨无限级框架显示的</p>
+<p><strong>示例2-7 跨无限级框架演示</strong></p>
+<p>可无限跨越框架iframe,无论怎么嵌套框架都不必担心了,即使有滚动条也不怕</p>
+<ol>
+<li>民国年日历和其他特殊日历</li>
+</ol>
+<p>当年份格式设置为yyy格式时,利用年份差量属性yearOffset(默认值1911民国元年),可实现民国年日历和其他特殊日历</p>
+<p><strong>示例2-8 民国年演示</strong></p>
+<pre><code><span class="xml"><span class="tag">&lt;<span class="title">input</span> <span class="attribute">type</span>=<span class="value">"text"</span> <span class="attribute">id</span>=<span class="value">"d28"</span> <span class="attribute">onClick</span>=<span class="value">"WdatePicker(</span></span></span><span class="expression">{<span class="variable">dateFmt</span>:'<span class="variable">yyy</span><span class="end-block">/MM</span><span class="end-block">/dd</span>'}</span><span class="xml"><span class="tag"><span class="value">)"</span>/&gt;</span></span>
+</code></pre><p>注意:年份格式设置成yyy时,真正的日期将会减去一个差量yearOffset(默认值为:1911),如果是民国年使用默认值即可无需另外配置,如果是其他的差量,可以通过参数的形式配置</p>
+<ol>
+<li>为<em><strong>编程</strong></em>带来方便</li>
+</ol>
+<p>如果el的值是this,可省略,即所有的el:this都可以不写<br>日期框设置为disabled时,禁止更改日期(不弹出选择框)<br>如果没有定义onpicked事件,自动触发文本框的onchange事件<br>如果没有定义oncleared事件,清空时,自动触发onchange事件</p>
+<ol>
+<li>其他属性</li>
+</ol>
+<p>设置readOnly属性,可指定日期框是否只读<br>设置highLineWeekDay属性,可指定是否高亮周末<br>设置isShowOthers属性,可指定是否显示其他月的日期<br>加上class=”Wdate”就会在选择框右边出现日期图标</p>
+<p><strong>多语言和自定义皮肤</strong></p>
+<ol>
+<li>多语言支持</li>
+</ol>
+<p>通过lang属性,可以为每个日期控件单独配置语言,当然也可以通过WdatePicker.js配置全局的语言<br>语言列表和语言<em><strong>安装</strong></em>说明详见<em>语言配置</em></p>
+<p><strong>示例3-1 多语言示例</strong></p>
+<p>繁体中文: </p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"d311"</span> <span class="variable">class=</span><span class="string">"Wdate"</span> <span class="variable">type=</span><span class="string">"text"</span> <span class="variable">onFocus=</span><span class="string">"WdatePicker({lang:'zh-tw'})"</span>/&gt;
+</code></pre><p>英文: </p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"d312"</span> <span class="variable">class=</span><span class="string">"Wdate"</span> <span class="variable">type=</span><span class="string">"text"</span> <span class="variable">onFocus=</span><span class="string">"WdatePicker({lang:'en'})"</span>/&gt;
+</code></pre><p>简体中文:   </p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"d313"</span> <span class="variable">class=</span><span class="string">"Wdate"</span> <span class="variable">type=</span><span class="string">"text"</span> <span class="variable">onFocus=</span><span class="string">"WdatePicker({lang:'zh-cn'})"</span>/&gt;
+</code></pre><p>注意:默认情况lang=’auto’,即根据浏览器的语言自动选择语言.</p>
+<ol>
+<li>自定义和动态切换皮肤</li>
+</ol>
+<p>通过skin属性,可以为每个日期控件单独配置皮肤,当然也可以通过WdatePicker.js配置全局的皮肤<br>皮肤列表和皮肤安装说明详见<em>皮肤配置</em></p>
+<p><em> </em></p>
+<p><strong>示例3-2 皮肤演示</strong></p>
+<p><strong>默认皮肤default</strong>: skin:’default’  </p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"d321"</span> <span class="variable">class=</span><span class="string">"Wdate"</span> <span class="variable">type=</span><span class="string">"text"</span> <span class="variable">onfocus=</span><span class="string">"WdatePicker()"</span>/&gt;
+</code></pre><p>注意:在WdatePicker里配置了skin=’default’,所以此处可省略,同理,如果你把WdatePicker里的skin配置成’whyGreen’那么在不指定皮肤的情况下都使用’whyGreen’皮肤了</p>
+<pre><code>   **whyGreen皮肤**: skin:<span class="symbol">'whyGree</span>n'   
+
+
+
+
+&lt;input id=<span class="string">"d322"</span> <span class="class"><span class="keyword">class</span>=</span><span class="string">"Wdate"</span> <span class="class"><span class="keyword">type</span>=</span><span class="string">"text"</span> onfocus=<span class="string">"WdatePicker({skin:'whyGreen'})"</span>/&gt;
+</code></pre><p><strong>4. 日期范围限制</strong></p>
+<ol>
+<li>静态限制<br>注意:日期格式必须与 realDateFmt 和 realTimeFmt 一致</li>
+</ol>
+<p>你可以给通过配置minDate(最小日期),maxDate(最大日期)为静态日期值,来限定日期的范围</p>
+<p><strong>示例4-1-1 限制日期的范围是 2006-09-10到2008-12-20</strong></p>
+<pre><code>&lt;input id=<span class="string">"d411"</span> <span class="class"><span class="keyword">class</span>="<span class="title">Wdate</span>" <span class="title">type</span>="<span class="title">text</span>" <span class="title">onfocus</span>="<span class="title">WdatePicker</span>({</span><span class="string">skin:</span><span class="string">'whyGreen'</span>,<span class="string">minDate:</span><span class="string">'2006-09-10'</span>,<span class="string">maxDate:</span><span class="string">'2008-12-20'</span>})<span class="string">"/&gt;</span>
+</code></pre><p><strong>示例4-1-2 限制日期的范围是 2008-3-8 11:30:00 到 2008-3-10 20:59:30</strong></p>
+<pre><code>&lt;input type=<span class="string">"text"</span> <span class="class"><span class="keyword">class</span>="<span class="title">Wdate</span>" <span class="title">id</span>="<span class="title">d412</span>" <span class="title">onfocus</span>="<span class="title">WdatePicker</span>({</span><span class="string">skin:</span><span class="string">'whyGreen'</span>,<span class="string">dateFmt:</span><span class="string">'yyyy-MM-dd HH:mm:ss'</span>,<span class="string">minDate:</span><span class="string">'2008-03-08 11:30:00'</span>,<span class="string">maxDate:</span><span class="string">'2008-03-10 20:59:30'</span>})<span class="string">" value="</span><span class="number">2008</span>-<span class="number">03</span>-<span class="number">09</span> <span class="number">11</span>:<span class="number">00</span>:<span class="number">00</span><span class="string">"/&gt;</span>
+</code></pre><p><strong>示例4-1-3 限制日期的范围是 <em>2008</em>**</strong>年2月 到 2008年10月**</p>
+<pre><code>&lt;input type=<span class="string">"text"</span> <span class="class"><span class="keyword">class</span>="<span class="title">Wdate</span>" <span class="title">id</span>="<span class="title">d413</span>" <span class="title">onfocus</span>="<span class="title">WdatePicker</span>({</span><span class="string">dateFmt:</span><span class="string">'yyyy年M月'</span>,<span class="string">minDate:</span><span class="string">'2008-2'</span>,<span class="string">maxDate:</span><span class="string">'2008-10'</span>})<span class="string">"/&gt;</span>
+</code></pre><p><strong>示例4-1-4 限制日期的范围是 8:00:00 到 11:30:00</strong></p>
+<pre><code>&lt;input type=<span class="string">"text"</span> <span class="class"><span class="keyword">class</span>="<span class="title">Wdate</span>" <span class="title">id</span>="<span class="title">d414</span>" <span class="title">onfocus</span>="<span class="title">WdatePicker</span>({</span><span class="string">dateFmt:</span><span class="string">'H:mm:ss'</span>,<span class="string">minDate:</span><span class="string">'8:00:00'</span>,<span class="string">maxDate:</span><span class="string">'11:30:00'</span>})<span class="string">"/&gt;</span>
+</code></pre><ol>
+<li>动态限制<br>注意:日期格式必须与 realDateFmt 和 realTimeFmt 一致</li>
+</ol>
+<p>你可以通过系统给出的动态变量,如%y(当前年),%M(当前月)等来限度<strong>日期范围</strong>,你</p>
+<p>还可以通过#{}进行表达式运算,如:#//d+1}:表示明天  </p>
+<p>动态变量表</p>
+<p><strong>格式</strong></p>
+<p><strong>说明</strong></p>
+<p>%y</p>
+<p>当前年</p>
+<p>%M</p>
+<p>当前月</p>
+<p>%d</p>
+<p>当前日</p>
+<p>%ld</p>
+<p>本月最后一天</p>
+<p>%H</p>
+<p>当前时</p>
+<p>%m</p>
+<p>当前分</p>
+<p>%s</p>
+<p>当前秒</p>
+<h1 id="{}">{}</h1><p>运算表达式,如:#//d+1}:表示明天</p>
+<h1 id="F{}">F{}</h1><p>{}之间是函数可写自定义JS代码</p>
+<hr>
+<p><strong>示例4-2-1 只能选择今天以前的日期(包括今天)</strong></p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"d421"</span> <span class="variable">class=</span><span class="string">"Wdate"</span> <span class="variable">type=</span><span class="string">"text"</span> <span class="variable">onfocus=</span><span class="string">"WdatePicker({skin:'whyGreen',maxDate:'%y-%M-%d'})"</span>/&gt;
+</code></pre><p><strong>示例4-2-2 使用了运算表达式只能选择今天以后的日期(不包括今天)</strong></p>
+<pre><code>&lt;input <span class="variable">id=</span><span class="string">"d422"</span> <span class="variable">class=</span><span class="string">"Wdate"</span> <span class="variable">type=</span><span class="string">"text"</span> <span class="variable">onfocus=</span><span class="string">"WdatePicker({minDate:'%y-%M-#//d+1}'})"</span>/&gt;
+</code></pre><p><strong>示例4-2-3 只能选择本月的日期1号至本月最后一天</strong></p>
+<pre><code>&lt;input id=<span class="string">"d423"</span> class=<span class="string">"Wdate"</span> type=<span class="string">"text"</span> onfocus=<span class="string">"WdatePicker({minDate:'<span class="variable">%y</span>-<span class="variable">%M</span>-01',maxDate:'<span class="variable">%y</span>-<span class="variable">%M</span>-<span class="variable">%ld</span>'})"</span>/&gt;
+</code></pre><p><strong>示例4-2-4 只能选择今天7:00:00至明天21:00:00的日期</strong></p>
+<pre><code>&lt;input id=<span class="string">"d424"</span> <span class="keyword">class</span>=<span class="string">"Wdate"</span> <span class="typedef"><span class="keyword">type</span>="text" onfocus="<span class="type">WdatePicker</span><span class="container">({<span class="title">dateFmt</span>:'<span class="title">yyyy</span>-<span class="type">M</span>-<span class="title">d</span> <span class="type">H</span>:<span class="title">mm</span>:<span class="title">ss'</span>,<span class="title">minDate</span>:'%<span class="title">y</span>-%<span class="type">M</span>-%<span class="title">d</span> 7:00:00',<span class="title">maxDate</span>:'%<span class="title">y</span>-%<span class="type">M</span>-#//<span class="title">d</span>+1} 21:00:00'})</span>"/&gt;</span>
+</code></pre><p><strong>      示例4-2-5 使用了运算表达式只能选择 20小时前至 30小时后的日</strong></p>
+<p><strong>期</strong></p>
+<pre><code>&lt;input id=<span class="string">"d425"</span> class=<span class="string">"Wdate"</span> type=<span class="string">"text"</span> onClick=<span class="string">"WdatePicker({dateFmt:'yyyy-MM-dd HH:mm',minDate:'<span class="variable">%y</span>-<span class="variable">%M</span>-<span class="variable">%d</span> #//H-20}:<span class="variable">%m</span>:<span class="variable">%s</span>',maxDate:'<span class="variable">%y</span>-<span class="variable">%M</span>-<span class="variable">%d</span> #//H+30}:<span class="variable">%m</span>:<span class="variable">%s</span>'})"</span>/&gt;
+</code></pre><p>3 . 脚本自定义限制<br>       注意:日期格式必须与 realDateFmt 和 realTimeFmt 一致</p>
+<p>系统提供了$dp.$D和$dp.$DV这两个API来辅助你进行日期运算,此外你还可以通过在 #F{} 中填入你自定义的脚本,做任何你想做的日期限制</p>
+<p><strong>示例4-3-1 前面的日期不能大于后面的日期且两个日期都不能大于 2020-10-01</strong></p>
+<p>合同有效期从  到   </p>
+<pre><code>&lt;input id=<span class="string">"d4311"</span> <span class="keyword">class</span>=<span class="string">"Wdate"</span> <span class="typedef"><span class="keyword">type</span>="text" onFocus="<span class="type">WdatePicker</span><span class="container">({<span class="title">maxDate</span>:'#<span class="type">F</span>{$<span class="title">dp</span>.$<span class="type">D</span>(\'<span class="title">d4312</span>\')</span>||\'2020-10-01\'}'})"/&gt; </span>
+&lt;input id=<span class="string">"d4312"</span> <span class="keyword">class</span>=<span class="string">"Wdate"</span> <span class="typedef"><span class="keyword">type</span>="text" onFocus="<span class="type">WdatePicker</span><span class="container">({<span class="title">minDate</span>:'#<span class="type">F</span>{$<span class="title">dp</span>.$<span class="type">D</span>(\'<span class="title">d4311</span>\')</span>}',maxDate:'2020-10-01'})"/&gt;</span>
+</code></pre><p>注意:<br>两个日期的日期格式必须相同  </p>
+<p>$dp.$ 相当于 document.getElementById 函数.<br>那么为什么里面的 ‘ 使用 \’ 呢? 那是因为 “ 和 ‘ 都被外围的函数使用了,故使用转义符 \ ,否则会提示JS语法错误.<br>所以您在其他地方使用时注意把 \’ 改成 “ 或者 ‘ 来使用.  </p>
+<h1 id="F{$dp-$D(\’d4312\’)||\’2020-10-01\’}_表示当_d4312_为空时,_采用_2020-10-01_的值作为最大值">F{$dp.$D(\’d4312\’)||\’2020-10-01\’} 表示当 d4312 为空时, 采用 2020-10-01 的值作为最大值</h1><p><strong>示例4-3-2 前面的日期+3天 不能大于 后面的日期</strong>       日期从  到   </p>
+<pre><code>&lt;<span class="keyword">input</span> <span class="keyword">type</span>=<span class="string">"text"</span> <span class="keyword">class</span>=<span class="string">"Wdate"</span> id=<span class="string">"d4321"</span>
+       onFocus=<span class="string">"WdatePicker({maxDate:'#F{$dp.$D(\'d4322\',{d:-3});}'})"</span>/&gt;
+       &lt;<span class="keyword">input</span> <span class="keyword">type</span>=<span class="string">"text"</span> <span class="keyword">class</span>=<span class="string">"Wdate"</span> id=<span class="string">"d4322"</span>
+       onFocus=<span class="string">"WdatePicker({minDate:'#F{$dp.$D(\'d4321\',{d:3});}'})"</span>/&gt;
+
+
+
+   使用 <span class="label">$dp</span>.<span class="label">$D</span> 函数 可以将日期框中的值,加上定义的日期差量:  
+   两个参数: id={字符类型}需要处理的文本框的id值 , obj={对象类型}日期差量  
+
+
+   日期差量用法:  
+   属性y,<span class="keyword">M</span>,<span class="keyword">d</span>,<span class="keyword">H</span>,<span class="keyword">m</span>,s分别代表年月日时分秒
+</code></pre>  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/WdatePicker/">WdatePicker</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/web/">web</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/17/wdatepicker/" data-title="WdatePicker日历控件使用方法[全] | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/17/oracle_lock/" title="oracle死锁问题查询及处理方法">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle死锁问题查询及处理方法</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/17/python-django-post-forbidden-403-csrf/"  title="Python Django POST Forbidden (403) - CSRF">
+ <strong>NEXT:</strong><br/> 
+ <span>Python Django POST Forbidden (403) - CSRF
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#{}"><span class="toc-number">1.</span> <span class="toc-text">{}</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#F{}"><span class="toc-number">2.</span> <span class="toc-text">F{}</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#F{$dp-$D(\’d4312\’)||\’2020-10-01\’}_表示当_d4312_为空时,_采用_2020-10-01_的值作为最大值"><span class="toc-number">3.</span> <span class="toc-text">F{$dp.$D(\’d4312\’)||\’2020-10-01\’} 表示当 d4312 为空时, 采用 2020-10-01 的值作为最大值</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

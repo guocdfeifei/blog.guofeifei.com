@@ -1,0 +1,503 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>django 开发多语言网站[转] | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="django的国际化支持非常好也很易用，支持代码、模板和JS的国际化整体解决方法。特别是到了1.2版本加入了对于模板本地的
+日期和数字的本地格式化，其国际化支持已经完善。
+应用方法首先需要修改settings.py:
+1. TEMPLATE_CONTEXT_PROCESSORS 加入django.c">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/04/02/django_i18n/" title="django 开发多语言网站[转]" itemprop="url">django 开发多语言网站[转]</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-04-02T15:03:52.000Z" itemprop="datePublished">2015-04-02</time>
+    更新日期:<time datetime="2015-06-23T16:27:25.070Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用方法"><span class="toc-number">1.</span> <span class="toc-text">应用方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成po文件和mo文件"><span class="toc-number">2.</span> <span class="toc-text">生成po文件和mo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#让用户在页面上切换语言"><span class="toc-number">3.</span> <span class="toc-text">让用户在页面上切换语言</span></a></li></ol>
+		</div>
+		
+		<p>django的国际化支持非常好也很易用，支持代码、模板和JS的国际化整体解决方法。特别是到了1.2版本加入了对于模板本地的</p>
+<p>日期和数字的本地格式化，其国际化支持已经完善。</p>
+<h2 id="应用方法">应用方法</h2><p>首先需要修改settings.py:</p>
+<p>1. TEMPLATE_CONTEXT_PROCESSORS 加入django.core.context_processors.i18n</p>
+<p>2. MIDDLEWARE_CLASSES中加入django.middleware.locale.LocaleMiddleware，注意：它要放在SessionMiddleware和<code>CacheMiddleware的后面，其他中间件的前面</code></p>
+<p>3. LANGUAGE_CODE 设置缺省的网站语言，如 en, zh-cn,<code>it</code>, <code>de-at</code>, <code>es</code>, <code>pt-br</code></p>
+<p>4. LANGUAGES设置网站所支持的所有语言，如((‘en’, u’English’),(‘zh-cn’,u’中文’))</p>
+<p>5. USE_I18N 设置为True</p>
+<p>代码中的应用：</p>
+<p>1. 所有需要国际化支持的源文件要引入函数gettext:  from django.utils.translation import ugettext<em>lazy as </em></p>
+<ol>
+<li>需要多语言支持的字符串如此例写： name = models.CharField(_(‘Name’)…)</li>
+</ol>
+<p>模板中的应用：</p>
+<ol>
+<li><p>所有需要国际化支持的模板文件需要加载： <code>load i18n</code></p>
+</li>
+<li><p>需要多语言支持的字符串如此写：<title>// trans “This is the title.” //</title></p>
+</li>
+<li><p>翻译中间带变量的句子：// blocktrans //This string will have  inside.// endblocktrans //</p>
+</li>
+</ol>
+<p>JS中的应用（这部分看django的文档没搞出来，自己看源码琢磨了一个方法。你也可参考这个文档）：</p>
+<p>1. 在url.py中加入： (r’^jsi18n/(?P<packages>\S+?)/$’, ‘django.views.i18n.javascript_catalog’),</packages></p>
+<p>这句话告诉页面在加载这个脚本时由服务器上的javascript_catalog函数生成该脚本，具体的方法是通过packages找到locale，进而找到mo文件，然后将其中的所有翻译字符串放入生成脚本中的一个字典变量中，同时该脚本也定义了gettext函数，这样客户端脚本可使用gettext方法直接从字典中取出翻译字符串。</p>
+<p>其中packages为你的项目名或者Application名的列表以加号隔开，格式为：  testproject+testproject.app1+testproject.app2。这些项目或Application应在INSTALLED_APPS中申明。</p>
+<p>2. 引用jsi18n： <script type="text/javascript" src="/jsi18n/testproject+testproject.app1+testproject.app2"></script></p>
+<p>我的项目不大，只在项目目录下有locale目录因此这样写就可以了 <script type="text/javascript" src="/jsi18n/testproject"></script></p>
+<p>如果你的项目较大，可考虑在Application中放locale目录，如例写脚本链接，这样的话不用每次都生成和加载全站的JS翻译字符串，以加快速度。</p>
+<p>3. 在JS中使用gettext函数翻译：document.write(gettext(‘this is to be translated’));</p>
+<p>4. 翻译带变量的句子</p>
+<pre><code>fmts = ngettext<span class="list">(<span class="quoted">'There</span> is %s object. Remaining: %s', <span class="quoted">'There</span> are %s objects. Remaining: %s', <span class="number">11</span>)</span><span class="comment">; </span>
+
+s = interpolate<span class="list">(<span class="keyword">fmts</span>, [<span class="number">11</span>, <span class="number">20</span>])</span><span class="comment">; // s is 'There are 11 objects. Remaining: 20' </span>
+</code></pre><h2 id="生成po文件和mo文件">生成po文件和mo文件</h2><p>这里先补补课，首先是locale目录, 请把locale创建在项目目录或Application目录中，其结构</p>
+<pre><code>locale
+
+
+
+      <span class="keyword">en</span>
+
+
+
+           LC_MESSAGES (这个目录下放django.<span class="keyword">po</span>/mo, djangojs.<span class="keyword">po</span>/mo)
+
+
+
+      zh-<span class="keyword">cn</span>
+
+
+
+           LC_MESSAGES(这个目录下放django.<span class="keyword">po</span>/mo, djangojs.<span class="keyword">po</span>/mo)
+</code></pre><p>django.po/djangojs.po相当于资源文件，它被编译后形成django.mo/djangojs.mo文件，在运行时被读取。</p>
+<p>po文件可以使用工具poedit编辑，我个人喜欢使用  mangage.py makemessages -a 让django自动分析源代码和模板文件</p>
+<p>生成po，这里要注意两点：</p>
+<p>1. 按我的实践，js中的字符串不能自动生成po,需手工生成</p>
+<p>2. makemessages 需要调用工具xgettext, Windows没有，可下载晕版的gettext, 要下两个文件<code>gettext-runtime-X.zip</code> 和 <code>gettext-tools-X.zip</code> </p>
+<p>   X为版本号，注意版本低了会报错”Django internationalization requires GNU gettext 0.15 or newer”）</p>
+<p>   下来后放在解压在一个目录里，然后把下面的bin目录加到你系统路径中，具体做法如下</p>
+<pre><code><span class="id">#Install</span> gettext
+<span class="id">#Download</span> from http:<span class="comment">//ftp.gnu.org/gnu/gettext/</span>
+cd ~/Downloads
+tar xzvf gettext-<span class="number">0.18</span>.<span class="number">1.1</span><span class="class">.tar</span><span class="class">.gz</span>
+cd gettext-<span class="number">0.18</span>.<span class="number">1.1</span>
+./configure
+make
+sudo make install
+</code></pre><p>3. 通过mangage.py makemessages -a自动生成后，你需要做的是编辑po文件，如 zh-cn/LC_MESSAGES/djang.po，把你的</p>
+<p>翻译逐个写上去。最后一步编译： mange.py compilemessages</p>
+<h2 id="让用户在页面上切换语言">让用户在页面上切换语言</h2><p>把这个放到urls.py中：(r’^i18n/‘, include(‘django.conf.urls.i18n’))</p>
+<p>搞个表单提交用户选择的语言，如例 </p>
+<p>这里涉及一个问题，用户如此选择的语言是否能被记住，下次访问时无需再选？首先需要了解django如何确定用户需要的语言，其判断流程如此：</p>
+<p>1. 首先判断Session里是否有键值为django_language的数据，如有则使用。（在用户选择语言时，如果网站支持Session，django把用户的语言偏好记录在Session中，否则记录在cookie里）</p>
+<p>2. 检查cookie里是否有键值为settings.LANGUAGE_COOKIE_NAME的设置，如有则使用。</p>
+<p>3. 检查浏览器提供的Accpet Language(各个浏览器都有的配置：语言首选项）是否被网站支持（是否有相应的翻译文件），如支持则使用</p>
+<p>4. 以上方式都不能确定时，使用settings.LANGUAGE_CODE(网站缺省语言）</p>
+<p>注意这样的方式能确保根据用户浏览器设置来为用户自动选定语言，也能保证用户选择语言后当次访问使用所选语言(用户的语言选择保存在Session和一次有效的cookie中）。如果用户浏览器的设置和其选择的语言不一致时，用户下次访问就无法使用本次选择的语言。要解决这个问题，可以接管”/i18n/setlang/“这个URL的处理，把用户选择直接保存在cookie里，而且其生命周期要搞得长一些。如例：</p>
+<pre><code>def <span class="function"><span class="title">set_language</span><span class="params">(request)</span></span>: 
+    from django<span class="class">.utils</span><span class="class">.translation</span> import check_for_language 
+
+    next = request<span class="class">.REQUEST</span><span class="class">.get</span>(<span class="string">'next'</span>, None) 
+    <span class="keyword">if</span> not next: 
+        next = request<span class="class">.META</span><span class="class">.get</span>(<span class="string">'HTTP_REFERER'</span>, None) 
+    <span class="keyword">if</span> not next: 
+        next = <span class="string">'/'</span> 
+    response = http.<span class="function"><span class="title">HttpResponseRedirect</span><span class="params">(next)</span></span> 
+    <span class="keyword">if</span> request<span class="class">.method</span> == <span class="string">'POST'</span>: 
+        lang_code = request<span class="class">.POST</span><span class="class">.get</span>(<span class="string">'language'</span>, None) 
+        <span class="keyword">if</span> lang_code and <span class="function"><span class="title">check_for_language</span><span class="params">(lang_code)</span></span>: 
+            <span class="keyword">if</span> <span class="function"><span class="title">hasattr</span><span class="params">(request, <span class="string">'session'</span>)</span></span>: 
+                request<span class="class">.session</span>[<span class="string">'django_language'</span>] = lang_code 
+            max_age =  <span class="number">60</span>*<span class="number">60</span>*<span class="number">24</span>*<span class="number">365</span> 
+            expires = datetime<span class="class">.datetime</span><span class="class">.strftime</span>(datetime<span class="class">.datetime</span><span class="class">.utcnow</span>() + datetime.<span class="function"><span class="title">timedelta</span><span class="params">(seconds=max_age)</span></span>, <span class="string">"%a, %d-%b-%Y %H:%M:%S GMT"</span>) 
+            response.<span class="function"><span class="title">set_cookie</span><span class="params">(settings.LANGUAGE_COOKIE_NAME, lang_code, max_age, expires)</span></span> 
+    return response
+</code></pre><p>最后，上述url配置改成这样: ：(r’^i18n/setlang’, ‘yourproject.yourapp.views.set_language’), </p>
+<p>@Copyright, 251   zhangtao.it@gmail.com, <a href="http://itrust.cnblogs.com" target="_blank" rel="external">http://itrust.cnblogs.com</a>    </p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/django/">django</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/django/">django</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2015/04/02/django_i18n/" data-title="django 开发多语言网站[转] | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/04/19/pep8-python/" title="PEP8 Python 编码规范">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  PEP8 Python 编码规范</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/03/26/ftpmget/"  title="ftp命令小解，mget">
+ <strong>NEXT:</strong><br/> 
+ <span>ftp命令小解，mget
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#应用方法"><span class="toc-number">1.</span> <span class="toc-text">应用方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#生成po文件和mo文件"><span class="toc-number">2.</span> <span class="toc-text">生成po文件和mo文件</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#让用户在页面上切换语言"><span class="toc-number">3.</span> <span class="toc-text">让用户在页面上切换语言</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

@@ -1,0 +1,600 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Oracle存储过程总结 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="1、创建存储过程create or replace procedure test(var_name_1 in type,var_name_2 out type) as--声明变量(变量名 变量类型)begin--存储过程的执行体end test;打印出输入的时间信息E.g:create or rep">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/oracle_procedure/" title="Oracle存储过程总结" itemprop="url">Oracle存储过程总结</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T12:48:22.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T16:27:21.975Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>1、创建存储过程<br>create or replace procedure test(var_name_1 in type,var_name_2 out type) as<br>--声明变量(变量名 变量类型)<br>begin<br>--存储过程的执行体<br>end test;<br>打印出输入的时间信息<br>E.g:<br>create or replace procedure test(workDate in Date) is<br>begin<br>dbms_output.putline(The input date is:||to_date(workDate, yyyy-mm-dd));<br>end test;<br>2、变量赋值<br>变量名 := 值;<br>E.g：<br>create or replace procedure test(workDate in Date) is<br>x number(4,2);<br> begin<br> x := 1;<br>end test;<br>3、判断语句:<br>if 比较式 then begin end; end if;<br>E.g<br>create or replace procedure test(x in number) is<br>begin<br>        if x &gt;0 then<br>         begin<br>        x := 0 - x;<br>        end;<br>    end if;<br>    if x = 0 then<br>       begin<br>        x: = 1;<br>    end;<br>    end if;<br>end test;<br>4、For 循环<br>For … in … LOOP<br>--执行语句<br>end LOOP;<br>(1)循环遍历游标<br>create or replace procedure test() as<br>Cursor1 cursor is select name from student;<br>name varchar(20);<br>begin<br>for name in cursor LOOP<br>begin<br> dbms_output.putline(name);<br>end;<br>end LOOP;<br>end test;<br>(2)循环遍历数组<br> create or replace procedure test(varArray in myPackage.TestArray) as<br>--(输入参数varArray 是自定义的数组类型，定义方式见标题6)<br>i number;<br>begin<br>i := 1;  --存储过程数组是起始位置是从1开始的，与java、C、C++等语言不同。因为在Oracle中本是没有数组的概念的，数组其实就是一张<br>--表(Table),每个数组元素就是表中的一个记录，所以遍历数组时就相当于从表中的第一条记录开始遍历<br>for i in 1..varArray.count LOOP<br>dbms_output.putline(The No. || i ||record in varArray is: ||varArray(i));<br> end LOOP;<br>end test;<br>5、While 循环<br>while 条件语句 LOOP<br>begin<br>end;<br>end LOOP;<br>E.g<br>create or replace procedure test(i in number) as<br>begin<br>while i &lt; 10 LOOP<br>begin<br> i:= i + 1;<br>end;<br>end LOOP;<br> end test;<br>6、数组<br>首先明确一个概念：Oracle中本是没有数组的概念的，数组其实就是一张表(Table),每个数组元素就是表中的一个记录。<br>使用数组时，用户可以使用Oracle已经定义好的数组类型，或可根据自己的需要定义数组类型。<br>(1)使用Oracle自带的数组类型<br>x array; —使用时需要需要进行初始化<br>e.g:<br>create or replace procedure test(y out array) is<br> x array;<br> begin<br>x := new array();<br>y := x;<br>end test;<br>(2)自定义的数组类型 (自定义数据类型时，建议通过创建Package的方式实现，以便于管理)<br>E.g (自定义使用参见标题4.2) create or replace package myPackage is<br>  -- Public type declarations   type info is record(     name varchar(20),     y number);<br>  type TestArray is table of info index by binary_integer;   --此处声明了一个TestArray的类型数据，其实其为一张存储Info数据类型的Table而已，及TestArray 就是一张表，有两个字段，一个是<br>name，一个是y。需要注意的是此处使用了Index by binary_integer 编制该Table的索引项，也可以不写，直接写成：type TestArray is<br>table of info，如果不写的话使用数组时就需要进行初始化：varArray myPackage.TestArray; varArray := new myPackage.TestArray();<br>end TestArray;<br>7.游标的使用 Oracle中Cursor是非常有用的，用于遍历临时表中的查询结果。其相关方法和属性也很多，现仅就常用的用法做一二介绍：<br>(1)Cursor型游标(不能用于参数传递)<br>create or replace procedure test() is<br>cusor_1 Cursor is select std_name from student where  …;  --Cursor的使用方式1   cursor_2 Cursor;<br>begin<br>select class_name into cursor_2 from class where …;  --Cursor的使用方式2<br>可使用For x in cursor LOOP …. end LOOP; 来实现对Cursor的遍历<br>end test;<br>(2)SYS_REFCURSOR型游标，该游标是Oracle以预先定义的游标，可作出参数进行传递<br>create or replace procedure test(rsCursor out SYS_REFCURSOR) is<br>cursor SYS_REFCURSOR; name varhcar(20);<br>begin<br>OPEN cursor FOR select name from student where … —SYS_REFCURSOR只能通过OPEN方法来打开和赋值<br>LOOP<br> fetch cursor into name   --SYS_REFCURSOR只能通过fetch into来打开和遍历 exit when cursor%NOTFOUND;              --SYS_REFCURSOR中可使用三个状态属性：                                         -—%NOTFOUND(未找到记录信息) %FOUND(找到记录信息)                                         -—%ROWCOUNT(然后当前游标所指向的行位置)<br> dbms_output.putline(name);<br>end LOOP;<br>rsCursor := cursor;<br>end test;<br>下面写一个简单的例子来对以上所说的存储过程的用法做一个应用：<br>现假设存在两张表，一张是学生成绩表(studnet)，字段为：stdId,math,article,language,music,sport,total,average,step                   一张是学生课外成绩表(out_school),字段为:stdId,parctice,comment<br>通过存储过程自动计算出每位学生的总成绩和平均成绩，同时，如果学生在课外课程中获得的评价为A，就在总成绩上加20分。<br>create or replace procedure autocomputer(step in number) is<br>rsCursor SYS_REFCURSOR;<br>commentArray myPackage.myArray;<br>math number;<br>article number;<br>language number;<br>music number;<br>sport number;<br>total number;<br>average number;<br>stdId varchar(30);<br>record myPackage.stdInfo;<br>i number;<br>begin<br>i := 1;<br>get_comment(commentArray); —调用名为get_comment()的存储过程获取学生课外评分信息<br>OPEN rsCursor for select stdId,math,article,language,music,sport from student t where t.step = step;<br>LOOP<br>fetch rsCursor into stdId,math,article,language,music,sport; exit when rsCursor%NOTFOUND;<br>total := math + article + language + music + sport;<br>for i in 1..commentArray.count LOOP<br> record := commentArray(i);<br>if stdId = record.stdId then<br> begin<br> if record.comment = &apos;A&apos; then<br>  begin<br> total := total + 20;<br>   go to next; —使用go to跳出for循环<br>  end;<br>end if;<br>end;<br>end if;<br>end LOOP;<br>&lt;<continue>&gt;  average := total / 5;<br> update student t set t.total=total and t.average = average where t.stdId = stdId;<br>end LOOP;<br>end;<br>end autocomputer;<br>--取得学生评论信息的存储过程<br>create or replace procedure get_comment(commentArray out myPackage.myArray) is<br>rs SYS_REFCURSOR；<br>record myPackage.stdInfo;<br>stdId varchar(30);<br>comment varchar(1);<br>i number;<br>begin<br>open rs for select stdId,comment from out_school<br>i := 1;<br>LOOP<br> fetch rs into stdId,comment; exit when rs%NOTFOUND;<br>record.stdId := stdId;<br> record.comment := comment;<br>recommentArray(i) := record;<br>i:=i + 1;<br>end LOOP;<br>end get_comment;<br>--定义数组类型myArray<br>create or replace package myPackage is begin<br>type stdInfo is record(stdId varchar(30),comment varchar(1));<br>type myArray is table of stdInfo index by binary_integer;<br>end myPackage;<br>项目中有涉及存储过程对字符串的处理，所以就将在网上查找到的资料汇总，做一个信息拼接式的总结。<br>以下信息均来自互联网，贴出来一则自己保存以待以后使用，一则供大家分享。<br>字符函数——返回字符值<br>这些函数全都接收的是字符族类型的参数(CHR除外)并且返回字符值.<br>除了特别说明的之外,这些函数大部分返回VARCHAR2类型的数值.<br>字符函数的返回类型所受的限制和基本数据库类型所受的限制是相同的。<br>字符型变量存储的最大值：<br> VARCHAR2数值被限制为2000字符(ORACLE 8中为4000字符)<br> CHAR数值被限制为255字符(在ORACLE8中是2000)<br> long类型为2GB<br> Clob类型为4GB<br>1、CHR<br>语法:  chr(x)<br>功能：返回在数据库字符集中与X拥有等价数值的字符。CHR和ASCII是一对反函数。经过CHR转换后的字符再经过ASCII转换又得到了原来的字<br>符。<br>使用位置：过程性语句和SQL语句。</continue></p>
+<p>2、CONCAT<br>语法： CONCAT（string1,string2）<br>功能：返回string1，并且在后面连接string2。<br>使用位置：过程性语句和SQL语句。</p>
+<p>3、INITCAP<br>语法：INITCAP（string）<br>功能：返回字符串的每个单词的第一个字母大写而单词中的其他字母小写的string。单词是用.空格或给字母数字字符进行分隔。不是字母的<br>字符不变动。<br>使用位置：过程性语句和SQL语句。</p>
+<p>4、LTRIM<br>语法：LTRIM（string1,string2）<br>功能：返回删除从左边算起出现在string2中的字符的string1。String2被缺省设置为单个的空格。数据库将扫描string1，从最左边开始。当<br>遇到不在string2中的第一个字符，结果就被返回了。LTRIM的行为方式与RTRIM很相似。<br>使用位置：过程性语句和SQL语句。<br>5、NLS_INITCAP<br>语法：NLS_INITCAP（string[,nlsparams]）<br>功能：返回字符串每个单词第一个字母大写而单词中的其他字母小写的string，nlsparams<br>指定了不同于该会话缺省值的不同排序序列。如果不指定参数，则功能和INITCAP相同。Nlsparams可以使用的形式是：<br>‘NLS_SORT=sort’<br>这里sort制订了一个语言排序序列。<br>使用位置：过程性语句和SQL语句。<br>6、NLS_LOWER<br>语法：NLS_LOWER（string[,nlsparams]）<br>功能：返回字符串中的所有字母都是小写形式的string。不是字母的字符不变。<br>      Nlsparams参数的形式与用途和NLS_INITCAP中的nlsparams参数是相同的。如果nlsparams没有被包含，那么NLS_LOWER所作的处理和<br>LOWER相同。<br>使用位置；过程性语句和SQL语句。<br>7、NLS_UPPER<br>语法：nls_upper（string[,nlsparams]）<br>功能：返回字符串中的所有字母都是大写的形式的string。不是字母的字符不变。nlsparams参数的形式与用途和NLS_INITCAP中的相同。如果<br>没有设定参数，则NLS_UPPER功能和UPPER相同。<br>使用位置：过程性语句和SQL语句。<br>8、REPLACE<br>语法：REPLACE（string，search_str[,replace_str]）<br>功能：把string中的所有的子字符串search_str用可选的replace_str替换，如果没有指定replace_str，所有的string中的子字符串<br>search_str都将被删除。REPLACE是TRANSLATE所提供的功能的一个子集。<br>使用位置：过程性语句和SQL语句。<br>9、RPAD<br>语法：RPAD（string1,x[,string2]）<br>功能：返回在X字符长度的位置上插入一个string2中的字符的string1。如果string2的长度要比X字符少，就按照需要进行复制。如果string2<br>多于X字符，则仅string1前面的X各字符被使用。如果没有指定string2，那么使用空格进行填充。X是使用显示长度可以比字符串的实际长度<br>要长。RPAD的行为方式与LPAD很相似，除了它是在右边而不是在左边进行填充。<br>使用位置：过程性语句和SQL语句。<br>10、RTRIM<br>语法:  RTRIM（string1,[,string2]）<br>功能:  返回删除从右边算起出现在string1中出现的字符string2. string2被缺省设置为单个的空格.数据库将扫描string1,从右边开始.当遇<br>到不在string2中的第一个字符,结果就被返回了RTRIM的行为方式与LTRIM很相似.<br>使用位置：过程性语句和SQL语句。<br>11、SOUNDEX<br>语法:  SOUNDEX（string）<br>功能:  返回string的声音表示形式.这对于比较两个拼写不同但是发音类似的单词而言很有帮助.<br>使用位置：过程性语句和SQL语句。<br>12、SUBSTR<br>语法:  SUBSTR（string,a[,b]）<br>功能:  返回从字母为值a开始b个字符长的string的一个子字符串.如果a是0,那么它就被认为从第一个字符开始.如果是正数,返回字符是从左<br>边向右边进行计算的.如果b是负数,那么返回的字符是从string的末尾开始从右向左进行计算的.如果b不存在,那么它将缺省的设置为整个字符<br>串.如果b小于1,那么将返回NULL.如果a或b使用了浮点数,那么该数值将在处理进行以前首先被却为一个整数.<br>使用位置：过程性语句和SQL语句。<br>13、TRANSLATE<br>   语法:  TRANSLATE(string,from_str,to_str)<br>   功能:  返回将所出现的from_str中的每个字符替换为to_str中的相应字符以后的string. TRANSLATE是REPLACE所提供的功能的一个超集.<br>如果from_str比to_str长,那么在from_str中而不在to_str中而外的字符将从string中被删除,因为它们没有相应的替换字符. to_str不能为空<br>.Oracle把空字符串认为是NULL,并且如果TRANSLATE中的任何参数为NULL,那么结果也是NULL.<br>使用位置：过程性语句和SQL语句。</p>
+<p>14、UPPER<br>语法: UPPER（string）<br>功能: 返回大写的string.不是字母的字符不变.如果string是CHAR数据类型的,那么结果也是CHAR类型的.如果string是VARCHAR2类型的,那么<br>结果也是VARCHAR2类型的.<br>使用位置: 过程性语句和SQL语句。</p>
+<p>字符函数——返回数字<br>这些函数接受字符参数回数字结果.参数可以是CHAR或者是VARCHAR2类型的.尽管实际下许多结果都是整数值,但是返回结果都是简单的NUMBER<br>类型的,没有定义任何的精度或刻度范围.<br>16、ASCII<br>语法:  ASCII（string）<br>功能: 数据库字符集返回string的第一个字节的十进制表示.请注意该函数仍然称作为ASCII.尽管许多字符集不是7位ASCII.CHR和ASCII是互为<br>相反的函数.CHR得到给定字符编码的响应字符. ASCII得到给定字符的字符编码.<br>使用位置: 过程性语句和SQL语句。<br>17、INSTR<br>语法:  INSTR（string1, string2[a,b]）<br>功能:  得到在string1中包含string2的位置. string1时从左边开始检查的,开始的位置为a,如果a是一个负数,那么string1是从右边开始进行<br>扫描的.第b次出现的位置将被返回. a和b都缺省设置为1,这将会返回在string1中第一次出现string2的位置.如果string2在a和b的规定下没有<br>找到,那么返回0.位置的计算是相对于string1的开始位置的,不管a和b的取值是多少.<br>使用位置: 过程性语句和SQL语句。<br>18、INSTRB<br>语法:  INSTRB（string1, string2[a,[b]]）<br>功能:  和INSTR相同,只是操作的对参数字符使用的位置的是字节.<br>使用位置: 过程性语句和SQL语句。<br>19、LENGTH<br>语法:  LENGTH（string）<br>功能:  返回string的字节单位的长度.CHAR数值是填充空格类型的,如果string由数据类型CHAR,它的结尾的空格都被计算到字符串长度中间.<br>如果string是NULL,返回结果是NULL,而不是0.<br>使用位置: 过程性语句和SQL语句。<br>20、LENGTHB<br>语法:  LENGTHB（string）<br>功能:  返回以字节为单位的string的长度.对于单字节字符集LENGTHB和LENGTH是一样的.<br>使用位置: 过程性语句和SQL语句。<br>21、NLSSORT<br>语法: NLSSORT（string[,nlsparams]）<br>功能: 得到用于排序string的字符串字节.所有的数值都被转换为字节字符串,这样在不同数据库之间就保持了一致性. Nlsparams的作用和<br>NLS_INITCAP中的相同.如果忽略参数,会话使用缺省排序.<br>使用位置: 过程性语句和SQL语句。  </p>
+<p>oracle 存储过程的基本语法</p>
+<p>1.基本结构<br>CREATE OR REPLACE PROCEDURE 存储过程名字<br>(<br>    参数1 IN NUMBER,<br>    参数2 IN NUMBER<br>) IS<br>变量1 INTEGER :=0;<br>变量2 DATE;<br>BEGIN<br>END 存储过程名字</p>
+<p>2.SELECT INTO STATEMENT<br>  将select查询的结果存入到变量中，可以同时将多个列存储多个变量中，必须有一条<br>  记录，否则抛出异常(如果没有记录抛出NO_DATA_FOUND)<br>  例子：<br>  BEGIN<br>  SELECT col1,col2 into 变量1,变量2 FROM typestruct where xxx;<br>  EXCEPTION<br>  WHEN NO_DATA_FOUND THEN<br>      xxxx;<br>  END;<br>  …</p>
+<p>3.IF 判断<br>  IF V_TEST=1 THEN<br>    BEGIN<br>       do something<br>    END;<br>  END IF;</p>
+<p>4.while 循环<br>  WHILE V_TEST=1 LOOP<br>  BEGIN<br> XXXX<br>  END;<br>  END LOOP;</p>
+<p>5.变量赋值<br>  V_TEST := 123;</p>
+<p>6.用for in 使用cursor<br>  …<br>  IS<br>  CURSOR cur IS SELECT * FROM xxx;<br>  BEGIN<br> FOR cur_result in cur LOOP<br>  BEGIN<br>   V_SUM :=cur_result.列名1+cur_result.列名2<br>  END;<br> END LOOP;<br>  END;</p>
+<p>7.带参数的cursor<br>  CURSOR C_USER(C_ID NUMBER) IS SELECT NAME FROM USER WHERE TYPEID=C_ID;<br>  OPEN C_USER(变量值);<br>  LOOP<br> FETCH C_USER INTO V_NAME;<br> EXIT FETCH C_USER%NOTFOUND;<br>    do something<br>  END LOOP;<br>  CLOSE C_USER;</p>
+<p>8.用pl/sql developer debug<br> 连接数据库后建立一个Test WINDOW<br>  在窗口输入调用SP的代码,F9开始debug,CTRL+N单步调试<br>关于oracle存储过程的若干问题备忘<br>1.在oracle中，数据表别名不能加as，如：<br>select a.appname from appinfo a;— 正确<br>select a.appname from appinfo as a;— 错误<br> 也许，是怕和oracle中的存储过程中的关键字as冲突的问题吧<br>2.在存储过程中，select某一字段时，后面必须紧跟into，如果select整个记录，利用游标的话就另当别论了。<br>  select af.keynode into kn from APPFOUNDATION af where af.appid=aid and af.foundationid=fid;— 有into，正确编译<br>  select af.keynode from APPFOUNDATION af where af.appid=aid and af.foundationid=fid;— 没有into，编译报错，提示：Compilation<br>  Error: PLS-00428: an INTO clause is expected in this SELECT statement</p>
+<p>3.在利用select…into…语法时，必须先确保数据库中有该条记录，否则会报出”no data found”异常。<br>   可以在该语法之前，先利用select count(*) from 查看数据库中是否存在该记录，如果存在，再利用select…into…<br>4.在存储过程中，别名不能和字段名称相同，否则虽然编译可以通过，但在运行阶段会报错<br> select keynode into kn from APPFOUNDATION where appid=aid and foundationid=fid;— 正确运行<br>select af.keynode into kn from APPFOUNDATION af where af.appid=appid and af.foundationid=foundationid;— 运行阶段报错，提示<br>ORA-01422:exact fetch returns more than requested number of rows<br>5.在存储过程中，关于出现null的问题<br>假设有一个表A，定义如下：<br>create table A(<br>id varchar2(50) primary key not null,<br>vcount number(8) not null,<br>bid varchar2(50) not null — 外键<br>);<br>如果在存储过程中，使用如下语句：<br>select sum(vcount) into fcount from A where bid=’xxxxxx’;<br>如果A表中不存在bid=”xxxxxx”的记录，则fcount=null(即使fcount定义时设置了默认值，如：fcount number(8):=0依然无效，fcount还是会变成null)，这样以后使用fcount时就可能有问题，所以在这里最好先判断一下：<br>if fcount is null then<br>    fcount:=0;<br>end if;<br>这样就一切ok了。<br>6.Hibernate调用oracle存储过程<br>        this.pnumberManager.getHibernateTemplate().execute(<br>                new HibernateCallback() …{<br>                    public Object doInHibernate(Session session)<br>                            throws HibernateException, SQLException …{<br>                        CallableStatement cs = session<br>                                .connection()<br>                                .prepareCall(“{call modifyapppnumber_remain(?)}”);<br>                        cs.setString(1, foundationid);<br>                        cs.execute();<br>                        return null;<br>                    }<br>                });  </p>
+<p>oracle 存储过程语法总结及练习<br>-——————————————————————<br>--1.存储过程之if<br>clear;<br>create or replace procedure mydel(<br>in_a in integer)<br>as<br>begin<br>if in_a&lt;100 then<br>dbms_output.put_line(‘小于100.’);<br>elsif in_a&lt;200 then<br>dbms_output.put_line(‘大于100小于200.’);<br>else<br>dbms_output.put_line(‘大于200.’);<br>end if;<br>end;<br>/</p>
+<p>set serveroutput on;<br>begin<br>mydel(1102);<br>end;<br>/<br>-——————————————————————</p>
+<p>--2.存储过程之case1<br>clear;<br>create or replace procedure mydel(<br>in_a in integer)<br>as<br>begin<br>case in_a<br>when 1 then<br>dbms_output.put_line(‘小于100.’);<br>when 2 then<br>dbms_output.put_line(‘大于100小于200.’);<br>else<br>dbms_output.put_line(‘大于200.’);<br>end case;<br>end;<br>/</p>
+<p>set serveroutput on;<br>begin<br>mydel(2);<br>end;<br>/<br>-———————————————————————-</p>
+<p>--1.存储过程之loop1<br>clear;<br>create or replace procedure mydel(<br>in_a in integer)<br>as<br>a integer;<br>begin<br>a:=0;<br>loop<br>dbms_output.put_line(a);<br>a:=a+1;<br>exit when<br>a&gt;301;<br>end loop;<br>end;<br>/</p>
+<p>set serveroutput on;<br>begin<br>mydel(2);<br>end;<br>/<br>-————————————————————————-<br>--1.存储过程之loop2<br>clear;<br>create or replace procedure mydel(<br>in_a in integer)<br>as<br>a integer;<br>begin<br>a:=0;<br>while a&lt;300 loop<br>dbms_output.put_line(a);<br>a:=a+1;<br>end loop;<br>end;<br>/</p>
+<p>set serveroutput on;<br>begin<br>mydel(2);<br>end;<br>-————————————————————————-<br>--1.存储过程之loop3<br>clear;<br>create or replace procedure mydel(<br>in_a in integer)<br>as<br>a integer;<br>begin<br>for a in 0..300<br>loop<br>dbms_output.put_line(a);<br>end loop;<br>end;<br>/</p>
+<p>set serveroutput on;<br>begin<br>mydel(2);<br>end;<br>/<br>clear;<br>select ename,cc:=(case<br>when comm=null then sal<em>12;<br>else (sal+comm)</em>12;<br>end case from emp order by salpersal;</p>
+<p>-—————————————————————————-<br>clear;<br>create or replace procedure getstudentcomments(<br>i_studentid in int,o_comments out varchar)<br>as<br>exams_sat int;<br>avg_mark int;<br>tmp_comments varchar(100);<br>begin<br>select count(examid) into exams_sat from studentexam<br>where studentid=i_studentid;<br>if exams_sat=0 then<br>tmp_comments:=’n/a-this student did not attend the exam!’;<br>else<br>select avg(mark) into avg_mark from studentexam<br>where studentid=i_studentid;<br>case<br>when avg_mark&lt;50 then tmp_comments:=’very bad’;<br>when avg_mark&lt;60 then tmp_comments:=’bad’;<br>when avg_mark&lt;70 then tmp_comments:=’good’;<br>end case;<br>end if;<br>o_comments:=tmp_comments;<br>end;<br>/</p>
+<p>set serveroutput on;<br>declare<br>pp studentexam.comments%type;<br>begin<br>getstudentcomments(8,pp);<br>dbms_output.put_line(pp);<br>end;<br>/<br>-———————————————————————————-</p>
+<p>delete from emp where empno&lt;6000;<br>clear;<br>create or replace procedure insertdata(<br>in_num in integer)<br>as<br>myNum int default 0;<br>emp_no emp.empno%type:=1000;<br>begin<br>while myNum&lt;in_num loop<br>insert into emp values(emp_no,’hui’||myNum,’coder’,7555,current_date,8000,6258,30);<br>emp_no:=emp_no+1;<br>myNum:=myNum+1;<br>end loop;<br>end;<br>/</p>
+<p>set serveroutput on;<br>begin<br>insertdata(10);<br>end;<br>/<br>select * from emp;</p>
+<p>-————————————————————————————————-</p>
+<p>clear;<br>select studentname,averageMark,case<br>when averageMark&lt;60 then ‘不及格’<br>when averageMark&lt;70 then ‘考得好’<br>when averageMark&lt;80 then ‘考得很好’<br>end case<br>from (select (<br>select b.name from student b where b.studentid=a.studentid) as studentname,<br>round(avg(mark),2) as averageMark from studentexam a group by a.studentid);  </p>
+<p>ORACLE 查询练习<br>emp员工表(empno员工号/ename员工姓名/job工作/mgr上级编号/hiredate受雇日期/sal薪金/comm佣金/deptno部门编号)</p>
+<p>dept部门表(deptno部门编号/dname部门名称/loc地点)</p>
+<p>工资 ＝ 薪金 ＋ 佣金</p>
+<p>1．列出至少有一个员工的所有部门。</p>
+<p>2．列出薪金比”SMITH”多的所有员工。</p>
+<p>3．列出所有员工的姓名及其直接上级的姓名。</p>
+<p>4．列出受雇日期早于其直接上级的所有员工。</p>
+<p>5．列出部门名称和这些部门的员工信息，同时列出那些没有员工的部门</p>
+<p>6．列出所有”CLERK”（办事员）的姓名及其部门名称。</p>
+<p>7．列出最低薪金大于1500的各种工作。</p>
+<p>8．列出在部门”SALES”（销售部）工作的员工的姓名，假定不知道销售部的部门编号。</p>
+<p>9．列出薪金高于公司平均薪金的所有员工。</p>
+<p>10．列出与”SCOTT”从事相同工作的所有员工。</p>
+<p>11．列出薪金等于部门30中员工的薪金的所有员工的姓名和薪金。</p>
+<p>12．列出薪金高于在部门30工作的所有员工的薪金的员工姓名和薪金。</p>
+<p>13．列出在每个部门工作的员工数量、平均工资和平均服务期限。</p>
+<p>14．列出所有员工的姓名、部门名称和工资。</p>
+<p>15．列出所有部门的详细信息和部门人数。</p>
+<p>16．列出各种工作的最低工资。</p>
+<p>17．列出各个部门的MANAGER（经理）的最低薪金。</p>
+<p>18．列出所有员工的年工资,按年薪从低到高排序。</p>
+<p>-———-1—————<br>select dname from dept where deptno in(<br>select deptno from emp);</p>
+<p>-———-2—————<br>select * from emp where sal&gt;(<br>select sal from emp where ename=’SMITH’);</p>
+<p>-———-3—————<br>select a.ename,(<br>select ename from emp b where b.empno=a.mgr) as bossname from emp a;</p>
+<p>-———-4—————<br>select a.ename from emp a where a.hiredate&lt;(<br>select hiredate from emp b where b.empno=a.mgr);</p>
+<p>-———-5—————<br>select a.dname,b.empno,b.ename,b.job,b.mgr,b.hiredate,b.sal,b.comm,b.deptno<br>from dept a left join emp b on a.deptno=b.deptno;</p>
+<p>-———-6—————<br>select a.ename,b.dname from emp a join dept b<br>on a.deptno=b.deptno and a.job=’CLERK’;</p>
+<p>-———-7—————<br>select distinct job as HighSalJob from emp group by job having min(sal)&gt;1500;</p>
+<p>-———-8—————<br>select ename from emp where deptno=(<br>select deptno from dept where dname=’SALES’);</p>
+<p>-———-9—————<br>select ename from emp where sal&gt;(<br>select avg(sal) from emp);</p>
+<p>-———-10————-<br>select ename from emp where job=(<br>select job from emp where ename=’SCOTT’);</p>
+<p>-———-11————-<br>select a.ename,a.sal from emp a where a.sal in (<br>select b.sal from emp b where b.deptno=30) and a.deptno&lt;&gt;30;</p>
+<p>-———-12————-<br>select ename,sal from emp where sal&gt;(<br>select max(sal) from emp where deptno=30);</p>
+<p>-———-13————-<br>select<br>(select b.dname from dept b where a.deptno=b.deptno) as deptname ,<br>count(deptno) as deptcount,<br>avg(sal) as deptavgsal<br>from emp a group by deptno; </p>
+<p>-———-14————-<br>select<br>a.ename,<br>(select b.dname from dept b where b.deptno=a.deptno) as deptname,<br>sal<br>from emp a; </p>
+<p>-———-15————-<br>select<br>a.deptno,<br>a.dname,<br>a.loc,<br>(select count(deptno) from emp b where b.deptno=a.deptno group by b.deptno) as deptcount<br>from dept a;</p>
+<p>-———-16————-<br>select job,avg(sal) from emp group by job;</p>
+<p>-———-17————-<br>select deptno,min(sal) from emp where job=’MANAGER’ group by deptno;</p>
+<p>-———-18————-<br>select ename,(sal+nvl(comm,0))*12 as salpersal from emp order by salpersal;  </p>
+<p>ORACLE子句查询,分组等<br>A.同表子查询作为条件<br>a. 给出人口多于Russia(俄国)的国家名称 SELECT name FROM bbc<br>WHERE population&gt;<br>(SELECT population FROM bbc<br>WHERE name=’Russia’) </p>
+<p>b.给出’India’(印度), ‘Iran’(伊朗)所在地区的所有国家的所有信息 SELECT * FROM bbc<br>WHERE region IN<br>(SELECT region FROM bbc<br>WHERE name IN (‘India’,’Iran’)) </p>
+<p>c.给出人均GDP超过’United Kingdom’(英国)的欧洲国家. SELECT name FROM bbc<br>WHERE region=’Europe’ AND gdp/population &gt;<br>(SELECT gdp/population FROM bbc<br>WHERE name=’United Kingdom’) </p>
+<p>d.这个查询实际上等同于以下这个:</p>
+<p>select e1.ename from emp e1,(select empno from emp where ename = ‘KING’) e2 where e1.mgr = e2.empno;<br>你可以用EXISTS写同样的查询，你只要把外部查询一栏移到一个像下面这样的子查询环境中就可以了：<br>select ename from emp e<br>where exists (select 0 from emp where e.mgr = empno and ename = ‘KING’);<br>当你在一个WHERE子句中写EXISTS时，又等于向最优化传达了这样一条信息，即你想让外部查询先运行，使用每一个值来从内部查询（假定：EXISTS＝由外而内）中得到一个值。<br>B.异表子查询作为条件<br>a.select * from studentExam where studentid=( select studentid from student where name=’吴丽丽’);</p>
+<p>b.select * from studentexam where studentid in (<br>select studentid from student) order by studentid;</p>
+<p>c.select * from student where studentid in (select studentid from studentexam where mark&gt;80); </p>
+<p>3.select studentexam.mark,studentexam.studentid as seid, student.studentid,student.name from studentexam,student where student.studentid=studentexam.studentid;</p>
+<p>过滤分组:<br>顺序为先分组,再过滤,最后进行统计(实际值).<br>select studentid,count(*) as highpasses from studentexamwhere mark&gt;70group by studentid;<br>假使我们不想通过数据表中的实际值,而是通过聚合函数的结果来过过滤查询的结果.<br>select studentid,avg(mark) as averagemarkfrom studentexamwhere avg(mark)<50 or="" avg(mark)="">70group by studentid;(此句错误,where 句子是不能用聚合函数作条件的)此时要用having.<br>select studentid,avg(mark) from studentexam group by studentid having avg(mark)&gt;70 or avg(mark)&lt;50;</50></p>
+<p>select studentid,avg(mark) from studentexam where studentid in(1,7,9,5)group by studentid having avg(mark)&gt;70;(先分组,再过滤,再having聚合,最后再统计).</p>
+<p>select studentid ,avg(mark) as averagemarkfrom studentexamwhere examid in(5,8,11)group by studentidhaving avg(mark)<50 or="" avg(mark)="">70;</50></p>
+<p>返回限定行数查询:<br>select name from student where rownum&lt;=10;<br>oracle 中使用rownum关键字指定,但该关键字必须在where子句中与一个比较运算符一起指定,而不能与order by 一起配合便用,因为rownum 维护的是原始行号.如果需要用group by\order by 就用子句查询作表使用的方法:</p>
+<p>select studentid,averagemark from(select studentid,avg(mark) as averagemarkfrom studentexamgroup by studentid order by averagemark desc)where rownum&lt;=10;  </p>
+<p>oracle存储过程语法:Oracle存储过程入门学习基本语法<br>1.基本结构<br>create OR REPLACE PROCEDURE存储过程名字<br>(<br>参数1 IN NUMBER,<br>参数2 IN NUMBER<br>) IS<br>变量1 INTEGER :=0;<br>变量2 DATE;<br>BEGIN<br>END 存储过程名字<br>2.select INTO STATEMENT<br>将select查询的结果存入到变量中，可以同时将多个列存储多个变量中，必须有一条记录，否则抛出异常(如果没有记录抛出NO_DATA_FOUND)<br>例子:<br>BEGIN<br>select col1,col2 into 变量1,变量2 FROM typestruct where xxx;<br>EXCEPTION<br>WHEN NO_DATA_FOUND THEN<br>xxxx;<br>END;<br>…<br>3.IF 判断<br>IF V_TEST=1 THEN<br>BEGIN<br>do something<br>END;<br>END IF;<br>4.while 循环<br>WHILE V_TEST=1 LOOP<br>BEGIN<br>XXXX<br>END;<br>END LOOP;<br>5.变量赋值<br>V_TEST := 123;<br>6.用for in 使用cursor<br>…<br>IS<br>CURSOR cur IS select * FROM xxx;<br>BEGIN<br>FOR cur_result in cur LOOP<br>BEGIN<br>V_SUM :=cur_result.列名1+cur_result.列名2<br>END;<br>END LOOP;<br>END;<br>7.带参数的cursor<br>CURSOR C_USER(C_ID NUMBER) IS select NAME FROM USER where TYPEID=C_ID;<br>OPEN C_USER(变量值);<br>LOOP<br>FETCH C_USER INTO V_NAME;<br>EXIT FETCH C_USER%NOTFOUND;<br>do something<br>END LOOP;<br>CLOSE C_USER;<br>8.用pl/sql developer debug<br>连接数据库后建立一个Test WINDOW<br>在窗口输入调用SP的代码,F9开始debug,CTRL+N单步调试  </p>
+<p>oracle语法:Oracle 触发器语法及实例基础知识（一）<br>一Oracle触发器语法 </p>
+<p>触发器是特定事件出现的时候，自动执行的代码块类似于存储过程，触发器和存储过程的区别在于:存储过程是由用户或应用程序显式调用的,而触发器是不能被直接调用的</p>
+<p>功能: </p>
+<p>1、 允许/限制对表的修改 </p>
+<p>2、 自动生成派生列，比如自增字段 </p>
+<p>3、 强制数据一致性 </p>
+<p>4、 提供审计和日志记录 </p>
+<p>5、 防止无效的事务处理 </p>
+<p>6、 启用复杂的业务逻辑 </p>
+<p>触发器触发时间有两种:after和before </p>
+<p>1、触发器的语法: </p>
+<p>CREATE [OR REPLACE] TIGGER触发器名 触发时间 触发事件 </p>
+<p>ON表名 </p>
+<p>[FOR EACH ROW] </p>
+<p>BEGIN </p>
+<p>pl/sql语句 </p>
+<p>END </p>
+<p>其中: </p>
+<p>触发器名:触发器对象的名称 </p>
+<p>由于触发器是数据库自动执行的，因此该名称只是一个名称，没有实质的用途 </p>
+<p>触发时间:指明触发器何时执行，该值可取: </p>
+<p>before—-表示在数据库动作的前触发器执行; </p>
+<p>after—-表示在数据库动作的后出发器执行 </p>
+<p>触发事件:指明哪些数据库动作会触发此触发器: </p>
+<p>insert:数据库插入会触发此触发器; </p>
+<p>update:数据库修改会触发此触发器; </p>
+<p>delete:数据库删除会触发此触发器 </p>
+<p>表 名:数据库触发器所在的表 </p>
+<p>for each row:对表的每一行触发器执行一次如果没有这一选项，则只对整个表执行一次 </p>
+<p>2、举例: </p>
+<p>下面的触发器在更新表auths的前触发，目的是不允许在周末修改表: </p>
+<p>create triggerauth_secure before insert or update or delete //对整表更新前触发<br>on auths<br>begin<br>if(to_char(sysdate,’DY’)=’SUN’<br>RAISE_APPLICATION_ERROR(-20600,’不能在周末修改表auths’);<br>end if;<br>end </p>
+<p>例子: </p>
+<p>CREATE OR REPLACE TRIGGER CRM.T_SUB_USERINFO_AUR_NAME AFTER UPDATE OF STAFF_NAME<br>ON CRM.T_SUB_USERINFO<br>REFERENCING OLD AS OLD NEW AS NEW<br>FOR EACH ROW<br>declare<br>begin<br>if :NEW.STAFF_NAME!=:OLD.STAFF_NAME then<br>begin </p>
+<p>客户投诉<br>update T_COMPLAINT_MANAGE set SERVE_NAME=:NEW.STAFF_NAME where SERVE_SEED=:OLD.SEED; </p>
+<p>客户关怀<br>update T_CUSTOMER_CARE set EXECUTOR_NAME=:NEW.STAFF_NAME<br>where EXECUTOR_SEED=:OLD.SEED; </p>
+<p>客户服务<br>update T_CUSTOMER_SERVICE set EXECUTOR_NAME=:NEW.STAFF_NAME<br>where EXECUTOR_SEED=:OLD.SEED;<br>end;<br>end if;<br>end T_sub_userinfo_aur_name;<br>/ </p>
+<p>2 Oracle触发器详解 </p>
+<p>开始:  </p>
+<p>create triggerbiufer_employees_department_id<br>beforeinsertorupdateofdepartment_idonemployees<br>referencingoldasold_value new as new_value<br>for each row<br>when (new_value.department_id&lt;&gt;80 )<br>begin<br>:new_value.commission_pct :=0;<br>end;<br>/ </p>
+<p>1、触发器的组成部分: </p>
+<p>1、 触发器名称 </p>
+<p>2、 触发语句 </p>
+<p>3、 触发器限制 </p>
+<p>4、 触发操作 </p>
+<p>1.1、触发器名称 </p>
+<p>create trigger biufer_employees_department_id </p>
+<p>命名习惯:  </p>
+<p>biufer(before insert update for each row) </p>
+<p>employees表名 </p>
+<p>department_id列名 </p>
+<p>1.2、触发语句 </p>
+<p>比如: </p>
+<p>表或视图上的DML语句 </p>
+<p>DDL语句 </p>
+<p>数据库关闭或启动,startup shutdown等等  </p>
+<p>before insert or update<br>of department_id<br>on employees<br>referencing old as old_value<br>new as new_value<br>for each row </p>
+<p>介绍说明: </p>
+<p>1、 无论是否规定了department_id，对employees表进行insert的时候 </p>
+<p>2、 对employees表的department_id列进行update的时候 </p>
+<p>1.3、触发器限制  </p>
+<p>when (new_value.department_id&lt;&gt;80 ) </p>
+<p>限制不是必须的此例表示如果列department_id不等于80的时候，触发器就会执行 </p>
+<p>其中的new_value是代表更新的后的值 </p>
+<p>1.4、触发操作 </p>
+<p>是触发器的主体  </p>
+<p>begin<br>:new_value.commission_pct :=0;<br>end; </p>
+<p>主体很简单，就是将更新后的commission_pct列置为0 </p>
+<p>触发:  </p>
+<p>insert into employees(employee_id,last_name,first_name,hire_date,job_id,email,<br>department_id,salary,commission_pct )<br>values( 12345,’Chen’,’Donny’, sysdate, 12, ‘donny@hotmail.com’,60,10000,.25);<br>select commission_pct from employees where employee_id=12345;  </p>
+<p>2、触发器的类型有: </p>
+<p>触发器类型: </p>
+<p>1、 语句触发器 </p>
+<p>2、 行触发器 </p>
+<p>3、INSTEAD OF触发 </p>
+<p>4、 系统条件触发器 </p>
+<p>5、 用户事件触发器 </p>
+<p>2.1、语句级触发器.(语句级触发器对每个DML语句执行一次) </p>
+<p>是在表上或者某些情况下的视图上执行的特定语句或者语句组上的触发器能够和INSERT、UPDATE、DELETE或者组合上进行关联但是无论使用什么样的组合，各个语句触发器都只会针对指定语句激活一次比如，无论update多少行，也只会调用一次update语句触发器 </p>
+<p>例子:  </p>
+<p>create or replace trigger tri_test<br>after insert or update or delete _disibledevent=&gt; </p>
+<p>测试,插入几条记录<br>insert into test values(0,’ff’);<br>insert into test values(0,’ff’);<br>insert into test values(0,’tt’); </p>
+<p>例子 2: </p>
+<p>创建一个触发器,无论用户插入新记录,还是修改emp表的job列,都将用户指定的job列的值转换成大写.<br>create or replace trigger trig_job<br>before insert or update of job<br>on emp<br>for each row<br>begin<br>if inserting then<br>:new.job:=upper(:new.job);<br>else<br>: new.job:=upper(:new.job);<br>end if;<br>end; </p>
+<p>2.3、instead of触发器. </p>
+<p>(此触发器是在视图上而不是在表上定义的触发器,它是用来替换所使用实际语句的触发器.) </p>
+<p>语法如下: </p>
+<p>create or replace triggertrig_test<br>instead ofinsert or update _disibledevent=&gt; </p>
+<p>2.5、数据库级触发器. </p>
+<p>可以创建在数据库事件上的触发器,包括关闭,启动,服务器错误,登录等.这些事件都是例子范围的,不和特定的表或视图关联. </p>
+<p>例子:  </p>
+<p>create or replace trigger trig_name<br>after startup _disibledevent=&gt; </p>
+<p>4、 测试 </p>
+<p>update employees_copy set salary= salary<em>1.1;<br>select </em>from employess_log; </p>
+<p>5、 确定是哪个语句起作用? </p>
+<p>即是INSERT/UPDATE/DELETE中的哪一个触发了触发器? </p>
+<p>可以在触发器中使用INSERTING / UPDATING / DELETING条件谓词，作判断:  </p>
+<p>begin<br>if inserting then<br>-——<br>elsif updating then<br>-——<br>elsif deleting then<br>-——-<br>end if;<br>end;<br>if updating(‘COL1’) or updating(‘COL2’) then<br>-——-<br>end if; </p>
+<p>2.8、[试验] </p>
+<p>1、 修改日志表 </p>
+<p>alter table employees_log<br>add (action varchar2(20)); </p>
+<p>2、 修改触发器，以便记录语句类型  </p>
+<p>then<br>l_action:=’Delete’;<br>else<br>raise_application_error(-20001,’You should never ever get this error.’);<br>Insert into employees_log(Who,action,when)<br>Values( user, l_action,sysdate);<br>End;Create or replace trigger biud_employee_copy<br>Before insert or update or delete<br>On employees_copy<br>Declare<br>L_action employees_log.action%type;<br>Begin<br>if inserting then<br>l_action:=’Insert’;<br>elsif updating then<br>l_action:=’Update’;<br>elsif deleting<br>/ </p>
+<p>3、 测试<br>insert into employees_copy( employee_id, last_name, email, hire_date, job_id)<br>values(12345,’Chen’,’Donny@hotmail’,sysdate,12);<br>select *from employees_log  </p>
+<p>oracle 基本语法备忘<br>2008年11月13日 星期四 09:58<br>1.基本结构<br>CREATE OR REPLACE PROCEDURE 存储过程名字<br>(<br>    参数1 IN NUMBER,<br>    参数2 IN NUMBER<br>) IS<br>变量1 INTEGER :=0;<br>变量2 DATE;<br>BEGIN<br>END 存储过程名字</p>
+<p>2.SELECT INTO STATEMENT将select查询的结果存入到变量中，可以同时将多个列存储多个变量中，必须有一条<br>记录，否则抛出异常(如果没有记录抛出NO_DATA_FOUND)<br>例子：<br>BEGIN<br>SELECT col1,col2 into 变量1,变量2 FROM typestruct where xxx;<br>EXCEPTION<br>WHEN NO_DATA_FOUND THEN<br>     xxxx;<br>END;<br>…</p>
+<p>3.IF 判断<br>IF V_TEST=1 THEN<br>    BEGIN<br>       do something<br>    END;<br>END IF;</p>
+<p>4.while 循环<br>WHILE V_TEST=1 LOOP<br>BEGIN<br>XXXX<br>END;<br>END LOOP;</p>
+<p>5.变量赋值<br>V_TEST := 123;</p>
+<p>6.用for in 使用cursor<br>…<br>IS<br>CURSOR cur IS SELECT * FROM xxx;<br>BEGIN<br>FOR cur_result in cur LOOP<br>   BEGIN<br>    V_SUM :=cur_result.列名1+cur_result.列名2<br>   END;<br>END LOOP;<br>END;</p>
+<p>7.带参数的cursor<br>CURSOR C_USER(C_ID NUMBER) IS SELECT NAME FROM USER WHERE TYPEID=C_ID;<br>OPEN C_USER(变量值);<br>LOOP<br>FETCH C_USER INTO V_NAME;<br>EXIT FETCH C_USER%NOTFOUND;<br>    do something<br>END LOOP;<br>CLOSE C_USER;</p>
+<p>8.用pl/sql developer debug<br>连接数据库后建立一个Test WINDOW<br>在窗口输入调用SP的代码,F9开始debug,CTRL+N单步调试  </p>
+<p>关于oracle存储过程的若干问题备忘<br>1.在oracle中，数据表别名不能加as，如：<br>select a.appname from appinfo a;— 正确<br>select a.appname from appinfo as a;— 错误<br>也许，是怕和oracle中的存储过程中的关键字as冲突的问题吧<br>2.在存储过程中，select某一字段时，后面必须紧跟into，如果select整个记录，利用游标的话就另当别论了。<br>  select af.keynode into kn from APPFOUNDATION af where af.appid=aid and af.foundationid=fid;— 有into，正确编译<br>  select af.keynode from APPFOUNDATION af where af.appid=aid and af.foundationid=fid;— 没有into，编译报错，提示：Compilation<br>   Error: PLS-00428: an INTO clause is expected in this SELECT statement</p>
+<p>3.在利用select…into…语法时，必须先确保数据库中有该条记录，否则会报出”no data found”异常。<br>   可以在该语法之前，先利用select count(*) from 查看数据库中是否存在该记录，如果存在，再利用select…into…<br>4.在存储过程中，别名不能和字段名称相同，否则虽然编译可以通过，但在运行阶段会报错<br>select keynode into kn from APPFOUNDATION where appid=aid and foundationid=fid;— 正确运行<br>select af.keynode into kn from APPFOUNDATION af where af.appid=appid and af.foundationid=foundationid;— 运行阶段报错，提示<br>ORA-01422:exact fetch returns more than requested number of rows<br>5.在存储过程中，关于出现null的问题<br>假设有一个表A，定义如下：<br>create table A(<br>id varchar2(50) primary key not null,<br>vcount number(8) not null,<br>bid varchar2(50) not null — 外键<br>);<br>如果在存储过程中，使用如下语句：<br>select sum(vcount) into fcount from A where bid=’xxxxxx’;<br>如果A表中不存在bid=”xxxxxx”的记录，则fcount=null(即使fcount定义时设置了默认值，如：fcount number(8):=0依然无效，fcount还是会变成null)，这样以后使用fcount时就可能有问题，所以在这里最好先判断一下：<br>if fcount is null then<br>     fcount:=0;<br>end if;<br>这样就一切ok了。<br>1、创建存储过程<br>create or replace procedure test(var_name_1 in type,var_name_2 out type) as<br>--声明变量(变量名 变量类型)<br>begin<br>--存储过程的执行体<br>end test;<br>打印出输入的时间信息<br>E.g:<br>create or replace procedure test(workDate in Date) is<br>begin<br>dbms_output.putline(&apos;The input date is:&apos;||to_date(workDate,&apos;yyyy-mm-dd&apos;));<br>end test;<br>2、变量赋值<br>变量名 := 值;<br>E.g：<br>create or replace procedure test(workDate in Date) is<br>x number(4,2);<br>begin<br>x := 1;<br>end test;<br>3、判断语句:<br>if 比较式 then begin end; end if;<br>E.g<br>create or replace procedure test(x in number) is<br>begin<br>         if x &gt;0 then<br>          begin<br>         x := 0 - x;<br>         end;<br>     end if;<br>     if x = 0 then<br>        begin<br>         x: = 1;<br>     end;<br>     end if;<br>end test;<br>4、For 循环<br>For … in … LOOP<br>--执行语句<br>end LOOP;<br>(1)循环遍历游标<br>create or replace procedure test() as<br>Cursor cursor is select name from student; name varchar(20);<br>begin<br>for name in cursor LOOP<br>begin<br>dbms_output.putline(name);<br>end;<br>end LOOP;<br>end test;<br>(2)循环遍历数组<br>create or replace procedure test(varArray in myPackage.TestArray) as<br>--(输入参数varArray 是自定义的数组类型，定义方式见标题6)<br>i number;<br>begin<br>i := 1; —存储过程数组是起始位置是从1开始的，与java、C、C++等语言不同。因为在Oracle中本是没有数组的概念的，数组其实就是一张<br>--表(Table),每个数组元素就是表中的一个记录，所以遍历数组时就相当于从表中的第一条记录开始遍历<br>for i in 1..varArray.count LOOP<br>dbms_output.putline(&apos;The No.&apos;|| i || &apos;record in varArray is:&apos;||varArray(i));<br>end LOOP;<br>end test;<br>5、While 循环<br>while 条件语句 LOOP<br>begin<br>end;<br>end LOOP;<br>E.g<br>create or replace procedure test(i in number) as<br>begin<br>while i &lt; 10 LOOP<br>begin<br>i:= i + 1;<br>end;<br>end LOOP;<br>end test;<br>6、数组<br>首先明确一个概念：Oracle中本是没有数组的概念的，数组其实就是一张表(Table),每个数组元素就是表中的一个记录。<br>使用数组时，用户可以使用Oracle已经定义好的数组类型，或可根据自己的需要定义数组类型。<br>(1)使用Oracle自带的数组类型<br>x array; —使用时需要需要进行初始化<br>e.g:<br>create or replace procedure test(y out array) is<br>x array;<br>begin<br>x := new array();<br>y := x;<br>end test;<br>(2)自定义的数组类型 (自定义数据类型时，建议通过创建Package的方式实现，以便于管理)<br>E.g (自定义使用参见标题4.2) create or replace package myPackage is<br>-- Public type declarations type info is record(     name varchar(20),     y number);<br>type TestArray is table of info index by binary_integer; —此处声明了一个TestArray的类型数据，其实其为一张存储Info数据类型的Table而已，及TestArray 就是一张表，有两个字段，一个是<br>name，一个是y。需要注意的是此处使用了Index by binary_integer 编制该Table的索引项，也可以不写，直接写成：type TestArray is<br>table of info，如果不写的话使用数组时就需要进行初始化：varArray myPackage.TestArray; varArray := new myPackage.TestArray();<br>end TestArray;<br>7.游标的使用 Oracle中Cursor是非常有用的，用于遍历临时表中的查询结果。其相关方法和属性也很多，现仅就常用的用法做一二介绍：<br>(1)Cursor型游标(不能用于参数传递)<br>create or replace procedure test() is<br>cusor_1 Cursor is select std_name from student where …; —Cursor的使用方式1 cursor_2 Cursor;<br>begin<br>select class_name into cursor_2 from class where …; —Cursor的使用方式2<br>可使用For x in cursor LOOP …. end LOOP; 来实现对Cursor的遍历<br>end test;<br>(2)SYS_REFCURSOR型游标，该游标是Oracle以预先定义的游标，可作出参数进行传递<br>create or replace procedure test(rsCursor out SYS_REFCURSOR) is<br>cursor SYS_REFCURSOR; name varhcar(20);<br>begin<br>OPEN cursor FOR select name from student where … —SYS_REFCURSOR只能通过OPEN方法来打开和赋值<br>LOOP<br>fetch cursor into name    --SYS_REFCURSOR只能通过fetch into来打开和遍历 exit when cursor%NOTFOUND;              --SYS_REFCURSOR中可使用三个状态属性：                                         -—%NOTFOUND(未找到记录信息) %FOUND(找到记录信息)                                         -—%ROWCOUNT(然后当前游标所指向的行位置)<br>dbms_output.putline(name);<br>end LOOP;<br>rsCursor := cursor;<br>end test;<br>下面写一个简单的例子来对以上所说的存储过程的用法做一个应用：<br>现假设存在两张表，一张是学生成绩表(studnet)，字段为：stdId,math,article,language,music,sport,total,average,step                   一张是学生课外成绩表(out_school),字段为:stdId,parctice,comment<br>通过存储过程自动计算出每位学生的总成绩和平均成绩，同时，如果学生在课外课程中获得的评价为A，就在总成绩上加20分。<br>create or replace procedure autocomputer(step in number) is<br>rsCursor SYS_REFCURSOR;<br>commentArray myPackage.myArray;<br>math number;<br>article number;<br>language number;<br>music number;<br>sport number;<br>total number;<br>average number;<br>stdId varchar(30);<br>record myPackage.stdInfo;<br>i number;<br>begin<br>i := 1;<br>get_comment(commentArray); —调用名为get_comment()的存储过程获取学生课外评分信息<br>OPEN rsCursor for select stdId,math,article,language,music,sport from student t where t.step = step;<br>LOOP<br>fetch rsCursor into stdId,math,article,language,music,sport; exit when rsCursor%NOTFOUND;<br>total := math + article + language + music + sport;<br>for i in 1..commentArray.count LOOP<br>record := commentArray(i);<br>if stdId = record.stdId then<br>begin<br>if record.comment = &apos;A&apos; then<br>   begin<br>total := total + 20;<br>    go to next; —使用go to跳出for循环<br>end;<br>end if;<br>end;<br>end if;<br>end LOOP;<br>&lt;<continue>&gt; average := total / 5;<br>update student t set t.total=total and t.average = average where t.stdId = stdId;<br>end LOOP;<br>end;<br>end autocomputer;<br>--取得学生评论信息的存储过程<br>create or replace procedure get_comment(commentArray out myPackage.myArray) is<br>rs SYS_REFCURSOR；<br>record myPackage.stdInfo;<br>stdId varchar(30);<br>comment varchar(1);<br>i number;<br>begin<br>open rs for select stdId,comment from out_school<br>i := 1;<br>LOOP<br>fetch rs into stdId,comment; exit when rs%NOTFOUND;<br>record.stdId := stdId;<br>record.comment := comment;<br>recommentArray(i) := record;<br>i:=i + 1;<br>end LOOP;<br>end get_comment;<br>--定义数组类型myArray<br>create or replace package myPackage is begin<br>type stdInfo is record(stdId varchar(30),comment varchar(1));<br>type myArray is table of stdInfo index by binary_integer;<br>end myPackage;</continue></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/oracle_procedure/" data-title="Oracle存储过程总结 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/oracle_clob_plsql/" title="Oracle中的处理CLOB字段的动态PL/SQL">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Oracle中的处理CLOB字段的动态PL/SQL</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/oracle_materialized/"  title="oracle 物化视图详解">
+ <strong>NEXT:</strong><br/> 
+ <span>oracle 物化视图详解
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

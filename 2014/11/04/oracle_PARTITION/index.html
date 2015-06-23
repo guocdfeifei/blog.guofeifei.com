@@ -1,0 +1,435 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>oracle 表分区详解 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="此文从以下几个方面来整理关于分区表的概念及操作:        1.表空间及分区表的概念        2.表分区的具体作用        3.表分区的优缺点        4.表分区的几种类型及操作方法        5.对表分区的维护性操作.(1.) 表空间及分区表的概念表空间：是一个或多个数据">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/oracle_PARTITION/" title="oracle 表分区详解" itemprop="url">oracle 表分区详解</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T05:47:20.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T16:27:21.832Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>此文从以下几个方面来整理关于分区表的概念及操作:<br>        1.表空间及分区表的概念<br>        2.表分区的具体作用<br>        3.表分区的优缺点<br>        4.表分区的几种类型及操作方法<br>        5.对表分区的维护性操作.<br>(1.) 表空间及分区表的概念<br>表空间：<br>是一个或多个数据文件的集合，所有的数据对象都存放在指定的表空间中，但主要存放的是表， 所以称作表空间。  </p>
+<p>分区表：<br>当表中的数据量不断增大，查询数据的速度就会变慢，应用程序的性能就会下降，这时就应该考虑对表进行分区。表进行分区后，逻辑上表仍然是一张完整的表，只是将表中的数据在物理上存放到多个表空间(物理文件上)，这样查询数据时，不至于每次都扫描整张表。  </p>
+<p>( 2).表分区的具体作用<br>Oracle的表分区功能通过改善可管理性、性能和可用性，从而为各式应用程序带来了极大的好处。通常，分区可以使某些查询以及维护操作的性能大大提高。此外,分区还可以极大简化常见的管理任务，分区是构建千兆字节数据系统或超高可用性系统的关键工具。  </p>
+<p>分区功能能够将表、索引或索引组织表进一步细分为段，这些数据库对象的段叫做分区。每个分区有自己的名称，还可以选择自己的存储特性。从数据库管理员的角度来看，一个分区后的对象具有多个段，这些段既可进行集体管理，也可单独管理，这就使数据库管理员在管理分区后的对象时有相当大的灵活性。但是，从应用程序的角度来看，分区后的表与非分区表完全相同，使用 SQL DML 命令访问分区后的表时，无需任何修改。  </p>
+<p>什么时候使用分区表：<br>1、表的大小超过2GB。<br>2、表中包含历史数据，新的数据被增加都新的分区中。  </p>
+<p> (3).表分区的优缺点<br>表分区有以下优点：<br>1、改善查询性能：对分区对象的查询可以仅搜索自己关心的分区，提高检索速度。<br>2、增强可用性：如果表的某个分区出现故障，表在其他分区的数据仍然可用；<br>3、维护方便：如果表的某个分区出现故障，需要修复数据，只修复该分区即可；<br>4、均衡I/O：可以把不同的分区映射到磁盘以平衡I/O，改善整个系统性能。  </p>
+<p>缺点：<br>分区表相关：已经存在的表没有方法可以直接转化为分区表。不过 Oracle 提供了在线重定义表的功能。  </p>
+<p>(4).表分区的几种类型及操作方法<br> 一.范围分区：<br>范围分区将数据基于范围映射到每一个分区，这个范围是你在创建分区时指定的分区键决定的。这种分区方式是最为常用的，并且分区键经常采用日期。举个例子：你可能会将销售数据按照月份进行分区。<br>当使用范围分区时，请考虑以下几个规则：<br>1、每一个分区都必须有一个VALUES LESS THEN子句，它指定了一个不包括在该分区中的上限值。分区键的任何值等于或者大于这个上限值的记录都会被加入到下一个高一些的分区中。<br>2、所有分区，除了第一个，都会有一个隐式的下限值，这个值就是此分区的前一个分区的上限值。<br>3、在最高的分区中，MAXVALUE被定义。MAXVALUE代表了一个不确定的值。这个值高于其它分区中的任何分区键的值，也可以理解为高于任何分区中指定的VALUE LESS THEN的值，同时包括空值。<br>例一：<br>假设有一个CUSTOMER表，表中有数据200000行，我们将此表通过CUSTOMER_ID进行分区，每个分区存储100000行，我们将每个分区保存到单独的表空间中，这样数据文件就可以跨越多个物理磁盘。下面是创建表和分区的代码，如下：<br>CREATE TABLE CUSTOMER<br>(<br>    CUSTOMER_ID NUMBER NOT NULL PRIMARY KEY,<br>    FIRST_NAME  VARCHAR2(30) NOT NULL,<br>    LAST_NAME   VARCHAR2(30) NOT NULL,<br>    PHONE        VARCHAR2(15) NOT NULL,<br>    EMAIL        VARCHAR2(80),<br>    STATUS       CHAR(1)<br>)<br>PARTITION BY RANGE (CUSTOMER_ID)<br>(<br>    PARTITION CUS_PART1 VALUES LESS THAN (100000) TABLESPACE CUS_TS01,<br>    PARTITION CUS_PART2 VALUES LESS THAN (200000) TABLESPACE CUS_TS02<br>)<br>例二：按时间划分<br>CREATE TABLE ORDER_ACTIVITIES<br>(<br>    ORDER_ID      NUMBER(7) NOT NULL,<br>    ORDER_DATE    DATE,<br>    TOTAL_AMOUNT NUMBER,<br>    CUSTOTMER_ID NUMBER(7),<br>    PAID           CHAR(1)<br>)<br>PARTITION BY RANGE (ORDER_DATE)<br>(<br>  PARTITION ORD_ACT_PART01 VALUES LESS THAN (TO_DATE(‘01- MAY -2003’,’DD-MON-YYYY’)) TABLESPACEORD_TS01,<br>  PARTITION ORD_ACT_PART02 VALUES LESS THAN (TO_DATE(‘01-JUN-2003’,’DD-MON-YYYY’)) TABLESPACE ORD_TS02,<br>  PARTITION ORD_ACT_PART02 VALUES LESS THAN (TO_DATE(‘01-JUL-2003’,’DD-MON-YYYY’)) TABLESPACE ORD_TS03<br>)<br>例三：MAXVALUE<br>CREATE TABLE RangeTable<br>(<br>  idd   INT PRIMARY KEY ,<br>  iNAME VARCHAR(10),<br>  grade INT<br>)<br>PARTITION  BY  RANGE (grade)<br>(<br>      PARTITION  part1 VALUES  LESS  THEN (1000) TABLESPACE  Part1_tb,<br>      PARTITION  part2 VALUES  LESS  THEN (MAXVALUE) TABLESPACE  Part2_tb<br>);  </p>
+<p>二.列表分区：<br>该分区的特点是某列的值只有几个，基于这样的特点我们可以采用列表分区。<br>例一<br>CREATE TABLE PROBLEM_TICKETS<br>(<br>    PROBLEM_ID   NUMBER(7) NOT NULL PRIMARY KEY,<br>    DESCRIPTION  VARCHAR2(2000),<br>    CUSTOMER_ID  NUMBER(7) NOT NULL,<br>    DATE_ENTERED DATE NOT NULL,<br>    STATUS       VARCHAR2(20)<br>)<br>PARTITION BY LIST (STATUS)<br>(<br>      PARTITION PROB_ACTIVE   VALUES (‘ACTIVE’) TABLESPACE PROB_TS01,<br>      PARTITION PROB_INACTIVE VALUES (‘INACTIVE’) TABLESPACE PROB_TS02<br>例二<br>CREATE  TABLE  ListTable<br>(<br>    id    INT  PRIMARY  KEY ,<br>    name  VARCHAR (20),<br>    area  VARCHAR (10)<br>)<br>PARTITION  BY  LIST (area)<br>(<br>    PARTITION  part1 VALUES (‘guangdong’,’beijing’) TABLESPACE  Part1_tb,<br>    PARTITION  part2 VALUES (‘shanghai’,’nanjing’)  TABLESPACE  Part2_tb<br>);<br>)  </p>
+<p>三.散列分区：<br>这类分区是在列值上使用散列算法，以确定将行放入哪个分区中。当列的值没有合适的条件时，建议使用散列分区。<br>散列分区为通过指定分区编号来均匀分布数据的一种分区类型，因为通过在I/O设备上进行散列分区，使得这些分区大小一致。<br>例一：<br>CREATE TABLE HASH_TABLE<br>(<br>  COL NUMBER(8),<br>  INF VARCHAR2(100)<br>)<br>PARTITION BY HASH (COL)<br>(<br>  PARTITION PART01 TABLESPACE HASH_TS01,<br>  PARTITION PART02 TABLESPACE HASH_TS02,<br>  PARTITION PART03 TABLESPACE HASH_TS03<br>)<br>简写：<br>CREATE TABLE emp<br>(<br>    empno NUMBER (4),<br>    ename VARCHAR2 (30),<br>    sal   NUMBER<br>)<br>PARTITION BY  HASH (empno) PARTITIONS 8<br>STORE IN (emp1,emp2,emp3,emp4,emp5,emp6,emp7,emp8);  </p>
+<p>hash分区最主要的机制是根据hash算法来计算具体某条纪录应该插入到哪个分区中,hash算法中最重要的是hash函数，Oracle中如果你要使用hash分区，只需指定分区的数量即可。建议分区的数量采用2的n次方，这样可以使得各个分区间数据分布更加均匀。  </p>
+<p>四.组合范围散列分区<br>这种分区是基于范围分区和列表分区，表首先按某列进行范围分区，然后再按某列进行列表分区，分区之中的分区被称为子分区。<br>CREATE TABLE SALES<br>(<br>PRODUCT_ID VARCHAR2(5),<br>SALES_DATE DATE,<br>SALES_COST NUMBER(10),<br>STATUS VARCHAR2(20)<br>)<br>PARTITION BY RANGE(SALES_DATE) SUBPARTITION BY LIST (STATUS)<br>(<br>   PARTITION P1 VALUES LESS THAN(TO_DATE(‘2003-01-01’,’YYYY-MM-DD’))TABLESPACE rptfact2009<br>          (<br>              SUBPARTITION P1SUB1 VALUES (‘ACTIVE’) TABLESPACE rptfact2009,<br>              SUBPARTITION P1SUB2 VALUES (‘INACTIVE’) TABLESPACE rptfact2009<br>          ),<br>   PARTITION P2 VALUES LESS THAN (TO_DATE(‘2003-03-01’,’YYYY-MM-DD’)) TABLESPACE rptfact2009<br>          (<br>              SUBPARTITION P2SUB1 VALUES (‘ACTIVE’) TABLESPACE rptfact2009,<br>              SUBPARTITION P2SUB2 VALUES (‘INACTIVE’) TABLESPACE rptfact2009<br>          )<br>)  </p>
+<p>五.复合范围散列分区：<br>这种分区是基于范围分区和散列分区，表首先按某列进行范围分区，然后再按某列进行散列分区。<br>create table dinya_test<br> (<br> transaction_id number primary key,<br> item_id number(8) not null,<br> item_description varchar2(300),<br> transaction_date date<br> )<br> partition by range(transaction_date)subpartition by hash(transaction_id)  subpartitions 3 store in (dinya_space01,dinya_space02,dinya_space03)<br> (<br>     partition part_01 values less than(to_date(‘2006-01-01’,’yyyy-mm-dd’)),<br>     partition part_02 values less than(to_date(‘2010-01-01’,’yyyy-mm-dd’)),<br>     partition part_03 values less than(maxvalue)<br> );  </p>
+<p>(5).有关表分区的一些维护性操作：<br>一、添加分区<br>以下代码给SALES表添加了一个P3分区<br>ALTER TABLE SALES ADD PARTITION P3 VALUES LESS THAN(TO_DATE(‘2003-06-01’,’YYYY-MM-DD’));<br>注意：以上添加的分区界限应该高于最后一个分区界限。<br>以下代码给SALES表的P3分区添加了一个P3SUB1子分区<br>ALTER TABLE SALES MODIFY PARTITION P3 ADD SUBPARTITION P3SUB1 VALUES(‘COMPLETE’);<br>二、删除分区<br>以下代码删除了P3表分区：<br>ALTER TABLE SALES DROP PARTITION P3;<br>在以下代码删除了P4SUB1子分区：<br>ALTER TABLE SALES DROP SUBPARTITION P4SUB1;<br>注意：如果删除的分区是表中唯一的分区，那么此分区将不能被删除，要想删除此分区，必须删除表。<br>三、截断分区<br>截断某个分区是指删除某个分区中的数据，并不会删除分区，也不会删除其它分区中的数据。当表中即使只有一个分区时，也可以截断该分区。通过以下代码截断分区：<br>ALTER TABLE SALES TRUNCATE PARTITION P2;<br>通过以下代码截断子分区：<br>ALTER TABLE SALES TRUNCATE SUBPARTITION P2SUB2;<br>四、合并分区<br>合并分区是将相邻的分区合并成一个分区，结果分区将采用较高分区的界限，值得注意的是，不能将分区合并到界限较低的分区。以下代码实现了P1 P2分区的合并：<br>ALTER TABLE SALES MERGE PARTITIONS P1,P2 INTO PARTITION P2;<br>五、拆分分区<br>拆分分区将一个分区拆分两个新分区，拆分后原来分区不再存在。注意不能对HASH类型的分区进行拆分。<br>ALTER TABLE SALES SBLIT PARTITION P2 AT(TO_DATE(‘2003-02-01’,’YYYY-MM-DD’)) INTO (PARTITION P21,PARTITION P22);<br>六、接合分区(coalesca)<br>结合分区是将散列分区中的数据接合到其它分区中，当散列分区中的数据比较大时，可以增加散列分区，然后进行接合，值得注意的是，接合分区只能用于散列分区中。通过以下代码进行接合分区：<br>ALTER TABLE SALES COALESCA PARTITION;<br>七、重命名表分区<br>以下代码将P21更改为P2<br>ALTER TABLE SALES RENAME PARTITION P21 TO P2;<br>八、相关查询<br>跨分区查询<br>select sum( <em>) from<br>(select count(</em>) cn from t_table_SS PARTITION (P200709_1)<br>union all<br>select count(<em>) cn from t_table_SS PARTITION (P200709_2)<br>);<br>查询表上有多少分区<br>SELECT </em> FROM useR_TAB_PARTITIONS WHERE TABLE_NAME=’tableName’<br>查询索引信息<br>select object_name,object_type,tablespace_name,sum(value)<br>from v$segment_statistics<br>where statistic_name IN (‘physical reads’,’physical write’,’logical reads’)and object_type=’INDEX’<br>group by object_name,object_type,tablespace_name<br>order by 4 desc  </p>
+<p>--显示数据库所有分区表的信息：<br>select * from DBA_PART_TABLES  </p>
+<p>--显示当前用户可访问的所有分区表信息:<br>select * from ALL_PART_TABLES  </p>
+<p>--显示当前用户所有分区表的信息：<br>select * from USER_PART_TABLES  </p>
+<p>--显示表分区信息 显示数据库所有分区表的详细分区信息：<br>select * from DBA_TAB_PARTITIONS  </p>
+<p>--显示当前用户可访问的所有分区表的详细分区信息：<br>select * from ALL_TAB_PARTITIONS  </p>
+<p>--显示当前用户所有分区表的详细分区信息：<br>select * from USER_TAB_PARTITIONS  </p>
+<p>--显示子分区信息 显示数据库所有组合分区表的子分区信息：<br>select * from DBA_TAB_SUBPARTITIONS  </p>
+<p>--显示当前用户可访问的所有组合分区表的子分区信息：<br>select * from ALL_TAB_SUBPARTITIONS  </p>
+<p>--显示当前用户所有组合分区表的子分区信息：<br>select * from USER_TAB_SUBPARTITIONS  </p>
+<p>--显示分区列 显示数据库所有分区表的分区列信息：<br>select * from DBA_PART_KEY_COLUMNS  </p>
+<p>--显示当前用户可访问的所有分区表的分区列信息：<br>select * from ALL_PART_KEY_COLUMNS  </p>
+<p>--显示当前用户所有分区表的分区列信息：<br>select * from USER_PART_KEY_COLUMNS  </p>
+<p>--显示子分区列 显示数据库所有分区表的子分区列信息：<br>select * from DBA_SUBPART_KEY_COLUMNS  </p>
+<p>--显示当前用户可访问的所有分区表的子分区列信息：<br>select * from ALL_SUBPART_KEY_COLUMNS  </p>
+<p>--显示当前用户所有分区表的子分区列信息：<br>select * from USER_SUBPART_KEY_COLUMNS  </p>
+<p>--怎样查询出oracle数据库中所有的的分区表<br>select * from user_tables a where a.partitioned=’YES’  </p>
+<p>--删除一个表的数据是<br>truncate table table_name;  </p>
+<p>--删除分区表一个分区的数据是<br>alter table table_name truncate partition p5;</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/oracle_PARTITION/" data-title="oracle 表分区详解 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/oracle_sys/" title="oracle 系统表详解">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle 系统表详解</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/oracle_function/"  title="Oracle 自定义函数写法大全">
+ <strong>NEXT:</strong><br/> 
+ <span>Oracle 自定义函数写法大全
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

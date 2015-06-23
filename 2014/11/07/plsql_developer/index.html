@@ -1,0 +1,413 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>PL/SQL Developer设置技巧 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="1、右键菜单在PL/SQL Developer（下面简称PLD）中的每一个文本编辑窗口，如SQL Window，Command Window和Porgram Window，右键点击某个对象名称，会弹出一个包含操作对象命令的菜单，我们这里称之为右键菜单。对象类型可以是表，视图，同义词，存储过程和函数等">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/07/plsql_developer/" title="PL/SQL Developer设置技巧" itemprop="url">PL/SQL Developer设置技巧</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-07T14:32:11.000Z" itemprop="datePublished">2014-11-07</time>
+    更新日期:<time datetime="2015-06-23T16:27:23.146Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>1、右键菜单<br>在PL/SQL Developer（下面简称PLD）中的每一个文本编辑窗口，如SQL Window，Command Window和Porgram Window，右键点击某个对象名称，会弹出一个包含操作对象命令的菜单，我们这里称之为右键菜单。<br>对象类型可以是表，视图，同义词，存储过程和函数等。根据对象类型的不同，弹出的菜单也有区别。表和视图有View, Edit, Rename, Drop, Query data 和Edit data等功能。View和Edit分别是查看和修改表的结构信息，如字段，主键，索引和约束等。Query data相当于新打开一个窗口，并执行select <em> from 表。Edit data相当于新打开一个窗口，并执行select </em> from 表 for update。存储过程和函数有Test功能，选中后可以进入调试状态。有时由于PLD识别错误，右键点击对象并不能出来正确的菜单，可以在对象所在的 DDL或DML语句的前面，加上分号，这样PLD就能正确的判断出对象的类型</p>
+<p>2、Select for Update<br>有时我们需要把一些数据导入数据库中，如果用UE拼Insert语句，会比较麻烦，而且操作性不强。PLD的SQL Window可以查询，新增，修改和删除表的内容。查询自不必说，而新增，删除和修改，只需在select语句后加入for update，对表进行行级锁定，然后点击窗口的锁型图标，即可进入编辑状态。下面介绍一下如何从Excel中提取文本插入到数据库中我们的Excel文件中有三列：在数据库中建立临时表：create table t1 (cino varchar2(100), contno varchar2(100), loanno varchar2(100))然后在SQL Window中输入select t1 for update，并点击锁型鼠标，进入编辑状态：用鼠标点击第一行的输入窗口，这时PLD会死锁几秒钟，然后可以见到光标在第一行的输入框中闪动，用鼠标把 CINO, CONTNO, LOANNO选中：进入Excel中，把需要插入数据库的内容选中，然后切换到PLD，按Ctrl + V：点击√，然后再点击Commit按钮，则数据提交到表t1中，执行select * from t1可以看到内容：</p>
+<p>3、PL/SQL Beautifier（PL/SQL 美化器）<br>PLD 6以上版本有对DML代码格式化的功能。在SQL Window或Program Window中选中部分代码（如果不选则对整个窗口的代码操作），在菜单中选Edit -&gt; PL/SQL Beautifier，得到格式化的代码。对于非法的DML语句或DDL语句，PLD将会在下方状态栏提示PL/SQL Beautifier could not parse text。在缺省的状态下，PLD会把DML语句的每一个字段都排在单独的一行，这样不方便查看。在菜单中选Edit a PL/SQL Beautifier Options，进入Preferences窗口，选择Edit，进入配置文件编辑界面：在标签栏选DML，在窗口中部的Select, Insert和Update组框中把Fit选中，然后点击Save，把配置文件保存到PLD的安装目录下，点击Close关闭。在Rules file中输入配置文件所在位置，点击OK，完成配置文件切换。这时再对代码进行格式化，就可以使每一个字段尽可能的在一行上了。<br>4、 TNS Names<br>菜单Help a Support Info a TNS Names，可以查看Oracle的tnsnames.ora。</p>
+<p>5、Copy to Excel<br>在SQL Window中执行Select语句，在结果出来以后，右键点击下面的数据区，选择Copy to Excel，可以把数据区的记录原样拷贝到Excel中。但有两点需要注意：一，field中不能以=开始，否则Excel会误认为是函数；二，数字不要超过17位，否则后面的位数将会置为0，但可以通过在数字前加’来使Excel认为该field是文本，同时对于数据库中Numbe类型的字段，最好用 to_char输出，不然可能会显示不正常</p>
+<p>6、PL/SQL Developer记住登陆密码<br>在使用PL/SQL Developer时，为了工作方便希望PL/SQL Developer记住登录Oracle的用户名和密码；<br>设置方法：PL/SQL Developer 7.1.2 -&gt;tools-&gt;Preferences-&gt;Oracle-&gt;Logon History ， “Store history”是默认勾选的，勾上”Store with password” 即可，重新登录在输入一次密码则记住了。(我的好像不行哦)</p>
+<p>7、执行单条SQL语句<br>在使用 PL/SQL Developer的SQL Window时，按F8键，PL/SQL Developer默认是执行该窗口的所有SQL语句，需要设置为鼠标所在的那条SQL语句，即执行当前SQL语句；<br>设置方法：PL/SQL Developer 7.1.2 —&gt;tools-&gt;Preferences—&gt;Window types ，勾上”AutoSelect Statement” 即可。</p>
+<p>7、格式化SQL语句<br>在使用 PL/SQL Developer的SQL Window时，有时候输入的SQL语句太长或太乱，希望能用比较通用的写法格式话一下，这样看起来会好看些，也好分析；<br>使用方法：选中需要格式化的SQL语句，然后点击工具栏的PL/SQL beautifier按钮即可。</p>
+<p>8、查看执行计划<br>在使用PL/SQL Developer的SQL Window时，有时候输入的SQL语句执行的效率，分析下表结构，如何可以提高查询的效率，可以通过查看Oracle提供的执行计划；<br>使用方法：选中需要分析的SQL语句，然后点击工具栏的Explain plan按钮（即执行计划），或者直接按F5即可。</p>
+<p>9、调试存储过程<br>在使用PL/SQL Developer操作Oracle时，有时候调用某些存储过程，或者调试存储过程；<br>调用存储过程的方法：首先，在PL/SQL Developer左边的Browser中选择Procedures，查找需要调用的存储过程；然后，选中调试的存储过程，点击右键，选择Test，在弹出来的Test scrīpt窗口中，对于定义为in类型的参数，需要给该参数的Value输入值；最后点击上面的条数按钮：Start debugger 或者按F9；最后点击：RUN 或者Ctrl+R 。<br>（具体要调式一个存储过程，请参照操作手册，这个大概说明下应用）。</p>
+<p>10、 oralce精简客户端的使用<br>要想PL/SQL连接oracle数据库，除了PL/SQL Developer 之外还需要Oracle客户端，有一个更方便的方法就是使用Oracle精简客户端，很多地方可以下载，文件很小，耗资源也少。安装完成后修改安装目录下的/Oracle/ora90/network/ADMIN/tnsnames.ora文件：格式如下：<br>DATABASE_NAME =(DESCRIPTION = (ADDRESS_LIST = (ADDRESS = (PROTOCOL = TCP)(HOST = 127.0.0.1)(PORT = 1521)) ) (CONNECT_DATA = #(SERVICE_NAME = dealer) (SID = SID_NAME) #(SERVER = DEDICATED) ))</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/技巧/">技巧</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/工具/">工具</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/07/plsql_developer/" data-title="PL/SQL Developer设置技巧 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/09/djangozinniasaestorage/" title="django的zinnia框架在sae的storage下添加图片">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  django的zinnia框架在sae的storage下添加图片</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/05/CKEDITOR_source_1/"  title="编辑器新增编辑源码">
+ <strong>NEXT:</strong><br/> 
+ <span>编辑器新增编辑源码
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

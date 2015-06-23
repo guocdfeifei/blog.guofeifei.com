@@ -1,0 +1,416 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>C库函数中字符串处理函数集合 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="strlen(v_cond_content) &amp;gt; 255bcmp原型：extern int bcmp(const void s1, const void s2, int n);用法：#include 功能：比较字符串s1和s2的前n个字节是否相等说明：如果s1=s2或n=0则返回零，否则返回非">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/c/" title="C库函数中字符串处理函数集合" itemprop="url">C库函数中字符串处理函数集合</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T05:38:57.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T15:45:05.835Z" itemprop="dateModified">2015-06-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>strlen(v_cond_content) &gt; 255<br>bcmp<br>原型：extern int bcmp(const void <em>s1, const void </em>s2, int n);<br>用法：#include <string.h><br>功能：比较字符串s1和s2的前n个字节是否相等<br>说明：如果s1=s2或n=0则返回零，否则返回非零值。bcmp不检查NULL。<br>bcopy<br>原型：extern void bcopy(const void <em>src, void </em>dest, int n);<br>用法：#include <string.h><br>   功能：将字符串src的前n个字节复制到dest中<br>   说明：bcopy不检查字符串中的空字节NULL，函数没有返回值。<br>bzero<br>   原型：extern void bzero(void <em>s, int n);<br>   用法：#include <string.h><br>   功能：置字节字符串s的前n个字节为零。<br>   说明：bzero无返回值。<br>memccpy<br>   原型：extern void </string.h></em>memccpy(void <em>dest, void </em>src, unsigned char ch, unsigned int count);<br>   用法：#include <string.h><br>   功能：由src所指内存区域复制不多于count个字节到dest所指内存区域，如果遇到字符ch则停止复制。<br>   说明：返回指向字符ch后的第一个字符的指针，如果src前n个字节中不存在ch则返回NULL。ch被复制。  </string.h></string.h></string.h></p>
+<p>memchr<br>   原型：extern void <em>memchr(void </em>buf, char ch, unsigned count);<br>   用法：#include <string.h><br>   功能：从buf所指内存区域的前count个字节查找字符ch。<br>   说明：当第一次遇到字符ch时停止查找。如果成功，返回指向字符ch的指针；否则返回NULL。<br>memcmp<br>   原型：extern int memcmp(void <em>buf1, void </em>buf2, unsigned int count);<br>   用法：#include <string.h><br>   功能：比较内存区域buf1和buf2的前count个字节。<br>   说明：<br>         当buf1<buf2时，返回值<0 当buf1="buf2时，返回值=0">buf2时，返回值&gt;0<br>memcpy<br>   原型：extern void <em>memcpy(void </em>dest, void *src, unsigned int count);<br>用法：#include <string.h><br>   功能：由src所指内存区域复制count个字节到dest所指内存区域。<br>   说明：src和dest所指内存区域不能重叠，函数返回指向dest的指针。<br>memicmp  </string.h></buf2时，返回值<0></string.h></string.h></p>
+<p>   原型：extern int memicmp(void <em>buf1, void </em>buf2, unsigned int count);<br>   用法：#include <string.h><br>   功能：比较内存区域buf1和buf2的前count个字节但不区分字母的大小写。<br>   说明：memicmp同memcmp的唯一区别是memicmp不区分大小写字母。<br>         当buf1<buf2时，返回值<0 当buf1="buf2时，返回值=0">buf2时，返回值&gt;0<br>memmove  </buf2时，返回值<0></string.h></p>
+<p>   原型：extern void <em>memmove(void </em>dest, const void <em>src, unsigned int count);<br>   用法：#include <string.h><br>   功能：由src所指内存区域复制count个字节到dest所指内存区域。<br>   说明：src和dest所指内存区域可以重叠，但复制后src内容会被更改。函数返回指向dest的指针。<br>memset<br>   原型：extern void </string.h></em>memset(void <em>buffer, int c, int count);<br>   用法：#include <string.h><br>   功能：把buffer所指内存区域的前count个字节设置成字符c。<br>   说明：返回指向buffer的指针。<br>movmem<br>   原型：extern void movmem(void </string.h></em>src, void <em>dest, unsigned int count);<br>   用法：#include <string.h><br>   功能：由src所指内存区域复制count个字节到dest所指内存区域。<br>   说明：src和dest所指内存区域可以重叠，但复制后src内容会被更改。函数返回指向dest的指针。<br>setmem<br>   原型：extern void setmem(void </string.h></em>buf, unsigned int count, char ch);<br>   用法：#include <string.h><br>   功能：把buf所指内存区域前count个字节设置成字符ch。<br>   说明：返回指向buf的指针。<br>stpcpy  </string.h></p>
+<p>   原型：extern char <em>stpcpy(char </em>dest,char <em>src);<br>   用法：#include <string.h><br>   功能：把src所指由NULL结束的字符串复制到dest所指的数组中。<br>   说明：src和dest所指内存区域不可以重叠且dest必须有足够的空间来容纳src的字符串。<br>         返回指向dest结尾处字符(NULL)的指针。<br>strcat<br>   原型：extern char </string.h></em>strcat(char <em>dest,char </em>src);<br>   用法：#include <string.h><br>   功能：把src所指字符串添加到dest结尾处(覆盖dest结尾处的’\0’)并添加’\0’。<br>   说明：src和dest所指内存区域不可以重叠且dest必须有足够的空间来容纳src的字符串。<br>         返回指向dest的指针。<br>strchr<br>   原型：extern char <em>strchr(char </em>s,char c);<br>   用法：#include <string.h><br>   功能：查找字符串s中首次出现字符c的位置<br>   说明：返回首次出现c的位置的指针，如果s中不存在c则返回NULL。  </string.h></string.h></p>
+<p>strcmp  </p>
+<p>   原型：extern int strcmp(char <em>s1,char </em> s2);<br>   用法：#include <string.h><br>   功能：比较字符串s1和s2。<br>   说明：<br>         当s1<s2时，返回值<0 当s1="s2时，返回值=0">s2时，返回值&gt;0<br>stricmp,strcmpi<br>   原型：extern int stricmp(char <em>s1,char </em> s2);<br>   用法：#include <string.h><br>   功能：比较字符串s1和s2，但不区分字母的大小写。<br>   说明：strcmpi是到stricmp的宏定义，实际未提供此函数。<br>         当s1<s2时，返回值<0 当s1="s2时，返回值=0">s2时，返回值&gt;0<br>strcpy  </s2时，返回值<0></string.h></s2时，返回值<0></string.h></p>
+<p>   原型：extern char <em>strcpy(char </em>dest,char <em>src);<br>   用法：#include <string.h><br>   功能：把src所指由NULL结束的字符串复制到dest所指的数组中。<br>   说明：src和dest所指内存区域不可以重叠且dest必须有足够的空间来容纳src的字符串。<br>         返回指向dest的指针。<br>strcspn<br>   原型：extern int strcspn(char </string.h></em>s1,char *s2);<br>   用法：#include <string.h><br>   功能：在字符串s1中搜寻s2中所出现的字符。<br>   说明：返回第一个出现的字符在s1中的下标值，亦即在s1中出现而s2中没有出现的子串的长度。<br>strdup  </string.h></p>
+<p>   原型：extern char <em>strdup(char </em>s);<br>   用法：#include <string.h><br>   功能：复制字符串s<br>   说明：返回指向被复制的字符串的指针，所需空间由malloc()分配且可以由free()释放。<br>strlen  </string.h></p>
+<p>   原型：extern int strlen(char <em>s);<br>   用法：#include <string.h><br>   功能：计算字符串s的长度<br>   说明：返回s的长度，不包括结束符NULL。<br>strlwr<br>   原型：extern char </string.h></em>strlwr(char *s);<br>   用法：#include <string.h><br>   功能：将字符串s转换为小写形式<br>   说明：只转换s中出现的大写字母，不改变其它字符。返回指向s的指针。</string.h></p>
+<p>strncat<br>   原型：extern char <em>strncat(char </em>dest,char <em>src,int n);<br>   用法：#include <string.h><br>   功能：把src所指字符串的前n个字符添加到dest结尾处(覆盖dest结尾处的’\0’)并添加’\0’。<br>   说明：src和dest所指内存区域不可以重叠且dest必须有足够的空间来容纳src的字符串。<br>         返回指向dest的指针。<br>strncmp<br>   原型：extern int strcmp(char </string.h></em>s1,char <em> s2，int n);<br>   用法：#include <string.h><br>   功能：比较字符串s1和s2的前n个字符。<br>   说明：<br>         当s1<s2时，返回值<0 当s1="s2时，返回值=0">s2时，返回值&gt;0<br>strnicmp,strncmpi<br>   原型：extern int strnicmp(char </s2时，返回值<0></string.h></em>s1,char * s2，int n);<br>   用法：#include <string.h><br>   功能：比较字符串s1和s2的前n个字符但不区分大小写。<br>   说明：strncmpi是到strnicmp的宏定义<br>         当s1<s2时，返回值<0 当s1="s2时，返回值=0">s2时，返回值&gt;0<br>strncpy  </s2时，返回值<0></string.h></p>
+<p>   原型：extern char <em>strncpy(char </em>dest, char <em>src, int n);<br>   用法：#include <string.h><br>   功能：把src所指由NULL结束的字符串的前n个字节复制到dest所指的数组中。<br>   说明：<br>         如果src的前n个字节不含NULL字符，则结果不会以NULL字符结束。<br>         如果src的长度小于n个字节，则以NULL填充dest直到复制完n个字节。<br>         src和dest所指内存区域不可以重叠且dest必须有足够的空间来容纳src的字符串。<br>         返回指向dest的指针。<br>strpbrk<br>   原型：extern char </string.h></em>strpbrk(char <em>s1, char </em>s2);<br>   用法：#include <string.h><br>   功能：在字符串s1中寻找字符串s2中任何一个字符相匹配的第一个字符的位置，空字符NULL不包括在内。<br>   说明：返回指向s1中第一个相匹配的字符的指针，如果没有匹配字符则返回空指针NULL。<br>strrev  </string.h></p>
+<p>   原型：extern char <em>strrev(char </em>s);<br>   用法：#include <string.h><br>   功能：把字符串s的所有字符的顺序颠倒过来（不包括空字符NULL）。<br>   说明：返回指向颠倒顺序后的字符串指针。<br>strset<br>   原型：extern char <em>strset(char </em>s, char c);<br>   用法：#include <string.h><br>   功能：把字符串s中的所有字符都设置成字符c。<br>   说明：返回指向s的指针。<br>strstr<br>   原型：extern char <em>strstr(char </em>haystack, char <em>needle);<br>   用法：#include <string.h><br>   功能：从字符串haystack中寻找needle第一次出现的位置（不比较结束符NULL)。<br>   说明：返回指向第一次出现needle位置的指针，如果没找到则返回NULL。<br>strtok<br>   原型：extern char </string.h></em>strtok(char <em>s, char </em>delim);<br>   用法：#include <string.h><br>   功能：分解字符串为一组标记串。s为要分解的字符串，delim为分隔符字符串。<br>   说明：首次调用时，s必须指向要分解的字符串，随后调用要把s设成NULL。<br>         strtok在s中查找包含在delim中的字符并用NULL(‘\0’)来替换，直到找遍整个字符串。<br>         返回指向下一个标记串。当没有标记串时则返回空字符NULL。<br>strupr<br>   原型：extern char <em>strupr(char </em>s);<br>   用法：#include <string.h><br>   功能：将字符串s转换为大写形式<br>   说明：只转换s中出现的小写字母，不改变其它字符。返回指向s的指针。</string.h></string.h></string.h></string.h></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/c/">c</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/c-c/">c/c++</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/c/" data-title="C库函数中字符串处理函数集合 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/c_source/" title="C字符串库函数源码">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  C字符串库函数源码</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/cString/"  title="C++字符串函数详解">
+ <strong>NEXT:</strong><br/> 
+ <span>C++字符串函数详解
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

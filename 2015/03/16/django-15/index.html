@@ -1,0 +1,1425 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>django 学习总结（1.5版） | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="原文地址：django 学习总结（1.5版） 作者：bailiangcn
+本人转载的地址，还是多看看文档，多实践
+http://blog.chinaunix.net/uid-23500957-id-3838222.html
+
+django的调度逻辑图
+
+目录
+
+setting
+url 转发
+view">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2015/03/16/django-15/" title="django 学习总结（1.5版）" itemprop="url">django 学习总结（1.5版）</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2015-03-16T14:28:33.000Z" itemprop="datePublished">2015-03-16</time>
+    更新日期:<time datetime="2015-06-23T16:18:28.240Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、settings"><span class="toc-number">1.</span> <span class="toc-text">一、settings</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、url_conf"><span class="toc-number">2.</span> <span class="toc-text">二、url conf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、view"><span class="toc-number">3.</span> <span class="toc-text">三、view</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、模板"><span class="toc-number">4.</span> <span class="toc-text">四、模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#{*{_story-headline|upper_}}"><span class="toc-number">5.</span> <span class="toc-text"> {*{ story.headline|upper }}</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、form表单"><span class="toc-number">6.</span> <span class="toc-text">五、form表单</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#有定义模块"><span class="toc-number"></span> <span class="toc-text">有定义模块</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#…"><span class="toc-number"></span> <span class="toc-text">…</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#六、model"><span class="toc-number">1.</span> <span class="toc-text">六、model</span></a></li></ol>
+		</div>
+		
+		<p>原文地址：django 学习总结（1.5版） 作者：bailiangcn</p>
+<p>本人转载的地址，还是多看看文档，多实践</p>
+<p><a href="http://blog.chinaunix.net/uid-23500957-id-3838222.html" target="_blank" rel="external">http://blog.chinaunix.net/uid-23500957-id-3838222.html</a></p>
+<blockquote>
+<p>django的调度逻辑图</p>
+<p><img src="http://blog.chinaunix.net/attachment/201306/18/20147410_13715638593EE0.jpg" alt=""></p>
+<p>目录</p>
+<ol>
+<li>setting</li>
+<li>url 转发</li>
+<li>view 视图</li>
+<li>django 模版</li>
+<li>form 表单</li>
+<li>model </li>
+</ol>
+</blockquote>
+<h2 id="一、settings">一、settings</h2><blockquote>
+<ul>
+<li>引用setting项 </li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>from django<span class="class">.conf</span> import settings
+  urlpatterns += <span class="function"><span class="title">static</span><span class="params">(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)</span></span> 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="二、url_conf">二、url conf</h2><blockquote>
+<p>主页url文档</p>
+<ul>
+<li>urlpatterns 是所有url的链表，可以 +=</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code><span class="keyword">from</span> django.conf.urls <span class="keyword">import</span> patterns, include, url
+  urlpatterns = patterns(<span class="string">''</span>,)
+  urlpatterns += patterns(<span class="string">''</span>,
+      url(<span class="string">r'^tag/(?P&lt;tag&gt;\w+)/$'</span>, <span class="string">'tag'</span>),) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>可以使用 include来引用 app内部urls.py文件</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>url(<span class="string">r'^elist/'</span>, include(<span class="string">'elist.urls'</span>)), 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>url中引用参数</li>
+</ul>
+<blockquote>
+<pre><code>在需要捕捉的地方用括号括起来  
+  <span class="params">(r'homeworklist/edit/<span class="params">([^/]+)</span>/$', edit_homeworklist)</span>,
+  调用结果：edit_homeworklist<span class="params">(request,参数)</span>
+
+  命名参数 ?P&lt;name&gt;
+  <span class="params">(r'homeworklist/edit/<span class="params">(?P&lt;id&gt;[^/]+)</span>/$', edit_homeworklist)</span>,
+  调用结果：edit_homeworklist<span class="params">(request,id='参数')</span> 
+</code></pre></blockquote>
+<ul>
+<li>patterns的前缀字符串,用于缩短视图函数</li>
+</ul>
+<blockquote>
+<pre><code>urlpatterns = patterns(<span class="string">''</span>,
+  url(<span class="string">r'^articles/(\d{4})/$'</span>, <span class="string">'news.views.year_archive'</span>),)
+
+      等价：
+  urlpatterns = patterns(<span class="string">'new.views'</span>,
+  url(<span class="string">r'^articles/(\d{4})/$'</span>, <span class="string">'year_archive'</span>),) 
+</code></pre></blockquote>
+<ul>
+<li>url() 函数</li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>格式：
+  url(regex, view, kwargs=<span class="keyword">None</span>, name=<span class="keyword">None</span>, prefix=<span class="string">''</span>)
+  传递参数：
+  url(<span class="string">r'^blog/(?P&lt;year&gt;\d{4})/$'</span>, <span class="string">'year_archive'</span>, {<span class="string">'foo'</span>: <span class="string">'bar'</span>}), 
+</code></pre></blockquote>
+<p><strong>命名 url</strong></p>
+<blockquote>
+<pre><code>url(<span class="string">r'^archive/(\d{4})/$'</span>, archive, name=<span class="string">"full-archive"</span>),
+  url(<span class="string">r'^archive-summary/(\d{4})/$'</span>, archive, {<span class="string">'summary'</span>: <span class="keyword">True</span>}, name=<span class="string">"arch-summary"</span>), 
+</code></pre></blockquote>
+<pre><code>在模板中使用
+  <span class="comment">// url 'arch-summary' 1945 //</span>
+  <span class="comment">// url 'full-archive' 2007 // </span>
+</code></pre></blockquote>
+</blockquote>
+<ul>
+<li>url的反向解析 </li>
+</ul>
+<blockquote>
+<pre><code>- <span class="type">In</span> templates: <span class="type">Using</span> the url <span class="keyword">template</span> tag.
+- <span class="type">In</span> <span class="type">Python</span> code: <span class="type">Using</span> the django.core.urlresolvers.reverse() function.
+- <span class="type">In</span> higher level code related to handling <span class="keyword">of</span> <span class="type">URLs</span> <span class="keyword">of</span> <span class="type">Django</span> model instances: <span class="type">The</span> get_absolute_url() <span class="keyword">method</span>.
+</code></pre><blockquote>
+<p>详细文档</p>
+</blockquote>
+</blockquote>
+<ul>
+<li>redirect() 文档</li>
+</ul>
+<blockquote>
+<p>虽然这个函数不属于 url conf配置的一部分，但是他在功能上起到转向分发的作用，所以我也把他放到这一节。 常见的使用方法：</p>
+<ol>
+<li>传入一个对象,返回访问这个对象的url（推荐使用reverse()）</li>
+<li>传入一个url,进行跳转 </li>
+</ol>
+<blockquote>
+<p>return redirect(‘/some/url/‘)<br>return redirect(‘<a href="http://example.com/" target="_blank" rel="external">http://example.com/</a>‘)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="三、view">三、view</h2><blockquote>
+<p>输入 request, 返回 response.</p>
+<ul>
+<li>HttpResponse (最简单)</li>
+</ul>
+<blockquote>
+<p>文档</p>
+<blockquote>
+<p>from django.http import HttpResponse</p>
+<p>html = “It is now %s.” % now<br>return HttpResponse(html)</p>
+</blockquote>
+</blockquote>
+<ul>
+<li>render_to_response</li>
+</ul>
+<blockquote>
+<p>文档</p>
+<blockquote>
+<pre><code><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render_to_response 
+</code></pre><p>render_to_response(template_name[, dictionary][, context_instance][, content_type])</p>
+<p>范例</p>
+<p>return render_to_response(‘myapp/index.html’, {“foo”: “bar”},</p>
+<pre><code><span class="setting">mimetype=<span class="value"><span class="string">"application/xhtml+xml"</span>) </span></span>
+</code></pre><p>默认的 render_to_response 是不包含 request ，如果要使用 HttpRequest, 需要手工定义 <strong>context_instance=RequestContext(request)</strong></p>
+<pre><code>return render_to_response<span class="list">(<span class="quoted">'my_template</span>.html',
+          my_data_dictionary,
+          context_instance=RequestContext<span class="list">(<span class="keyword">request</span>)</span>)</span> 
+</code></pre></blockquote>
+</blockquote>
+<ul>
+<li>render (应用模板，比较简洁) </li>
+</ul>
+<blockquote>
+<p>文档 ,默认使用 RequestContext 的 <strong>render_to_response</strong></p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+<p>render(request, template_name[, dictionary][, context_instance]</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>[<span class="link_label">, content_type</span>][<span class="link_reference">, status</span>][<span class="link_label">, current_app</span>]) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ol>
+<li>request</li>
+<li>模板名称</li>
+<li>附加字典</li>
+<li>上下文对象</li>
+<li>内容类型</li>
+<li>状态 200 404 500</li>
+</ol>
+<p>return render(request, ‘myapp/index.html’, {“foo”: “bar”},</p>
+<pre><code>content_<span class="built_in">type</span>=<span class="string">"application/xhtml+xml"</span>) 
+</code></pre><p>和 django.template 下的 手工loader 等效</p>
+<p>t = loader.get_template(‘myapp/template.html’)<br>c = RequestContext(request, {‘foo’: ‘bar’})<br>return HttpResponse(t.render(c),<br>content_type=”application/xhtml+xml”)</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="四、模板">四、模板</h2><blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>// extends <span class="string">"base_generic.html"</span> //
+
+           // <span class="built_in">block</span> title //{*{ section.title }}// endblock //
+
+           // <span class="built_in">block</span> content //
+           <span class="variable">&lt;h1&gt;</span>{*{ section.title }}<span class="variable">&lt;/h1&gt;</span>
+
+           // <span class="keyword">for</span> story <span class="keyword">in</span> story_list //
+</code></pre><h2 id="{*{_story-headline|upper_}}"><a href="{*{ story.get_absolute_url }}"> {*{ story.headline|upper }}</a></h2><p>{*{ story.tease|truncatewords:”100” }}</p>
+<p>// endfor // // endblock // </p>
+<blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+<ul>
+<li>变量</li>
+</ul>
+<blockquote>
+<p>{*{ 变量名 }}</p>
+<blockquote>
+<pre><code><span class="bullet">- </span>点的解释顺序 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>1.字典
+2.属性
+3.方法
+4.列表索引 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>过滤器</li>
+</ul>
+<blockquote>
+<p>可以用来修饰变量，{<em>{变量名|过滤器}}<br>使用参数的例子 {</em>{ value|add:”2” }}<br>内置的过滤器目录</p>
+<blockquote>
+<pre><code>- <span class="annotation">default</span> 默认值 {*{ <span class="keyword">value</span>|<span class="annotation">default</span>:<span class="string">"nothing"</span> }}
+</code></pre></blockquote>
+</blockquote>
+<ul>
+<li>标签</li>
+</ul>
+<blockquote>
+<p>// 标签名称 //<br>内置的模板标签目录</p>
+<blockquote>
+<pre><code>-<span class="ruby"> <span class="keyword">for</span> endfor
+</span>-<span class="ruby"> <span class="keyword">for</span> ... empty
+</span>-<span class="ruby"> <span class="keyword">if</span> elif <span class="keyword">else</span> endif
+</span>-<span class="ruby"> **** 单行注释
+</span>-<span class="ruby"> **<span class="regexp">//</span> comment /<span class="regexp">/ ... /</span><span class="regexp">/ endcomment /</span><span class="regexp">/** 多行注释
+</span></span>-<span class="ruby"> **<span class="regexp">//</span> verbatim /<span class="regexp">/ ... /</span><span class="regexp">/ endverbatim /</span><span class="regexp">/** 禁止 render ,比如包围javascript模板
+</span></span>-<span class="ruby"> **&lt;form action=<span class="string">"."</span> method=<span class="string">"post"</span>&gt;<span class="regexp">//</span> csrf_token /<span class="regexp">/** 保护
+</span></span>-<span class="ruby"> **now** 现在日期、时间 详细格式</span>
+</code></pre><blockquote>
+<p>It is // now “jS F Y H:i” //</p>
+</blockquote>
+<pre><code>- <span class="keyword">*</span><span class="keyword">*</span>// cycle 'row1' 'row2' //<span class="keyword">*</span><span class="keyword">*</span> 交替 详细文档
+- <span class="keyword">*</span><span class="keyword">*</span>regroup<span class="keyword">*</span><span class="keyword">*</span> 可以根据字段、属性进行分组 详细文档
+</code></pre><blockquote>
+<p>根据国家进行分组<br>// regroup cities|dictsort:”country” by country as country_list //</p>
+</blockquote>
+<pre><code>- <span class="keyword">*</span><span class="keyword">*</span>ifequal<span class="keyword">*</span><span class="keyword">*</span> 如果相等
+- <span class="keyword">*</span><span class="keyword">*</span>ifnoequal<span class="keyword">*</span><span class="keyword">*</span> 如果不等
+- <span class="keyword">*</span><span class="keyword">*</span>ifchanged<span class="keyword">*</span><span class="keyword">*</span> 如果改变 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>// <span class="flow">for</span> <span class="built_in">date</span> <span class="flow">in</span> days //
+  // ifchanged <span class="built_in">date</span>.<span class="built_in">date</span> // {*{ <span class="built_in">date</span>.<span class="built_in">date</span> }} // endifchanged //
+  // ifchanged <span class="built_in">date</span>.hour <span class="built_in">date</span>.<span class="built_in">date</span> //
+     {*{ <span class="built_in">date</span>.hour }}
+  // endifchanged //
+// endfor // 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>- <span class="keyword">*</span><span class="keyword">*</span>布尔操作<span class="keyword">*</span><span class="keyword">*</span> 详细文档（优先级由低到高） 
+</code></pre><blockquote>
+<pre><code><span class="bullet">1. </span>or
+<span class="bullet">2. </span>and
+<span class="bullet">3. </span>not
+<span class="bullet">4. </span>in
+<span class="bullet">5. </span>==、 !=、 &gt;、 &gt;=、 <span class="xml"><span class="tag">&lt;<span class="title">、</span> &lt;=</span></span>
+</code></pre></blockquote>
+<pre><code>- <span class="keyword">*</span><span class="keyword">*</span>// include 其他模板 //<span class="keyword">*</span><span class="keyword">*</span>
+</code></pre><blockquote>
+<p>// include “foo/bar.html” //<br><strong>传递参数</strong><br>// include “name_snippet.html” with person=”Jane” greeting=”Hello” //</p>
+</blockquote>
+<pre><code>- <span class="keyword">*</span><span class="keyword">*</span>// ssi 本地文件 //<span class="keyword">*</span><span class="keyword">*</span> 详细文档
+- <span class="keyword">*</span><span class="keyword">*</span>url<span class="keyword">*</span><span class="keyword">*</span>
+</code></pre><blockquote>
+<p>第一个参数是 view 函数的路径，格式是 package.package.module.function 之后的参数使用 / 连接<br><strong>范例</strong><br>// url ‘path.to.view’ arg arg2 as the_url //</p>
+<pre><code>&lt;<span class="tag">a</span> href=<span class="string">"{*{ the_url }}"</span>&gt;I<span class="string">'m linking to {*{ the_url }} </span>
+</code></pre></blockquote>
+<p><strong>可以使用过滤器</strong>,但大部分过滤器都返回字符串结果</p>
+<pre><code>// <span class="keyword">if</span> athlete_list|<span class="built_in">length</span> &gt; <span class="number">1</span><span class="comment"> //</span>
+     Team:<span class="comment"> // for athlete in athlete_list // ... // endfor //</span>
+ <span class="comment"> // else //</span>
+     Athlete: {*{ athlete_list.0.name }}
+ <span class="comment"> // endif // </span>
+</code></pre></blockquote>
+</blockquote>
+<ul>
+<li>继承 </li>
+</ul>
+<blockquote>
+<p>// block 名称 // … // endblock //<br>// extends “base.html” // 必须第一行<br>// block title //My amazing blog// endblock //<br>{*{ block.super }} 引用父模版的内容 // block 名称 // … // endblock 名称 // 方便阅读</p>
+</blockquote>
+</blockquote>
+<h2 id="五、form表单">五、form表单</h2><blockquote>
+<p><strong>第一部分：定义</strong></p>
+<blockquote>
+<p>可以使用两种方式</p>
+</blockquote>
+<ul>
+<li>自己定义 详细文档</li>
+</ul>
+<blockquote>
+<p>from django import <strong>forms</strong></p>
+<p>class ContactForm(forms.Form):</p>
+<blockquote>
+<p>subject = forms.CharField(max_length=100)<br>message = forms.CharField()<br>sender = forms.EmailField()<br>cc_myself = forms.BooleanField(required=False)</p>
+</blockquote>
+</blockquote>
+<ul>
+<li>继承model 详细文档</li>
+</ul>
+<blockquote>
+<p>from django.forms import <strong>ModelForm</strong></p>
+<h1 id="有定义模块">有定义模块</h1><p>class Article(models.Model):</p>
+<blockquote>
+<p>headline = models.CharField(max_length=200)  </p>
+<h1 id="…">…</h1><p>sites = models.ManyToManyField(Site)</p>
+</blockquote>
+<p>class ArticleForm(ModelForm):</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">Meta</span>: <span class="typename"></span></span>
+</code></pre><blockquote>
+<blockquote>
+<pre><code><span class="attribute">model </span>=<span class="string"> Article </span>
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p><strong>第二部分：显示</strong></p>
+<blockquote>
+<p>在把form表单和模板进行结合之前，先要知道如何处理提交的表单。</p>
+</blockquote>
+<ul>
+<li><strong>(预备知识)</strong> 在view中的标准处理form的框架</li>
+</ul>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="keyword">from</span> django.shortcuts <span class="keyword">import</span> render
+           <span class="keyword">from</span> django.http <span class="keyword">import</span> HttpResponseRedirect
+
+           <span class="function"><span class="keyword">def</span> <span class="title">contact</span><span class="params">(request)</span>:</span>
+               <span class="keyword">if</span> request.method == <span class="string">'POST'</span>: <span class="comment"># 表单被提交</span>
+                   form = ContactForm(request.POST) <span class="comment"># 表单绑定了post数据</span>
+                   <span class="keyword">if</span> form.is_valid(): <span class="comment"># 所有的表单验证通过</span>
+                       <span class="comment"># 对数据进行一些处理</span>
+                       <span class="comment"># ...</span>
+                       <span class="keyword">return</span> HttpResponseRedirect(<span class="string">'/thanks/'</span>) <span class="comment"># 转向或者其他操作</span>
+               <span class="keyword">else</span>:
+                   form = ContactForm() <span class="comment"># 没有提交的表单</span>
+
+               <span class="keyword">return</span> render(request, <span class="string">'contact.html'</span>, {
+                   <span class="string">'form'</span>: form,
+               }) 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+<ul>
+<li><strong>统一显示</strong></li>
+</ul>
+<blockquote>
+<pre><code>- <span class="tag">form</span><span class="class">.as_p</span>        由 
+</code></pre><p>包围,分行显示</p>
+<pre><code>- <span class="tag">form</span><span class="class">.as_table</span>        生成表格
+- <span class="tag">form</span><span class="class">.as_ul</span>        生成列表项
+</code></pre></blockquote>
+</blockquote>
+<pre><code><span class="comment"># 实际的模板例子(contact.html)</span>
+           &lt;form action=<span class="string">"/contact/"</span> <span class="keyword">method</span>=<span class="string">"post"</span>&gt;// csrf_token //
+           {*{ form.as_p }}
+           &lt;input <span class="keyword">type</span>=<span class="string">"submit"</span> value=<span class="string">"Submit"</span> /&gt;
+           &lt;/form&gt; 
+</code></pre><blockquote>
+<ul>
+<li><strong>单独自定义显示</strong> 详细文档</li>
+</ul>
+</blockquote>
+<pre><code>&lt;div <span class="keyword">class</span>=<span class="string">"fieldWrapper"</span>&gt;
+               {*{ <span class="keyword">form</span>.subject.errors }}
+               &lt;<span class="keyword">label</span> <span class="keyword">for</span>=<span class="string">"id_subject"</span>&gt;Email subject:&lt;/<span class="keyword">label</span>&gt;
+               {*{ <span class="keyword">form</span>.subject }}
+           &lt;/div&gt; 
+</code></pre><blockquote>
+<blockquote>
+<ul>
+<li>引用字段 </li>
+</ul>
+<blockquote>
+<p>{*{ form.字段名 }}</p>
+</blockquote>
+<ul>
+<li>引用字段验证错误 </li>
+</ul>
+<blockquote>
+<p>{*{ form.字段名.errors}}</p>
+</blockquote>
+</blockquote>
+<p><strong>第三部分：验证</strong></p>
+<blockquote>
+<p>详细文档 分为多个层次,检测失败会返回 ValidationError</p>
+<blockquote>
+<ol>
+<li>to_python() 　　　　[forms.Field] 转换成python的类型 使用范例</li>
+<li>validate() 　　　　 [forms.Field] 针对特别字段验证，又不想放到验证器当中，不返回值</li>
+<li>run_validators() 　 运行所有字段级别验证，收集错误，不需要改写</li>
+<li><strong>字段级别clean()</strong> 　调用上面3项验证，一旦有错，验证停止，否则返回 clean data 字典</li>
+<li><strong>表单级别clean_<fieldname>()</fieldname></strong> 　验证特别的字段</li>
+<li><strong>表单级别clean()</strong> 　负责整个表单的验证，手工返回 self.cleaned_data</li>
+</ol>
+</blockquote>
+</blockquote>
+<ul>
+<li><strong>form组件自身的验证</strong></li>
+</ul>
+<blockquote>
+<p>默认django会自动对form组件的post内容根据定义的类型进行验证,如果需要自定义，需要在 forms.Field 中定义。</p>
+<blockquote>
+<p><strong>范例(上面的ContactForm为例)：</strong></p>
+<p>data={‘bookid’:’aa’,’days’:datetime.datetime.now(),’subject’:’ehllo’}<br>f=ContactForm(data)<br>f.is_valid()<br>                    False<br>f.errors<br>                    {‘bookid’: [u’Enter a whole number.’]} </p>
+</blockquote>
+</blockquote>
+<ul>
+<li><strong>定义Field子类进行验证</strong></li>
+</ul>
+<blockquote>
+<p><strong>使用 to_python() 和 validate() 的例子</strong>：</p>
+<blockquote>
+<p>假设需要定义一个多邮件的组合字段，用逗号分隔邮件地址</p>
+<hr>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="keyword">from</span> django <span class="keyword">import</span> forms
+           <span class="keyword">from</span> django.core.validators <span class="keyword">import</span> validate_email
+
+           <span class="class"><span class="keyword">class</span> <span class="title">MultiEmailField</span><span class="params">(forms.Field)</span>:</span>
+               <span class="function"><span class="keyword">def</span> <span class="title">to_python</span><span class="params">(self, value)</span>:</span>
+                   <span class="string">"Normalize data to a list of strings."</span>
+
+                   <span class="comment"># Return an empty list if no input was given.</span>
+                   <span class="keyword">if</span> <span class="keyword">not</span> value:
+                       <span class="keyword">return</span> []
+                   <span class="keyword">return</span> value.split(<span class="string">','</span>)
+
+               <span class="function"><span class="keyword">def</span> <span class="title">validate</span><span class="params">(self, value)</span>:</span>
+                   <span class="string">"Check if value consists only of valid emails."</span>
+
+                   <span class="comment"># Use the parent's handling of required fields, etc.</span>
+                   super(MultiEmailField, self).validate(value)
+
+                   <span class="keyword">for</span> email <span class="keyword">in</span> value:
+                       validate_email(email) 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+<ul>
+<li><strong>form内针对字段的验证</strong></li>
+</ul>
+<blockquote>
+<pre><code>举一个验证 recipients 字段必须包含 fred@example<span class="class">.com</span> 项目
+</code></pre><blockquote>
+<hr>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">ContactForm</span><span class="params">(forms.Form)</span>:</span>
+               <span class="comment"># Everything as before.</span>
+               ...
+
+               <span class="function"><span class="keyword">def</span> <span class="title">clean_recipients</span><span class="params">(self)</span>:</span>
+                   data = self.cleaned_data[<span class="string">'recipients'</span>]
+                   <span class="keyword">if</span> <span class="string">"fred@example.com"</span> <span class="keyword">not</span> <span class="keyword">in</span> data:
+                       <span class="keyword">raise</span> forms.ValidationError(<span class="string">"You have forgotten about Fred!"</span>)
+
+                   <span class="comment"># Always return the cleaned data, whether you have changed it or</span>
+                   <span class="comment"># not.</span>
+                   <span class="keyword">return</span> data 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+<ul>
+<li><strong>form表单的组合验证</strong></li>
+</ul>
+<blockquote>
+<pre><code>如果我们有个需求需要验证比如密码和重复密码是否相同的话。这样验证单个字段的方法就没有用了,需要form的 <span class="function"><span class="title">clean</span><span class="params">()</span></span>方法
+</code></pre><blockquote>
+<hr>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="class"><span class="keyword">class</span> <span class="title">ContactForm</span><span class="params">(forms.Form)</span>:</span>
+               <span class="comment"># Everything as before.</span>
+               ...
+
+               <span class="function"><span class="keyword">def</span> <span class="title">clean</span><span class="params">(self)</span>:</span>
+                   cleaned_data = super(ContactForm, self).clean()
+                   password = self.cleaned_data.get(<span class="string">'password'</span>, <span class="string">''</span>).strip()
+                   password1 = self.cleaned_data.get(<span class="string">'password1'</span>,<span class="string">''</span>).strip()
+                   <span class="keyword">if</span> password <span class="keyword">and</span> password1 <span class="keyword">and</span>  password != password1:
+                       msg = <span class="string">u'两次密码输入不一致'</span>
+                       self._errors[<span class="string">"password1"</span>] = ErrorList([msg])
+                       <span class="keyword">del</span> self.cleaned_data[<span class="string">"password1"</span>]
+                   <span class="keyword">return</span> self.cleaned_data 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+</blockquote>
+<p><strong>第四部分：访问 clean的数据</strong></p>
+<blockquote>
+<p>表单的Post数据如果通过了验证，就叫做cleaned数据，被存放在 Form.cleaned_data字典中。</p>
+<blockquote>
+<p>data={‘bookid’:’12’,’days’:datetime.datetime.now(),’subject’:’ehllo’}<br>f=ContactForm(data)<br>f.is_valid()<br>                    True<br>f.cleaned_data<br>                    {‘bookid’: 12, ‘days’: datetime.date(2013, 6, 16), ‘subject’: u’ehllo’}<br>f.cleaned_data[‘days’]<br>                    datetime.date(2013, 6, 16) </p>
+</blockquote>
+</blockquote>
+</blockquote>
+<h2 id="六、model">六、model</h2><blockquote>
+<p>主页url文档 一个model类表示一个数据表，一个类的实例代表表中的记录</p>
+<p><strong>第一部分：定义</strong></p>
+<blockquote>
+<blockquote>
+<pre><code>字段的命名不能包括两个下划线 
+</code></pre></blockquote>
+<ul>
+<li>简单的例子</li>
+</ul>
+</blockquote>
+</blockquote>
+<pre><code>from django<span class="class">.db</span> import models
+
+           class <span class="function"><span class="title">Person</span><span class="params">(models.Model)</span></span>:
+               first_name = models.<span class="function"><span class="title">CharField</span><span class="params">(max_length=<span class="number">30</span>)</span></span>
+               last_name = models.<span class="function"><span class="title">CharField</span><span class="params">(max_length=<span class="number">30</span>)</span></span> 
+</code></pre><blockquote>
+<blockquote>
+<ul>
+<li>字段类型</li>
+</ul>
+<blockquote>
+<p>类型清单 BooleanField、CharField(max_length=None)…<br>自定义新类型</p>
+</blockquote>
+<ul>
+<li>通用参数</li>
+</ul>
+<blockquote>
+<pre><code>-<span class="ruby"> null 　　　　默认<span class="constant">False</span>
+</span>-<span class="ruby"> blank 　　　　默认<span class="constant">False</span> ,<span class="constant">True</span> 字段允许为空
+</span>-<span class="ruby"> default 　　　默认值,也可是可调用的对象
+</span>-<span class="ruby"> help_text 　　
+</span>-<span class="ruby"> primary_key 　　<span class="constant">True</span>,会把当前字段当成主键
+</span>-<span class="ruby"> unique 　　<span class="constant">True</span>, 表示唯一
+</span>-<span class="ruby"> verbose_name 　　字段名字
+</span>-<span class="ruby"> choices 　　　选择 ,使用 **get<span class="number">_</span>字段名称_desplay()** 显示内容</span>
+</code></pre><hr>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="keyword">from</span> django.db <span class="keyword">import</span> models
+
+                       <span class="class"><span class="keyword">class</span> <span class="title">Person</span><span class="params">(models.Model)</span>:</span>
+                           SHIRT_SIZES = (
+                               (<span class="string">'S'</span>, <span class="string">'Small'</span>),
+                               (<span class="string">'M'</span>, <span class="string">'Medium'</span>),
+                               (<span class="string">'L'</span>, <span class="string">'Large'</span>),
+                           )
+                           name = models.CharField(max_length=<span class="number">60</span>)
+                           shirt_size = models.CharField(max_length=<span class="number">1</span>, 
+                                                         choices=SHIRT_SIZES)
+
+
+                       <span class="comment"># 使用 choice的例子</span>
+                       &gt;&gt;&gt; p = Person(name=<span class="string">"Fred Flintstone"</span>, shirt_size=<span class="string">"L"</span>)
+                       &gt;&gt;&gt; p.save()
+                       &gt;&gt;&gt; p.shirt_size
+                       <span class="string">u'L'</span>
+                       &gt;&gt;&gt; p.get_shirt_size_display()
+                       <span class="string">u'Large'</span>
+
+                       <span class="comment"># 使用 enumerate 生成choice的例子</span>
+                       <span class="comment"># 和上面的定义作用类似</span>
+                       SHIRT_SIZES = enumerate((<span class="string">"Small"</span>,<span class="string">"Medium"</span>, <span class="string">"Large"</span>)) 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<hr>
+</blockquote>
+<ul>
+<li>关系</li>
+</ul>
+<blockquote>
+<pre><code><span class="bullet">- </span>ForeignKey 　　　　详细文档
+</code></pre><blockquote>
+<p>引用未定义 　　　　‘’字符串<br>递归 　　　　　　　　‘self’</p>
+</blockquote>
+<pre><code>-<span class="ruby"> <span class="constant">ManyToManyField</span> 　　详细文档 使用范例
+</span>-<span class="ruby"> <span class="constant">OneToOneField</span> 　　　　</span>
+</code></pre></blockquote>
+<ul>
+<li>元数据</li>
+</ul>
+<blockquote>
+<pre><code>-<span class="ruby"> ordering 　　　　　　　　　　顺序
+</span>-<span class="ruby"> db_table 　　　　 　　　　　　数据库名称
+</span>-<span class="ruby"> verbose_name 　　　 　　　　对象名称
+</span>-<span class="ruby"> verbose_name_plural 　　　 复数对象名称  </span>
+</code></pre><p>详细清单</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>class <span class="function"><span class="title">Ox</span><span class="params">(models.Model)</span></span>:
+                           horn_length = models.<span class="function"><span class="title">IntegerField</span><span class="params">()</span></span>
+
+                           class Meta:
+                               ordering = [<span class="string">"horn_length"</span>]
+                               verbose_name_plural = <span class="string">"oxen"</span> 
+</code></pre><blockquote>
+<blockquote>
+<ul>
+<li>模型方法 </li>
+</ul>
+<blockquote>
+<pre><code>- <span class="keyword">property</span> 　　　　　　　　　　属性 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code><span class="function"><span class="keyword">def</span> <span class="title">_get_full_name</span><span class="params">(self)</span>:</span>
+      <span class="string">"Returns the person's full name."</span>
+      <span class="keyword">return</span> <span class="string">'%s %s'</span> % (self.first_name, self.last_name)
+      full_name = property(_get_full_name) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>- __unicode__() 　　　　　　　文本格式显示对象
+- <span class="function"><span class="title">get_absolute_url</span><span class="params">()</span></span> 　　　　　　　返回对象的url地址 详细文档
+- <span class="function"><span class="title">save</span><span class="params">()</span></span> 　　　　　　　保存
+- <span class="function"><span class="title">delete</span><span class="params">()</span></span> 　　　　　　　删除
+</code></pre></blockquote>
+</blockquote>
+<p><strong>第二部分：查询</strong></p>
+<blockquote>
+<p>文档 范例的model定义</p>
+<ul>
+<li>建立实体(记录) </li>
+</ul>
+<blockquote>
+<p>用字典作为参数实例化一个model类，然后 save() 保存。</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="tag">b</span> = <span class="function"><span class="title">Blog</span><span class="params">(name=<span class="string">'Beatles Blog'</span>, tagline=<span class="string">'All the latest Beatles news.'</span>)</span></span>
+               <span class="tag">b</span>.<span class="function"><span class="title">save</span><span class="params">()</span></span> 
+</code></pre><blockquote>
+<blockquote>
+<ul>
+<li>修改记录 </li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>普通model,首先用 <span class="function"><span class="title">get</span><span class="params">()</span></span> 等方法检索一个实体对象，修改属性，然后 <span class="function"><span class="title">save</span><span class="params">()</span></span> 保存。 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="bullet">- </span>更新外键 ForeignKey
+</code></pre><p>e=Entry(headline=’headline’,body_text=’aaa’,<br>                                    pub_date=datetime.datetime.now(),<br>                                    mod_date=datetime.datetime.now(),<br>                                    n_comments=12,n_pingbacks=3,<br>                                    rating=5)<br>e.blog=b<br>e.save() </p>
+<blockquote>
+<ul>
+<li>更新ManyToManyField</li>
+</ul>
+</blockquote>
+<p>joe=Author(name=’bbb’,email=’aaa@test.com’)<br>joe.save()<br>e.authors.add(joe)</p>
+<pre><code><span class="preprocessor"># 另外一种方法建立</span>
+</code></pre><p>newjoe=Author.objects.create(name=’John’)<br>newjoe.save()<br>e.authors.add(newjoe)</p>
+<pre><code><span class="preprocessor"># 同时增加多个对象关系</span>
+</code></pre><p>entry.authors.add(john, paul, george, ringo) </p>
+</blockquote>
+<ul>
+<li>普通检索记录 </li>
+</ul>
+<blockquote>
+<p><strong>QuerySet</strong> 　　　　检索集合结果，也可以看成是数据对象的集合，<br>　　　　　　　　　 可以有0-n个过滤器(filter)<br><strong>Manager</strong> 　　　　每个model都至少有一个Manager，默认名称是 objects</p>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="comment"># 获取所有记录</span>
+                       <span class="prompt">&gt;&gt;&gt; </span>all_entries = <span class="constant">Entry</span>.objects.all() 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<ul>
+<li><strong>使用过滤器</strong></li>
+</ul>
+<blockquote>
+<pre><code>-<span class="ruby"> filter 　　　　包含匹配
+</span>-<span class="ruby"> exclude 　　　不包含匹配</span>
+</code></pre></blockquote>
+<hr>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="comment"># 过滤年</span>
+                       <span class="prompt">&gt;&gt;&gt;</span><span class="constant">Entry</span>.objects.filter(pub_date__year=<span class="number">2006</span>)
+
+                           <span class="comment"># 连续串联过滤</span>
+                           <span class="comment"># 所有headline满足What开头，出版时间在2005年1月30至今</span>
+                       <span class="prompt">&gt;&gt;&gt; </span><span class="constant">Entry</span>.objects.filter(
+                               headline__startswith=<span class="string">'What'</span>
+                           ).exclude(
+                               pub_date__gte=datetime.date.today()
+                           ).filter(
+                               pub_date__gte=datetime(<span class="number">2005</span>, <span class="number">1</span>, <span class="number">30</span>)
+                           ) 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<hr>
+<ul>
+<li><strong>使用get获得单个对象</strong></li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>没有结果会报 DoesNotExist ，多个结果报 <span class="keyword">MultipleObjectsReturned </span>
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p>one_entry = Entry.objects.get(pk=1)</p>
+<pre><code><span class="preprocessor"># 结果切片 </span>
+</code></pre><p>Entry.objects.all()[5:10] </p>
+<blockquote>
+<ul>
+<li><strong>查找类型</strong> 　　　　Lookups 完整列表</li>
+</ul>
+<blockquote>
+<pre><code><span class="bullet">- </span>exact 　　　　精确匹配 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>Entry<span class="class">.objects</span><span class="class">.get</span>(id__exact=<span class="number">14</span>) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code><span class="bullet">- </span>iexact 　　　　不区分大小写匹配 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>Blog<span class="class">.objects</span><span class="class">.get</span>(name__iexact=<span class="string">'beatles blog'</span>) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>-<span class="ruby"> contains 　　　　区分大小写包含
+</span>-<span class="ruby"> icontains 　　　　不区分大小写包含
+</span>-<span class="ruby"> startswith 　　　　开始
+</span>-<span class="ruby"> endswith 　　　　 结束
+</span>-<span class="ruby"> <span class="keyword">in</span> 　　　　　　　　在列表内 </span>
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>Entry.objects.filter(<span class="variable">id__in=</span>[<span class="number">1</span>, <span class="number">3</span>, <span class="number">4</span>])
+       <span class="comment"># 动态生成列表</span>
+  <span class="variable">inner_qs =</span> Blog.objects.filter(<span class="variable">name__contains=</span>'Cheddar')  
+  <span class="variable">entries =</span> Entry.objects.filter(<span class="variable">blog__in=</span>inner_qs) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li><strong>pk</strong></li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>可以使用 pk 作为主键进行检索 get(<span class="variable">id__exact=</span><span class="number">14</span>) (<span class="variable">id=</span><span class="number">14</span>) (<span class="variable">pk=</span><span class="number">14</span>)效果相同。 
+       <span class="comment"># 一些例子</span>
+</code></pre><p>Blog.objects.filter(pk<strong>in=[1,4,7])<br>Blog.objects.filter(pk</strong>gt=14) </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>跨越关系检索记录</li>
+</ul>
+<blockquote>
+<pre><code><span class="bullet">1. </span>双下划线能够扩展到相关的model字段 范例模型
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code># 检索 <span class="preprocessor">Entry</span> --&gt; <span class="keyword">blog </span>--&gt; name 是 <span class="string">"Beatles Blog"</span>
+</code></pre><p>Entry.objects.filter(blog<strong>name</strong>exact=’Beatles Blog’)</p>
+<pre><code><span class="preprocessor"># pk的跨越关系检索</span>
+</code></pre><p>Entry.objects.filter(blog__pk=3) </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>2. 双下划线加上<span class="keyword">*</span><span class="keyword">*</span>小写的 model 名<span class="keyword">*</span><span class="keyword">*</span>，可以反方向引用 
+</code></pre><blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code># 反向检索 <span class="variable">Blog</span> -<span class="arrow">-&gt;</span> <span class="function_or_atom">entry</span> -<span class="arrow">-&gt;</span> <span class="function_or_atom">headline</span> 包含 <span class="string">'Lennon'</span>
+</code></pre><p>Blog.objects.filter(entry<strong>headline</strong>contains=’Lennon’) </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>使用 F()表达式 进行检索</li>
+</ul>
+<blockquote>
+<p>可以对同一个model的不同字段进行比较、计算(加减乘除)</p>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>from django.db.models import F</p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<pre><code>    <span class="comment"># 检索Entry中 n_comments 数值比 n_pingbacks 的记录</span>
+<span class="prompt">&gt;&gt;</span>&gt; <span class="constant">Entry</span>.objects.filter(n_comments__gt=<span class="constant">F</span>(<span class="string">'n_pingbacks'</span>))
+
+    <span class="comment"># (计算范例) n_comments 数值比 n_pingbacks 多两倍的记录</span>
+<span class="prompt">&gt;&gt;</span>&gt; <span class="constant">Entry</span>.objects.filter(n_comments__gt=<span class="constant">F</span>(<span class="string">'n_pingbacks'</span>) * <span class="number">2</span>)
+
+    <span class="comment"># (使用双下划线跨越关系和F()类的例子) </span>
+    <span class="comment"># 所有 authors的name 与 blog的name相同</span>
+<span class="prompt">&gt;&gt;</span>&gt; <span class="constant">Entry</span>.objects.filter(authors__name=<span class="constant">F</span>(<span class="string">'blog__name'</span>)) 
+</code></pre></blockquote>
+</blockquote>
+<ul>
+<li>使用 Q类 进行复杂检索</li>
+</ul>
+<blockquote>
+<p>filter进行筛选，组合条件都是AND关系，使用Q对象能进行 OR 关系组合条件。</p>
+<blockquote>
+<p><strong>Q 实例</strong>是筛选条件的封装, | OR &amp; 与</p>
+<pre><code>from django.<span class="keyword">db</span>.models import <span class="literal">Q</span>
+  <span class="literal">Q</span>(question__startswith='What')
+
+  Poll.objects.<span class="literal">get</span>(
+      <span class="literal">Q</span>(question__startswith='Who'),
+      <span class="literal">Q</span>(pub_date=<span class="literal">date</span>(2005, 5, 2)) | <span class="literal">Q</span>(pub_date=<span class="literal">date</span>(2005, 5, 6))
+     ) 
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+<p><strong>第三部分：其他操作</strong></p>
+<blockquote>
+<ul>
+<li>比较记录对象 </li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<p>some_obj == other_obj </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<ul>
+<li>删除记录对象 </li>
+</ul>
+<blockquote>
+<p>默认情况下以该对象为主键的对应记录被删除 &gt;&gt;&gt;Entry.objects.filter(pub_date__year=2005).delete()</p>
+</blockquote>
+<ul>
+<li>拷贝记录对象 </li>
+</ul>
+<blockquote>
+<p>把 pk 设为None，然后保存</p>
+<pre><code><span class="prompt">&gt;&gt;</span>&gt;blog = <span class="constant">Blog</span>(name=<span class="string">'My blog'</span>, tagline=<span class="string">'Blogging is easy'</span>)
+       <span class="prompt">&gt;&gt;&gt;</span>blog.save() <span class="comment"># blog.pk == 1</span>
+
+       <span class="prompt">&gt;&gt;&gt;</span>blog.pk = <span class="constant">None</span>
+       <span class="prompt">&gt;&gt;&gt;</span>blog.save() <span class="comment"># blog.pk == 2 </span>
+</code></pre></blockquote>
+<ul>
+<li>一次更新多条记录 </li>
+</ul>
+<blockquote>
+<p><strong>update() </strong></p>
+<pre><code>&gt;&gt;&gt;Entry<span class="class">.objects</span><span class="class">.filter</span>(pub_date__year=<span class="number">2007</span>).<span class="function"><span class="title">update</span><span class="params">(headline=<span class="string">'Everything is the same'</span>)</span></span> 
+</code></pre></blockquote>
+<ul>
+<li>引用关联对象 </li>
+</ul>
+<blockquote>
+<blockquote>
+<blockquote>
+<blockquote>
+<pre><code>e<span class="function"><span class="params">(Entry)</span> --&gt;</span> blog属性 
+</code></pre><blockquote>
+<blockquote>
+<p>e.blog </p>
+</blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+<p><strong>_set</strong> 　　　　反向引用 b(Blog) —&gt; Entry</p>
+<pre><code>&gt;&gt;&gt;&gt;     
+ &gt;&gt;&gt;<span class="tag">b</span><span class="class">.entry_set</span><span class="class">.all</span>() 
+</code></pre><p><strong>select_related()</strong> 　　　　递归取得关联数据，进入cache</p>
+<pre><code><span class="prompt">&gt;&gt;</span>&gt;&gt;     
+ &gt;&gt;&gt; e = <span class="constant">Entry</span>.objects.select_related().get(id=<span class="number">2</span>)
+        <span class="prompt">&gt;&gt;&gt; </span>print(e.blog)  <span class="comment"># 直接使用缓存 </span>
+</code></pre></blockquote>
+</blockquote>
+</blockquote>
+</blockquote>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/django/">django</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/django/">django</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2015/03/16/django-15/" data-title="django 学习总结（1.5版） | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2015/03/22/bootstrap/" title="多重进度条">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  多重进度条</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/28/htmljs/"  title="HTML中A标签执行JS脚本的几种方法">
+ <strong>NEXT:</strong><br/> 
+ <span>HTML中A标签执行JS脚本的几种方法
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#一、settings"><span class="toc-number">1.</span> <span class="toc-text">一、settings</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#二、url_conf"><span class="toc-number">2.</span> <span class="toc-text">二、url conf</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#三、view"><span class="toc-number">3.</span> <span class="toc-text">三、view</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#四、模板"><span class="toc-number">4.</span> <span class="toc-text">四、模板</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#{*{_story-headline|upper_}}"><span class="toc-number">5.</span> <span class="toc-text"> {*{ story.headline|upper }}</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#五、form表单"><span class="toc-number">6.</span> <span class="toc-text">五、form表单</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#有定义模块"><span class="toc-number"></span> <span class="toc-text">有定义模块</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#…"><span class="toc-number"></span> <span class="toc-text">…</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#六、model"><span class="toc-number">1.</span> <span class="toc-text">六、model</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

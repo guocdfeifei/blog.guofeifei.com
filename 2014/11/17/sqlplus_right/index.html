@@ -1,0 +1,476 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>sqlplus格式命令大全 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="命令含义   
+/运行 SQL 缓冲区   
+? [关键词]对关键词提供 SQL 帮助   
+@[@] [文件名] [参数列表]通过指定的参数，运行指定的命令文件   
+ACC[EPT] 变量 [DEF[AULT] 值] [PROMPT 文本 | NOPR[OMPT]]允许用户输入置换变量的值   ">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/17/sqlplus_right/" title="sqlplus格式命令大全" itemprop="url">sqlplus格式命令大全</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-17T14:55:07.000Z" itemprop="datePublished">2014-11-17</time>
+    更新日期:<time datetime="2015-06-23T16:27:24.768Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+		</div>
+		
+		<p>命令<br>含义   </p>
+<p>/<br>运行 SQL 缓冲区   </p>
+<p>? [关键词]<br>对关键词提供 SQL 帮助   </p>
+<p>@[@] [文件名] [参数列表]<br>通过指定的参数，运行指定的命令文件   </p>
+<p>ACC[EPT] 变量 [DEF[AULT] 值] [PROMPT 文本 | NOPR[OMPT]]<br>允许用户输入置换变量的值   </p>
+<p>CL[EAR] [SCR[EEN]]<br>清除屏幕   </p>
+<p>CL[EAR] SQL<br>清除 SQL 缓冲区   </p>
+<p>COL[UMN] [列] [格式] [NEW_VALUE 变量]<br>定义一个列的格式，显示一个列的格式，或者显示所有列格式   </p>
+<p>CON[NECT] [用户名/口令@数据库]<br>带有指定用户连接到数据库   </p>
+<p>DEF[INE] [变量] [ = 文本]<br>定义置换变量，显示一个变量，或者显示所有置换变量。   </p>
+<p>DESC[RIBE] 对象<br>给指定对象一个描述   </p>
+<p>DISC[CONNECT]<br>从数据库断开   </p>
+<p>EDIT<br>显示文本编辑器以编辑 SQL 缓冲区   </p>
+<p>EXEC[UTE] 过程<br>运行指定的过程   </p>
+<p>EXIT [APPLICATION]<br>退出正在运行的脚本或关闭命令窗口，添加APPLICATION 参数也将关闭 PL/SQL Developer 。   </p>
+<p>GET [文件名]<br>载入命令文件到编辑器   </p>
+<p>HOST [命令]<br>执行主机命令   </p>
+<p>HELP [关键词]<br>对关键词提供 SQL 帮助   </p>
+<p>PAUSE [信息]<br>显示信息和暂停，直到用户按确定或取消按钮为止   </p>
+<p>PRI[NT] [变量]<br>显示绑定变量或所有绑定变量的值   </p>
+<p>PROMPT [文本]<br>显示指定文本   </p>
+<p>QUIT [APPLICATION]<br>退出正在运行的脚本或关闭命令窗口，添加APPLICATION 参数也将关闭 PL/SQL Developer 。   </p>
+<p>R[UN]<br>运行 SQL 缓冲区   </p>
+<p>REM[ARK] [文本]<br>一个注释行   </p>
+<p>SET AUTOP[RINT] [ON | OFF]<br>确定绑定变量在运行了 SQL 语句或 PL/SQL 块以后是否自动地被显示出来。   </p>
+<p>SET COLSEP [分隔符 | OFF]<br>确定了列分隔符(默认 = “ “)。   </p>
+<p>SET CON[CAT] [字符 | ON | OFF]<br>确定终止置换变量参照的字符（默认=.）   </p>
+<p>SET DEF[INE] [字符 | ON | OFF]<br>确定开始置换变量参照的字符（默认=&amp;）   </p>
+<p>SET ECHO [ON | OFF]<br>确定在脚本里已执行的命令是否被显示出来   </p>
+<p>SET ESC[APE] [字符 | ON | OFF]<br>确定中断开始置换变量参照字符的字符（默认=\）   </p>
+<p>SET FEED[BACK] [ON | OFF]<br>确定 SQL 语句受影响行数是否被显示出来   </p>
+<p>SET HEA[DING] [ON | OFF]<br>确定在结果集列上面的标题是否被显示出来   </p>
+<p>SET LONG [宽度]<br>确定一个 LONG 列的最大显示宽度   </p>
+<p>SET NUM[WIDTH] [宽度]<br>确定不带精度的数字列的最大显示宽度   </p>
+<p>SET PAGES[IZE] [大小]<br>确定在标题被重复以前的结果集的显示行数   </p>
+<p>SET PROMPT [提示]<br>替换标准的 SQL&gt; 提示，改为你也能使用变量 [user] 、 [db] 或 [connection] 的文字文本。此外，你还可以包括一个绑定变量（ set prompt :bind_var_name ）。   </p>
+<p>SET SCAN [ON | OFF]<br>确定置换变量是否应该被扫描   </p>
+<p>SET SERVEROUT[PUT] [ON | OFF] [SIZE n]<br>确定调用 dbms_output.put_line 的输出是否被显示出来，并且输出缓冲区的大小是多少。   </p>
+<p>SET SPOOL*DIRECTORY [目录]<br>确定如果 SPOOL 命令没有指定一个绝对路径那么假脱机文件应该被储存在哪一个目录里。   </p>
+<p>SET TERM[OUT] [ON | OFF]<br>确定已运行的 SQL 语句的输出是否被显示出来   </p>
+<p>SET TIMI[NG] [ON | OFF]<br>确定关于已运行的 SQL 语句的计时信息是否被显示出来   </p>
+<p>SET VER[IFY] [ON | OFF]<br>确定当被用于 SQL 语句或 PL/SQL 块的时候置换变量是否被显示出来。   </p>
+<p>SHO[W] ERR[ORS] [类型名]<br>显示以前编译或者指定对象的错误   </p>
+<p>SHO[W] REL[EASE]<br>显示当前连接的 Oracle 版本信息   </p>
+<p>SHO[W] SQLCODE<br>显示已运行的 SQL 语句的结果代码   </p>
+<p>SHO[W] USER<br>显示当前连接的用户名   </p>
+<p>SPO[OL] [文件名 | OFF]<br>开始或停止假脱机   </p>
+<p>STA[RT] [文件名] [参数列表]<br>通过指定的参数，运行指定的命令文件   </p>
+<p>STORE SET [文件名]<br>在[文件名]里存储所有选项的值，你可以以后运行这个文件以恢复这些选项。   </p>
+<p>UNDEF[INE] 变量<br>不定义已设定的置换变量   </p>
+<p>VAR[IABLE] [变量] [数据类型]<br>定义一个绑定变量，显示一个绑定变量或显示所有的绑定变量。   </p>
+<p>WHENEVER [OSERROR | SQLERROR] [动作]<br>指定一个动作，用于无论 OS 或 SQL 何时出现错误。这个动作既可以是 EXIT 又可以是 CONTINUE ，随便地被 COMMIT 或 ROLLBACK 跟随着。 </p>
+<p>上面所有这些命令函数都与 SQL*Plus 相同。下面的命令是 PL/SQL Developer 特有的：</p>
+<p>命令<br>含义   </p>
+<p>BEAUT[IFY] 文件 | 对象<br>使用当前规则或者 SET BEAUTIFIERRULES 命令指定的规则来美化指定文件或数据库对象。   </p>
+<p>BROWSE 对象<br>在对象浏览器里选择对象   </p>
+<p>EDIT 对象<br>打开带有对象定义的可编辑窗口   </p>
+<p>EDITD[ATA] 表 | 视图<br>为带有可编辑结果集的表或视图打开一个 SQL 窗口   </p>
+<p>EXPORT[DATA] 表<br>为指定表打开导出工具   </p>
+<p>INFO<br>显示关于连接的信息   </p>
+<p>PROP[ERTIES] 对象<br>为指定对象显示一个属性窗口   </p>
+<p>QUERY[DATA] 表 | 视图<br>为带有只读结果集的表或视图打开一个 SQL 窗口   </p>
+<p>REC[OMPILE] 对象<br>重新编译对象   </p>
+<p>SET BEAUT[IFIERRULES] [文件]<br>临时使用来自于指定文件的美化器规则，这可以带着BEAUTIFY 命令使用。   </p>
+<p>SET COL[WIDTH] [宽度]<br>确定结果集里的最大列宽。如果 Width = 0 ，则不限制宽度。默认为 80 。   </p>
+<p>SET EXEC[PAUSE] [ON | OFF]<br>在下一个命令暂停执行（ ON ），或者在下一个命令正常继续执行（ OFF ）。   </p>
+<p>SQLPLUS<br>带有当前文件调用 SQL*Plus 。   </p>
+<p>TEST 程序单元<br>对于指定的程序单元，打开一个带有标准测试脚本的测试窗口。   </p>
+<p>VIEW 对象<br>打开一个带有对象定义的只读窗口 </p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/17/sqlplus_right/" data-title="sqlplus格式命令大全 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/17/oracle-alter/" title="oracle alter 大全">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle alter 大全</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/17/oraclesql/"  title="oracle查看未提交SQL">
+ <strong>NEXT:</strong><br/> 
+ <span>oracle查看未提交SQL
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

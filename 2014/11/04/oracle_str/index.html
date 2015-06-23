@@ -1,0 +1,411 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>oracle字符串函数 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="一概述instr的语法如下：instr( string1, string2 [, start_position [, nth_appearance ] ] )函数说明：该函数返回参数string2在参数string1中的位置。start_position参数表示将从string1的第几个字符开始来查">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2014/11/04/oracle_str/" title="oracle字符串函数" itemprop="url">oracle字符串函数</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2014-11-04T05:55:51.000Z" itemprop="datePublished">2014-11-04</time>
+    更新日期:<time datetime="2015-06-23T16:27:22.421Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一概述"><span class="toc-number">1.</span> <span class="toc-text">一概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#aaa"><span class="toc-number">1.1.</span> <span class="toc-text">aaa  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(‘AAA’,’BBB’)"><span class="toc-number">1.2.</span> <span class="toc-text">NVL(‘AAA’,’BBB’)  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(NULL,’BBB’)"><span class="toc-number">1.3.</span> <span class="toc-text">NVL(NULL,’BBB’)  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(NULL,’BBB’)-1"><span class="toc-number">1.4.</span> <span class="toc-text">NVL(NULL,’BBB’)  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(‘NULL’,’AAA’)"><span class="toc-number">1.5.</span> <span class="toc-text">NVL(‘NULL’,’AAA’)  </span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二详述"><span class="toc-number">2.</span> <span class="toc-text">二详述</span></a></li></ol>
+		</div>
+		
+		<h1 id="一概述">一概述</h1><p>instr的语法如下：<br>instr( string1, string2 [, start_position [, nth_appearance ] ] )<br>函数说明：<br>该函数返回参数string2在参数string1中的位置。<br>start_position参数表示将从string1的第几个字符开始来查找string2。该参数为可选参数，如果省略，那么默认为1。instr函数默认的查找顺序为从左到右。当该参数为负数的时候，则从右边开始查找。<br>nth_appearance表示返回第几次出现的string2的位置。该参数为可选参数，如果省略则默认为1，也就是返回首次出现string2的位置。<br>示例：<br>SELECT INSTR(‘CORPORATE FLOOR’, ‘OR’, -1, 1) “aaa” FROM DUAL;  </p>
+<h2 id="aaa">aaa  </h2><p>14<br>decode函数说明：<br>decode函数可以将输入数值与函数中的参数列表相比较，根据输入值返回一个对应值。<br>函数的参数列表是由若干数值及其对应结果值组成的若干序偶形式。当然，如果未能与任何一个实参序偶匹配成功，则函数也有默认的返回值。区别于SQL的其它函数，DECODE函数还能识别和操作空值。<br>如果应用中没有建立代码表，使用docode函数进行key-&gt;value的转换是一种不错的替代方案，只是为应用的后期维护带来麻烦。<br>语法如下：<br>DECODE(control_value,value1,result1[,value2,result2…][,default_result]);<br>参数说明：<br>control _value<br>试图处理的数值。可以是数据库中表的某一列，DECODE函数将该数值与后面的一系列的偶序相比较，以决定返回值。<br>value1<br>是一组成序偶的数值。如果输入数值与之匹配成功，则相应的结果将被返回。对应一个空的返回值，可以使用关键字NULL于之对应<br>result1<br>是一组成序偶的结果值。<br>default_result<br>未能与任何一个值匹配时，函数返回的默认值。<br>示例：<br>首先创建一张sale表，并插入一些测试数据：<br>create table class(id char(2),name varchar2(50), valid_flag char(1));<br>insert into class values(‘01’,’语文’,’Y’);<br>insert into class values(‘02’,’数学’,’Y’);<br>insert into class values(‘03’,’外语’,’N’);<br>insert into class values(‘04’,’历史’);首先看一下decode函数的基本用法：<br>select id, name, decode(valid_flag, ‘Y’, ‘有效’, ‘N’, ‘无效’,’未设置’) from class;<br>ID NAME                                               DECODE(VALID_FLAG,’Y’,’有效’,’<br>-- ————————————————————————— ———————————————<br>01 语文                                               有效<br>02 数学                                               有效<br>03 外语                                               无效<br>04 历史                                               未设置说明：<br>当valid_flag为’Y’时，则返回’有效’;<br>当month为’N’时，则返回’无效’;<br>其他则返回’未设置’。<br>以上的sql语句可以通过case实现：<br>select id, name, case valid_flag<br>                 when ‘Y’ then ‘有效’<br>                 when ‘N’ then ‘无效’<br>                 else ‘未设置’ end<br>from class;由以上sql语句可以看出，使用decode函数要简洁的多。<br>另外，还可以在Order by中使用decode：<br>例：表table_subject，有subject_name列。要求按照：语、数、外的顺序进行排序。这时，就可以非常轻松的使用Decode完成要求了。<br>select * from table_subject order by decode(subject_name, ‘语文’, 1, ‘数学’, 2, , ‘外语’,3)<br>NVL函数<br>在Oracle/PLSQL中，NVL函数会将一个NULL值替换为一个非NULL值。<br>语法<br>NVL(eExpression1, eExpression2)<br>参数<br>eExpression1, eExpression2<br>如果 eExpression1 的计算结果为 null 值，则 NVL( ) 返回 eExpression2。如果 eExpression1 的计算结果不是 null 值，则返回 eExpression1。eExpression1 和 eExpression2 可以是任意一种数据类型。如果 eExpression1 与 eExpression2 的结果皆为 null 值，则 NVL( ) 返回 .NULL.。<br>返回值类型<br>字符型、日期型、日期时间型、数值型、货币型、逻辑型或 null 值<br>说明<br>在不支持 null 值或 null 值无关紧要的情况下，可以使用 NVL( ) 来移去计算或操作中的 null 值。<br>示例1<br>select nvl(‘aaa’,’bbb’) from dual;  </p>
+<h2 id="NVL(‘AAA’,’BBB’)">NVL(‘AAA’,’BBB’)  </h2><p>aaa<br>示例2<br>select nvl(null,’bbb’) from dual;  </p>
+<h2 id="NVL(NULL,’BBB’)">NVL(NULL,’BBB’)  </h2><p>bbb<br>返回字符串bbb<br>示例3<br>select nvl(NULL,’bbb’) from dual;  </p>
+<h2 id="NVL(NULL,’BBB’)-1">NVL(NULL,’BBB’)  </h2><p>bbb<br>返回字符串bbb，null不区分大小写。<br>示例4<br>select nvl(‘null’,’aaa’) from dual;  </p>
+<h2 id="NVL(‘NULL’,’AAA’)">NVL(‘NULL’,’AAA’)  </h2><p>null<br>字符串’null’不是null。<br>oracle的substr函数的用法<br>取得字符串中指定起始位置和长度的字符串    substr( string, start_position, [ length ] )<br>如:<br>      substr(‘This is a test’, 6, 2)      would return ‘is’<br>      substr(‘This is a test’, 6)      would return ‘is a test’<br>      substr(‘TechOnTheNet’, -3, 3)      would return ‘Net’<br>      substr(‘TechOnTheNet’, -6, 3)      would return ‘The’</p>
+<h1 id="二详述">二详述</h1><p>平常我们用Oracle主要有两种字符串类型<br>1.char始终为固定的长度，如果设置了长度小于char列的值，则Oracle会自动用空格填充的。当比较char时，Oracle用空格将其填充为等长，再进行比较。<br>2.VarChar2数据类型为可变长度，虽然与VarChar数据类型是同义的，但在今后的Oracle版本中也许会有变化，所以应该避免使用VarChar，优先使用VarChar2。<br>固定长度的字符串字段使用Char,而其他所有的字符串字段都应使用VarChar2.<br>下面列出部分Oracle针对字符串操作的一些函数，以下函数可以使用在字符串上，也可以使用在列名上：<br>1.LOWER(string) 将输入的字符串转换成小写<br>2.UPPER(string) 将输入的字符串转换成大写<br>3.INITCAP(string) 将输入的字符串单词的首字母转换成大写。PS:如果不是两个字母连在一起，则认为是新的单词，例：a_b a,b  a b  类似前面这些情况，都a和b都会转换成大写<br>4.连接符(||),将两个字符串用||连接起来，除此之外还可以使用Concat函数来连接字符串。例：select CONCAT(City,country) from Table<br>5.LPAD和RPAD，填充函数，这是两个十分相似的函数，使用方式完全一样。允许在列的左[右]边填充一组字符。例：RPAD(city,20,’.’),如果ciy的值没有小于长度20的话，则用’.’在右边补齐，补到20个，如果是用空格补齐，看上去就是像左对齐一样。<br>6.LTRIM,RTRIM和TRIM,他们的作用是从字符串的左边，右边，左右两边删除不需要的字符，默认时删除空格。<br>格式：RTRIM、LTRIM(字符串,’删除字符集’) 第一个参数就是要进行删除的字符，第二个参数是一个字符集来的，如果填写的是’AB’，Oracle会认为是A和B，然后反复检查字符串的右端，直到字符串中的每个字符都被删除了，也就是说，直到遇到被删除字符集中未出现的第一个字符时，才停止删除。这样讲可能有点不是很明白，看下面例子<br>原数据<br>1 AAA.<br>2 AAA.”<br>3 AA.AAB<br>RTRIM(name,’.B”‘)<br>1 AAA<br>2 AAA<br>3 AA.AA<br>如果觉得不够明白的话，自己试多几次就明白了！我也觉得讲得好像不是很清楚一样！<br>TRIM格式有点不一样，直接看例子吧 select trim(‘A’ from 列名) from tableName 或者trim(leading ‘A’ from 列名)或者trim(trailing ‘A’ from 列名) 等价于LTRIM和RTRIM函数一样，其实TRIM函数就只是为了简化代码而以。<br>7.LENGTH 该函数很简单，就是告诉用户一个字符串有多长，即字符串中有多少个字符，该函数本身并不是很好用，但可以做为其它函数的一部分，用于计算表格需要多少空格，或者做为orderby 子句的一部分。PS:您不能对一个使用LONG数据类型的列使用LENGTH之类的函数。<br>8.SUBSTR(string,start [,count]) 该函数告诉oracle提取出string一个子集，start开始位置，count提取长度，不指定count时，默认提取到该字符串的尾部。<br>  start同时也可以指定为负数，指定为正数的时候是从字符串的起始位置开始算（左边），指定负数时，是从末尾位置算（右边）。PS:负数不能使用于Char数据类型，因为Char是固定长度的，   所以将使用空格填充他们的值，直到扩展到列的全长。<br>9.INSTR 返回指定的字符串所在的位置<br>  INSTR(string,set[,start [,occurrence ] ] ) 如果指定start，oracle则跳过前面所有字符串到该位置开始搜索，occurence，是强迫instr跳过前几次与字符串匹配，给出下一次匹配的位置，如果occurence指定3,那就是匹配第三次的位置了。 例 instr(‘ABACAAA’,’A’,2,2) 从ABACAAA中匹配A这个字符串，从2个位置开始匹配，匹配第2次A所在的位置。PS：如果set中不止有一个字符而是有几个字符组成的，则INSTR给出该字符集中的第一个字符的位置。<br>10.Chr和ascii函数在即席查询中很少使用。Chr把数值转换成等价的ascii字符串 例：select chr(70) from dual<br>        ascii函数执行的结果刚好是相反的，传递给他字符串，它将转换成对应的数值（只转换第一个字符串），如果需要同时转换多个字符串可以使用DUMP函数DUMP(string)<br>PS：INSTR,REPLACE和SUBSTR的功能已经得到扩展，可以支持正则表达式。<br>通过以上函数可以单独使用或者组合使用，这是一个简单的过程，即将简单的逻辑步骤组合起来完成非常复杂的任务。</p>
+<p>字符函数——返回字符值<br>这些函数全都接收的是字符族类型的参数(CHR 除外)并且返回字符值.除了特别说明的之外,这些函数大部分返回VARCHAR2类型的数值.字符函数的返回类型所受的限制和基本数据库类型所受的限制是 相同的,比如: VARCHAR2数值被限制为2000字符(ORACLE 8中为4000字符),而CHAR数值被限制为255字符(在ORACLE8中是2000).当在过程性语句中使用时,它们可以被赋值给VARCHAR2 或者CHAR类型的PL/SQL变量.<br>l         CHR<br>语法:  chr(x)<br>功能：返回在数据库字符集中与X拥有等价数值的字符。CHR和ASCII是一对反函数。经过CHR转换后的字符再经过ASCII转换又得到了原来的字符。<br>使用位置：过程性语句和SQL语句。<br>l         CONCAT<br>语法： CONCAT（string1,string2）<br>功能：返回string1，并且在后面连接string2。<br>使用位置：过程性语句和SQL语句。<br>l         INITCAP<br>语法：INITCAP（string）<br>功能：返回字符串的每个单词的第一个字母大写而单词中的其他字母小写的string。单词是用.空格或给字母数字字符进行分隔。不是字母的字符不变动。<br>使用位置：过程性语句和SQL语句。<br>l         LTRIM<br>语法：LTRIM（string1,string2）<br>功能：返回删除从左边算起出现在string2中的字符的string1。String2被缺省设置为单个的空格。数据库将扫描string1，从最左边开始。当遇到不在string2中的第一个字符，结果就被返回了。LTRIM的行为方式与RTRIM很相似。<br>使用位置：过程性语句和SQL语句。<br>l         NLS_INITCAP<br>语法：NLS_INITCAP（string[,nlsparams]）<br>功能：返回字符串每个单词第一个字母大写而单词中的其他字母小写的string，nlsparams<br>指定了不同于该会话缺省值的不同排序序列。如果不指定参数，则功能和INITCAP相同。Nlsparams可以使用的形式是：<br>‘NLS_SORT=sort’<br>这里sort制订了一个语言排序序列。<br>使用位置：过程性语句和SQL语句。<br>l         NLS_LOWER<br>语法：NLS_LOWER（string[,nlsparams]）<br>功能：返回字符串中的所有字母都是小写形式的string。不是字母的字符不变。<br>      Nlsparams参数的形式与用途和NLS_INITCAP中的nlsparams参数是相同的。如果nlsparams没有被包含，那么NLS_LOWER所作的处理和LOWER相同。<br>使用位置；过程性语句和SQL语句。<br>l         NLS_UPPER<br>语法：nls_upper（string[,nlsparams]）<br>功能：返回字符串中的所有字母都是大写的形式的string。不是字母的字符不变。nlsparams参数的形式与用途和NLS_INITCAP中的相同。如果没有设定参数，则NLS_UPPER功能和UPPER相同。<br>使用位置：过程性语句和SQL语句。<br>l         REPLACE<br>语法：REPLACE（string，search_str[,replace_str]）<br>功能：把string中的所有的子字符串search_str用可选的replace_str替换，如果没有指定replace_str，所有的string中的子字符串search_str都将被删除。REPLACE是TRANSLATE所提供的功能的一个子集。<br>使用位置：过程性语句和SQL语句。<br>l         RPAD<br>语法：RPAD（string1,x[,string2]）<br>功能：返回在X 字符长度的位置上插入一个string2中的字符的string1。如果string2的长度要比X字符少，就按照需要进行复制。如果string2多于 X字符，则仅string1前面的X各字符被使用。如果没有指定string2，那么使用空格进行填充。X是使用显示长度可以比字符串的实际长度要长。 RPAD的行为方式与LPAD很相似，除了它是在右边而不是在左边进行填充。<br>使用位置：过程性语句和SQL语句。<br>l         RTRIM<br>语法:  RTRIM（string1,[,string2]）<br>功能:  返回删除从右边算起出现在string1中出现的字符string2. string2被缺省设置为单个的空格.数据库将扫描string1,从右边开始.当遇到不在string2中的第一个字符,结果就被返回了RTRIM的行为方式与LTRIM很相似.<br>使用位置：过程性语句和SQL语句。<br>l         SOUNDEX<br>语法:  SOUNDEX（string）<br>功能:  返回string的声音表示形式.这对于比较两个拼写不同但是发音类似的单词而言很有帮助.<br>使用位置：过程性语句和SQL语句。<br>l         SUBSTR<br>语法:  SUBSTR（string,a[,b]）<br>功能:  返 回从字母为值a开始b个字符长的string的一个子字符串.如果a是0,那么它就被认为从第一个字符开始.如果是正数,返回字符是从左边向右边进行计算 的.如果b是负数,那么返回的字符是从string的末尾开始从右向左进行计算的.如果b不存在,那么它将缺省的设置为整个字符串.如果b小于1,那么将 返回NULL.如果a或b使用了浮点数,那么该数值将在处理进行以前首先被却为一个整数.<br>使用位置：过程性语句和SQL语句。<br>l         TRANSLATE<br>   语法:  TRANSLATE(string,from_str,to_str)<br>   功能:  返回将所出现的from_str 中的每个字符替换为to_str中的相应字符以后的string. TRANSLATE是REPLACE所提供的功能的一个超集.如果from_str比to_str长,那么在from_str中而不在to_str中而外 的字符将从string中被删除,因为它们没有相应的替换字符. to_str不能为空.Oracle把空字符串认为是NULL,并且如果TRANSLATE中的任何参数为NULL,那么结果也是NULL.<br>使用位置：过程性语句和SQL语句。<br>l         UPPER<br>语法: UPPER（string）<br>功能: 返回大写的string.不是字母的字符不变.如果string是CHAR数据类型的,那么结果也是CHAR类型的.如果string是VARCHAR2类型的,那么结果也是VARCHAR2类型的.<br>使用位置: 过程性语句和SQL语句。<br>F.2    字符函数——返回数字<br>这些函数接受字符参数回数字结果.参数可以是CHAR或者是VARCHAR2类型的.尽管实际下许多结果都是整数值,但是返回结果都是简单的NUMBER类型的,没有定义任何的精度或刻度范围.<br>l         ASCII<br>语法:  ASCII（string）<br>功能: 数据库字符集返回string的第一个字节的十进制表示.请注意该函数仍然称作为ASCII.尽管许多字符集不是7位ASCII.CHR和ASCII是互为相反的函数.CHR得到给定字符编码的响应字符. ASCII得到给定字符的字符编码.<br>使用位置: 过程性语句和SQL语句。<br>l         INSTR<br>语法:  INSTR（string1, string2[a,b]）<br>功能: 得到在string1中 包含string2的位置. string1时从左边开始检查的,开始的位置为a,如果a是一个负数,那么string1是从右边开始进行扫描的.第b次出现的位置将被返回. a和b都缺省设置为1,这将会返回在string1中第一次出现string2的位置.如果string2在a和b的规定下没有找到,那么返回0.位置的 计算是相对于string1的开始位置的,不管a和b的取值是多少.<br>使用位置: 过程性语句和SQL语句。<br>l         INSTRB<br>语法:  INSTRB（string1, string2[a,[b]]）<br>功能: 和INSTR相同,只是操作的对参数字符使用的位置的是字节.<br>使用位置: 过程性语句和SQL语句。<br>l         LENGTH<br>语法:  LENGTH（string）<br>功能:  返回string的字节单位的长度.CHAR数值是填充空格类型的,如果string由数据类型CHAR,它的结尾的空格都被计算到字符串长度中间.如果string是NULL,返回结果是NULL,而不是0.<br>使用位置: 过程性语句和SQL语句。<br>l         LENGTHB<br>语法:  LENGTHB（string）<br>功能:  返回以字节为单位的string的长度.对于单字节字符集LENGTHB和LENGTH是一样的.<br>使用位置: 过程性语句和SQL语句。<br>l         NLSSORT<br>语法: NLSSORT（string[,nlsparams]）<br>功能: 得到用于排序string的字符串字节.所有的数值都被转换为字节字符串,这样在不同数据库之间就保持了一致性. Nlsparams的作用和NLS_INITCAP中的相同.如果忽略参数,会话使用缺省排序.<br>使用位置: 过程性语句和SQL语句。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/oracle/">oracle</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/oracle/">oracle</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2014/11/04/oracle_str/" data-title="oracle字符串函数 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/11/04/oracle_num/" title="oracle数字函数">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  oracle数字函数</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2014/11/04/oracle_records/"  title="oracle 查询集间的操作">
+ <strong>NEXT:</strong><br/> 
+ <span>oracle 查询集间的操作
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#一概述"><span class="toc-number">1.</span> <span class="toc-text">一概述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#aaa"><span class="toc-number">1.1.</span> <span class="toc-text">aaa  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(‘AAA’,’BBB’)"><span class="toc-number">1.2.</span> <span class="toc-text">NVL(‘AAA’,’BBB’)  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(NULL,’BBB’)"><span class="toc-number">1.3.</span> <span class="toc-text">NVL(NULL,’BBB’)  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(NULL,’BBB’)-1"><span class="toc-number">1.4.</span> <span class="toc-text">NVL(NULL,’BBB’)  </span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#NVL(‘NULL’,’AAA’)"><span class="toc-number">1.5.</span> <span class="toc-text">NVL(‘NULL’,’AAA’)  </span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#二详述"><span class="toc-number">2.</span> <span class="toc-text">二详述</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>

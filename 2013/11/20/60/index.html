@@ -1,0 +1,534 @@
+
+ <!DOCTYPE HTML>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Python模块学习 ---- logging 日志记录 | guofeifei&#39;s blog</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=3, minimum-scale=1">
+    
+    <meta name="author" content="guoff">
+    
+    <meta name="description" content="许多应用程序中都会有日志模块，用于记录系统在运行过程中的一些关键信息，以便于对系统的运行状况进行跟踪。在.NET平台中，有非常著名的第三方开源日志组件log4net，c++中，有人们熟悉的log4cpp，而在python中，我们不需要第三方的日志组件，因为它已经为我们提供了简单易用、且功能强大的日志">
+    
+    
+    
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/pacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/pacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css" type="text/css">
+</head>
+
+  <body>
+    <header>
+      <div>
+		
+			<div id="imglogo">
+				<a href="/"><img src="/img/logo.svg" alt="guofeifei&#39;s blog" title="guofeifei&#39;s blog"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="guofeifei&#39;s blog">guofeifei&#39;s blog</a></h1>
+				<h2 class="blog-motto">Writing thinking doing</h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="text" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:www.guofeifei.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2013/11/20/60/" title="Python模块学习 ---- logging 日志记录" itemprop="url">Python模块学习 ---- logging 日志记录</a>
+  </h1>
+  <p class="article-author">By
+    
+      <a href="http://www.guofeifei.com" title="guoff">guoff</a>
+    </p>
+  <p class="article-time">
+    <time datetime="2013-11-19T21:33:27.000Z" itemprop="datePublished">2013-11-20</time>
+    更新日期:<time datetime="2015-06-23T16:54:03.996Z" itemprop="dateModified">2015-06-24</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#4个主要的组件"><span class="toc-number">1.</span> <span class="toc-text">4个主要的组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志级别"><span class="toc-number">2.</span> <span class="toc-text">日志级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-basicConfig([**kwargs]):"><span class="toc-number">3.</span> <span class="toc-text">logging.basicConfig([**kwargs]):</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#coding=gbk"><span class="toc-number"></span> <span class="toc-text">coding=gbk</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#——-_结果"><span class="toc-number"></span> <span class="toc-text">——- 结果</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2009-07-13_21:42:15,592_-_WARNING:_warn"><span class="toc-number"></span> <span class="toc-text">2009-07-13 21:42:15,592 - WARNING: warn</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2009-07-13_21:42:15,640_-_ERROR:_error"><span class="toc-number"></span> <span class="toc-text">2009-07-13 21:42:15,640 - ERROR: error</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-getLogger([name])"><span class="toc-number">1.</span> <span class="toc-text">logging.getLogger([name])</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-setLoggerClass(klass)"><span class="toc-number">2.</span> <span class="toc-text">logging.setLoggerClass(klass)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-getLoggerClass()"><span class="toc-number">3.</span> <span class="toc-text">logging.getLoggerClass()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-getLevelName(lvl)"><span class="toc-number">4.</span> <span class="toc-text">logging.getLevelName(lvl)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-shutdown()"><span class="toc-number">5.</span> <span class="toc-text">logging.shutdown()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-setLevel(lvl):"><span class="toc-number">6.</span> <span class="toc-text">Logger.setLevel(lvl):</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#coding=gbk-1"><span class="toc-number"></span> <span class="toc-text">coding=gbk</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-debug(msg_[_,args_[,_*kwargs]])"><span class="toc-number">1.</span> <span class="toc-text">Logger.debug(msg [ ,args [, *kwargs]])</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-info(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">2.</span> <span class="toc-text">Logger.info(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-warnning(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">3.</span> <span class="toc-text">Logger.warnning(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-error(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">4.</span> <span class="toc-text">Logger.error(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-critical(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">5.</span> <span class="toc-text">Logger.critical(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-log(lvl,_msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">6.</span> <span class="toc-text">Logger.log(lvl, msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-exception(msg[,_*args])"><span class="toc-number">7.</span> <span class="toc-text">Logger.exception(msg[, *args])</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-addFilter(filt)"><span class="toc-number">8.</span> <span class="toc-text">Logger.addFilter(filt)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-removeFilter(filt)"><span class="toc-number">9.</span> <span class="toc-text">Logger.removeFilter(filt)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-addHandler(hdlr)"><span class="toc-number">10.</span> <span class="toc-text">Logger.addHandler(hdlr)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-removeHandler(hdlr)"><span class="toc-number">11.</span> <span class="toc-text">Logger.removeHandler(hdlr)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-makeRecord(name,_lvl,_fn,_lno,_msg,_args,_exc_info[,_func,_extra])"><span class="toc-number">12.</span> <span class="toc-text">Logger.makeRecord(name, lvl, fn, lno, msg, args, exc_info[, func, extra])</span></a></li></ol>
+		</div>
+		
+		<p>许多应用程序中都会有日志模块，用于记录系统在运行过程中的一些关键信息，以便于对系统的运行状况进行跟踪。在.NET平台中，有非常著名的第三方开源日志组件log4net，c++中，有人们熟悉的log4cpp，而在python中，我们不需要第三方的日志组件，因为它已经为我们提供了简单易用、且功能强大的日志模块：logging。logging模块支持将日志信息保存到不同的目标域中，如：保存到日志文件中；以邮件的形式发送日志信息；以http get或post的方式提交日志到web服务器；以windows事件的形式记录等等。这些日志保存方式可以组合使用，每种方式可以设置自己的日志级别以及日志格式。日志模块的内容比较多，今天先学习logging模块的基本使用，下次具体学习日志的处理。</p>
+<p>先看一个比较简单的例子，让我们对logging模块有个感性的认识：</p>
+<p>[python] view plaincopy</p>
+<ol>
+<li><p>import logging  </p>
+</li>
+<li><p>logging.basicConfig(filename = os.path.join(os.getcwd(), ‘log.txt’), level = logging.DEBUG)  </p>
+</li>
+<li><p>logging.debug(‘this is a message’)  </p>
+</li>
+</ol>
+<p>　　运行上面例子的代码，将会在程序的根目录下创建一个log.txt文件，打开该文件，里面有一条日志记录：”DEBUG:root:this is a message”。</p>
+<h3 id="4个主要的组件">4个主要的组件</h3><p>logger: 日志类，应用程序往往通过调用它提供的api来记录日志；</p>
+<p>handler: 对日志信息处理，可以将日志发送(保存)到不同的目标域中；</p>
+<p>filter: 对日志信息进行过滤；</p>
+<p>formatter:日志的格式化；</p>
+<h3 id="日志级别">日志级别</h3><p>　　在记录日志时, 日志消息都会关联一个级别(“级别”本质上是一个非负整数)。系统默认提供了6个级别，它们分别是：  </p>
+<p>级别对应的值</p>
+<p>CRITICAL<br>50</p>
+<p>ERROR<br>40</p>
+<p>WARNING<br>30</p>
+<p>INFO<br>20</p>
+<p>DEBUG<br>10</p>
+<p>NOTSET<br>0</p>
+<p>可以给日志对象(Logger Instance)设置日志级别，低于该级别的日志消息将会被忽略，也可以给Hanlder设置日志级别，对于低于该级别的日志消息, Handler也会忽略。</p>
+<p>logging模块中的常用函数：</p>
+<h3 id="logging-basicConfig([**kwargs]):">logging.basicConfig([**kwargs]):</h3><p>　　为日志模块配置基本信息。kwargs 支持如下几个关键字参数：<br>filename ：日志文件的保存路径。如果配置了些参数，将自动创建一个FileHandler作为Handler；<br>filemode ：日志文件的打开模式。 默认值为’a’，表示日志消息以追加的形式添加到日志文件中。如果设为’w’, 那么每次程序启动的时候都会创建一个新的日志文件；<br>format ：设置日志输出格式；<br>datefmt ：定义日期格式；<br>level ：设置日志的级别.对低于该级别的日志消息将被忽略；<br>stream ：设置特定的流用于初始化StreamHandler；</p>
+<p>　　下面是一个简单的例子：</p>
+<p>[python] view plaincopy</p>
+<ol>
+<li><h1 id="coding=gbk">coding=gbk</h1></li>
+<li><p>import logging  </p>
+</li>
+<li><p>logging.basicConfig(filename = os.path.join(os.getcwd(), ‘log.txt’), /  </p>
+</li>
+<li><p>level = logging.WARN, filemode = ‘w’, format = ‘%(asctime)s - %(levelname)s: %(message)s’)  </p>
+</li>
+<li><p>logging.debug(‘debug’)  #被忽略  </p>
+</li>
+<li><p>logging.info(‘info’)    #被忽略  </p>
+</li>
+<li><p>logging.warning(‘warn’)  </p>
+</li>
+<li><p>logging.error(‘error’)  </p>
+</li>
+<li><h1 id="——-_结果">——- 结果</h1></li>
+<li><h1 id="2009-07-13_21:42:15,592_-_WARNING:_warn">2009-07-13 21:42:15,592 - WARNING: warn</h1></li>
+<li><h1 id="2009-07-13_21:42:15,640_-_ERROR:_error">2009-07-13 21:42:15,640 - ERROR: error</h1></li>
+</ol>
+<h3 id="logging-getLogger([name])">logging.getLogger([name])</h3><p>　　创建Logger对象。日志记录的工作主要由Logger对象来完成。在调用getLogger时要提供Logger的名称（注：多次使用相同名称来调用getLogger，返回的是同一个对象的引用。），Logger实例之间有层次关系，这些关系通过Logger名称来体现，如：</p>
+<p>p = logging.getLogger(“root”)</p>
+<p>c1 = logging.getLogger(“root.c1”)</p>
+<p>c2 = logging.getLogger(“root.c2”)</p>
+<p>例子中，p是父logger, c1,c2分别是p的子logger。c1, c2将继承p的设置。如果省略了name参数, getLogger将返回日志对象层次关系中的根Logger。</p>
+<h3 id="logging-setLoggerClass(klass)">logging.setLoggerClass(klass)</h3><h3 id="logging-getLoggerClass()">logging.getLoggerClass()</h3><p>　　获取/设置日志类型。用户可以自定义日志类来代替系统提供的logging.Logger类。</p>
+<h3 id="logging-getLevelName(lvl)">logging.getLevelName(lvl)</h3><p>　　获取日志级别对应的名称。例如：</p>
+<p>[python] view plaincopy</p>
+<ol>
+<li><p>print logging.getLevelName(logging.NOTSET)  </p>
+</li>
+<li><p>print logging.getLevelName(10) #logging.DEBUG  </p>
+</li>
+<li><p>print logging.getLevelName(logging.DEBUG)  </p>
+</li>
+<li><p>print logging.getLevelName(30) #logging.WARN  </p>
+</li>
+<li><p>print logging.getLevelName(logging.ERROR)  </p>
+</li>
+<li><p>print logging.getLevelName(50)  #logging.CRITICAL  </p>
+</li>
+</ol>
+<h3 id="logging-shutdown()">logging.shutdown()</h3><p>　　当不再使用日志系统的时候，调用该方法，它会将日志flush到对应的目标域上。一般在系统退出的时候调用。</p>
+<p>Logger对象 通过调用logging.getLogger(name)来创建，它有如下常用的方法和属性：</p>
+<h3 id="Logger-setLevel(lvl):">Logger.setLevel(lvl):</h3><p>　　设置日志的级别。对于低于该级别的日志消息将被忽略。下面一个例子演示setLevel方法：</p>
+<p>[c-sharp] view plaincopy</p>
+<ol>
+<li><h1 id="coding=gbk-1">coding=gbk</h1></li>
+<li><p>import logging  </p>
+</li>
+<li><p>logging.basicConfig(filename = os.path.join(os.getcwd(), ‘log.txt’), level = logging.DEBUG)  </p>
+</li>
+<li><p>log = logging.getLogger(‘root.test’)  </p>
+</li>
+<li><p>log.setLevel(logging.WARN)  #日志记录级别为WARNNING  </p>
+</li>
+<li><p>log.info(‘info’)    #不会被记录  </p>
+</li>
+<li><p>log.debug(‘debug’)  #不会被记录  </p>
+</li>
+<li><p>log.warning(‘warnning’)  </p>
+</li>
+<li><p>log.error(‘error’)  </p>
+</li>
+</ol>
+<h3 id="Logger-debug(msg_[_,args_[,_*kwargs]])">Logger.debug(msg [ ,<em>args [, *</em>kwargs]])</h3><p>　　记录DEBUG级别的日志信息。参数msg是信息的格式，args与kwargs分别是格式参数。</p>
+<p>[python] view plaincopy</p>
+<ol>
+<li><p>import logging  </p>
+</li>
+<li><p>logging.basicConfig(filename = os.path.join(os.getcwd(), ‘log.txt’), level = logging.DEBUG)  </p>
+</li>
+<li><p>log = logging.getLogger(‘root’)  </p>
+</li>
+<li><p>log.debug(‘%s, %s, %s’, *(‘error’, ‘debug’, ‘info’))  </p>
+</li>
+<li><p>log.debug(‘%(module)s, %(info)s’, {‘module’: ‘log’, ‘info’: ‘error’})  </p>
+</li>
+</ol>
+<h3 id="Logger-info(msg[_,_args[_,_*kwargs]_]_)">Logger.info(msg[ , <em>args[ , *</em>kwargs] ] )</h3><h3 id="Logger-warnning(msg[_,_args[_,_*kwargs]_]_)">Logger.warnning(msg[ , <em>args[ , *</em>kwargs] ] )</h3><h3 id="Logger-error(msg[_,_args[_,_*kwargs]_]_)">Logger.error(msg[ , <em>args[ , *</em>kwargs] ] )</h3><h3 id="Logger-critical(msg[_,_args[_,_*kwargs]_]_)">Logger.critical(msg[ , <em>args[ , *</em>kwargs] ] )</h3><p>　　记录相应级别的日志信息。参数的含义与Logger.debug一样。</p>
+<h3 id="Logger-log(lvl,_msg[_,_args[_,_*kwargs]_]_)">Logger.log(lvl, msg[ , <em>args[ , *</em>kwargs] ] )</h3><p>　　记录日志，参数lvl用户设置日志信息的级别。参数msg, <em>args, *</em>kwargs的含义与Logger.debug一样。</p>
+<h3 id="Logger-exception(msg[,_*args])">Logger.exception(msg[, *args])</h3><p>　　以ERROR级别记录日志消息，异常跟踪信息将被自动添加到日志消息里。Logger.exception通过用在异常处理块中，如：</p>
+<p>[python] view plaincopy</p>
+<ol>
+<li><p>import logging  </p>
+</li>
+<li><p>logging.basicConfig(filename = os.path.join(os.getcwd(), ‘log.txt’), level = logging.DEBUG)  </p>
+</li>
+<li><p>log = logging.getLogger(‘root’)  </p>
+</li>
+<li><p>try:  </p>
+</li>
+<li><p>raise Exception, ‘this is a exception’  </p>
+</li>
+<li><p>except:  </p>
+</li>
+<li><p>log.exception(‘exception’) #异常信息被自动添加到日志消息中  </p>
+</li>
+</ol>
+<h3 id="Logger-addFilter(filt)">Logger.addFilter(filt)</h3><h3 id="Logger-removeFilter(filt)">Logger.removeFilter(filt)</h3><p>　　添加/移除日志消息过滤器。在讲述Filter时具体介绍。</p>
+<h3 id="Logger-addHandler(hdlr)">Logger.addHandler(hdlr)</h3><h3 id="Logger-removeHandler(hdlr)">Logger.removeHandler(hdlr)</h3><p>　　添加/移除日志消息处理器。在讲述Handler时具体介绍。</p>
+<h3 id="Logger-makeRecord(name,_lvl,_fn,_lno,_msg,_args,_exc_info[,_func,_extra])">Logger.makeRecord(name, lvl, fn, lno, msg, args, exc_info[, func, extra])</h3><p>　　创建LogRecord对象。日志消息被实例为一个LogRecord对象，并在日志类内处理。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/log/">log</a><a href="/tags/python/">python</a>
+  </div>
+
+
+<div class="article-categories">
+  <span></span>
+  <a class="article-category-link" href="/categories/python/">python</a>
+</div>
+
+
+
+<div class="article-share" id="share">
+
+  <div data-url="http://www.guofeifei.com/2013/11/20/60/" data-title="Python模块学习 ---- logging 日志记录 | guofeifei&#39;s blog" data-tsina="null" class="share clearfix">
+  </div>
+
+</div>
+</footer>   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2014/01/02/66/" title="Java打印类型System.out.printf(&quot;%b %n %c %n %s %n %s %n %d %n&quot;,..)">
+  <strong>PREVIOUS:</strong><br/>
+  <span>
+  Java打印类型System.out.printf(&quot;%b %n %c %n %s %n %s %n %d %n&quot;,..)</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2013/11/13/57/"  title="Toad 连接的时候提示 OCI_NO_DATA 关闭后再连就没有反映了">
+ <strong>NEXT:</strong><br/> 
+ <span>Toad 连接的时候提示 OCI_NO_DATA 关闭后再连就没有反映了
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+<section class="comment">
+	<div class="ds-thread"></div>
+</section>
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+  <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#4个主要的组件"><span class="toc-number">1.</span> <span class="toc-text">4个主要的组件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#日志级别"><span class="toc-number">2.</span> <span class="toc-text">日志级别</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-basicConfig([**kwargs]):"><span class="toc-number">3.</span> <span class="toc-text">logging.basicConfig([**kwargs]):</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#coding=gbk"><span class="toc-number"></span> <span class="toc-text">coding=gbk</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#——-_结果"><span class="toc-number"></span> <span class="toc-text">——- 结果</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2009-07-13_21:42:15,592_-_WARNING:_warn"><span class="toc-number"></span> <span class="toc-text">2009-07-13 21:42:15,592 - WARNING: warn</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#2009-07-13_21:42:15,640_-_ERROR:_error"><span class="toc-number"></span> <span class="toc-text">2009-07-13 21:42:15,640 - ERROR: error</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-getLogger([name])"><span class="toc-number">1.</span> <span class="toc-text">logging.getLogger([name])</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-setLoggerClass(klass)"><span class="toc-number">2.</span> <span class="toc-text">logging.setLoggerClass(klass)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-getLoggerClass()"><span class="toc-number">3.</span> <span class="toc-text">logging.getLoggerClass()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-getLevelName(lvl)"><span class="toc-number">4.</span> <span class="toc-text">logging.getLevelName(lvl)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#logging-shutdown()"><span class="toc-number">5.</span> <span class="toc-text">logging.shutdown()</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-setLevel(lvl):"><span class="toc-number">6.</span> <span class="toc-text">Logger.setLevel(lvl):</span></a></li></ol></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#coding=gbk-1"><span class="toc-number"></span> <span class="toc-text">coding=gbk</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-debug(msg_[_,args_[,_*kwargs]])"><span class="toc-number">1.</span> <span class="toc-text">Logger.debug(msg [ ,args [, *kwargs]])</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-info(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">2.</span> <span class="toc-text">Logger.info(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-warnning(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">3.</span> <span class="toc-text">Logger.warnning(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-error(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">4.</span> <span class="toc-text">Logger.error(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-critical(msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">5.</span> <span class="toc-text">Logger.critical(msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-log(lvl,_msg[_,_args[_,_*kwargs]_]_)"><span class="toc-number">6.</span> <span class="toc-text">Logger.log(lvl, msg[ , args[ , *kwargs] ] )</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-exception(msg[,_*args])"><span class="toc-number">7.</span> <span class="toc-text">Logger.exception(msg[, *args])</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-addFilter(filt)"><span class="toc-number">8.</span> <span class="toc-text">Logger.addFilter(filt)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-removeFilter(filt)"><span class="toc-number">9.</span> <span class="toc-text">Logger.removeFilter(filt)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-addHandler(hdlr)"><span class="toc-number">10.</span> <span class="toc-text">Logger.addHandler(hdlr)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-removeHandler(hdlr)"><span class="toc-number">11.</span> <span class="toc-text">Logger.removeHandler(hdlr)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Logger-makeRecord(name,_lvl,_fn,_lno,_msg,_args,_exc_info[,_func,_extra])"><span class="toc-number">12.</span> <span class="toc-text">Logger.makeRecord(name, lvl, fn, lno, msg, args, exc_info[, func, extra])</span></a></li></ol>
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+<div class="categorieslist">
+	<p class="asidetitle">分类</p>
+		<ul>
+		
+			<li><a href="/categories/Java/" title="Java">Java<sup>3</sup></a></li>
+		
+			<li><a href="/categories/c-c/" title="c/c++">c/c++<sup>3</sup></a></li>
+		
+			<li><a href="/categories/django/" title="django">django<sup>13</sup></a></li>
+		
+			<li><a href="/categories/web/html5/" title="html5">html5<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mezzanine/" title="mezzanine">mezzanine<sup>1</sup></a></li>
+		
+			<li><a href="/categories/mysql/" title="mysql">mysql<sup>5</sup></a></li>
+		
+			<li><a href="/categories/oracle/" title="oracle">oracle<sup>26</sup></a></li>
+		
+			<li><a href="/categories/python/" title="python">python<sup>9</sup></a></li>
+		
+			<li><a href="/categories/ubuntu/" title="ubuntu">ubuntu<sup>4</sup></a></li>
+		
+			<li><a href="/categories/web/" title="web">web<sup>8</sup></a></li>
+		
+			<li><a href="/categories/低落/" title="低落">低落<sup>1</sup></a></li>
+		
+			<li><a href="/categories/django/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>3</sup></a></li>
+		
+			<li><a href="/categories/兴奋的事儿/" title="兴奋的事儿">兴奋的事儿<sup>4</sup></a></li>
+		
+			<li><a href="/categories/喜欢/" title="喜欢">喜欢<sup>1</sup></a></li>
+		
+			<li><a href="/categories/工作随感/" title="工作随感">工作随感<sup>4</sup></a></li>
+		
+			<li><a href="/categories/工具/" title="工具">工具<sup>3</sup></a></li>
+		
+			<li><a href="/categories/待办/" title="待办">待办<sup>10</sup></a></li>
+		
+			<li><a href="/categories/我是大厨/" title="我是大厨">我是大厨<sup>4</sup></a></li>
+		
+			<li><a href="/categories/概念/" title="概念">概念<sup>1</sup></a></li>
+		
+			<li><a href="/categories/生活点滴/" title="生活点滴">生活点滴<sup>6</sup></a></li>
+		
+			<li><a href="/categories/翻译/" title="翻译">翻译<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			<li><a href="/tags/C/" title="C++">C++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/CKEDITOR/" title="CKEDITOR">CKEDITOR<sup>1</sup></a></li>
+		
+			<li><a href="/tags/JAVA/" title="JAVA">JAVA<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Linux/" title="Linux">Linux<sup>1</sup></a></li>
+		
+			<li><a href="/tags/Oracle/" title="Oracle">Oracle<sup>1</sup></a></li>
+		
+			<li><a href="/tags/WdatePicker/" title="WdatePicker">WdatePicker<sup>1</sup></a></li>
+		
+			<li><a href="/tags/bootstrap/" title="bootstrap">bootstrap<sup>1</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c">c<sup>3</sup></a></li>
+		
+			<li><a href="/tags/c/" title="c++">c++<sup>1</sup></a></li>
+		
+			<li><a href="/tags/chrome/" title="chrome">chrome<sup>1</sup></a></li>
+		
+			<li><a href="/tags/createjs/" title="createjs">createjs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/crt/" title="crt">crt<sup>1</sup></a></li>
+		
+			<li><a href="/tags/css3/" title="css3">css3<sup>1</sup></a></li>
+		
+			<li><a href="/tags/django/" title="django">django<sup>7</sup></a></li>
+		
+			<li><a href="/tags/django-lfs/" title="django-lfs">django-lfs<sup>1</sup></a></li>
+		
+			<li><a href="/tags/eclipse/" title="eclipse">eclipse<sup>1</sup></a></li>
+		
+			<li><a href="/tags/error/" title="error">error<sup>4</sup></a></li>
+		
+			<li><a href="/tags/fiddler/" title="fiddler">fiddler<sup>1</sup></a></li>
+		
+			<li><a href="/tags/ftp/" title="ftp">ftp<sup>1</sup></a></li>
+		
+			<li><a href="/tags/geany/" title="geany">geany<sup>1</sup></a></li>
+		
+		</ul>
+</div>
+
+
+  <div class="rsspart">
+	<a href="null" target="_blank" title="rss">RSS 订阅</a>
+</div>
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	
+	<div class="social-font clearfix">
+		
+		
+		
+		
+		
+	</div>
+		<p class="copyright">Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/A-limon/pacman" target="_blank" title="Pacman">Pacman</a> © 2015 
+		
+		<a href="http://www.guofeifei.com" target="_blank" title="guoff">guoff</a>
+		
+		</p>
+</div>
+</footer>
+    <script src="/js/jquery-2.1.0.min.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else
+    {
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      h  = $('article h2')
+      ah = $('article h2'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  if(ah.length==0){
+    t.css('display','none');
+  }else{
+    c.click(function(){
+      ta.css('display', 'block').addClass('fadeIn');
+    });
+    o.click(function(){
+      ta.css('display', 'none');
+    });
+    $(window).scroll(function(){
+      ta.css("top",Math.max(140,320-$(this).scrollTop()));
+    });
+  };
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina');
+  var html = [
+  '<a href="#" class="overlay" id="qrcode"></a>',
+  '<div class="qrcode clearfix"><span>扫描二维码分享到微信朋友圈</span><a class="qrclose" href="#share"></a><strong>Loading...Please wait</strong><img id="qrcode-pic" data-src="http://s.jiathis.com/qrcode.php?url=' + encodedUrl + '"/></div>',
+  '<a href="#textlogo" class="article-back-to-top" title="Top"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="QRcode"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="Weibo"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+  $('.article-share-qrcode').click(function(){
+    var imgSrc = $('#qrcode-pic').attr('data-src');
+    $('#qrcode-pic').attr('src', imgSrc);
+    $('#qrcode-pic').load(function(){
+        $('.qrcode strong').text(' ');
+    });
+  });
+});     
+</script>
+
+
+<script type="text/javascript">
+  var duoshuoQuery = {short_name:"git_guoff"};
+  (function() {
+    var ds = document.createElement('script');
+    ds.type = 'text/javascript';ds.async = true;
+    ds.src = '//static.duoshuo.com/embed.js';
+    ds.charset = 'UTF-8';
+    (document.getElementsByTagName('head')[0] 
+    || document.getElementsByTagName('body')[0]).appendChild(ds);
+  })();
+</script> 
+
+
+
+
+
+  </body>
+</html>
